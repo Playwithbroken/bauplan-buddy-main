@@ -1,0 +1,129 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { DragAndDropProvider } from "@/contexts/DragAndDropContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ToastProvider } from "@/components/ErrorToast";
+import ProtectedRoute, { PublicRoute } from "@/components/ProtectedRoute";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import ServiceWorkerUpdatePrompt from "@/components/ServiceWorkerUpdatePrompt";
+import GlobalShortcutListener from "@/components/GlobalShortcutListener";
+import GlobalCommandMenu from "@/components/GlobalCommandMenu";
+import KeyboardShortcutsPanelPortal from "@/components/KeyboardShortcutsPanelPortal";
+import HelpCenterPortal from "@/components/HelpCenterPortal";
+import FloatingThemeToggle from "@/components/FloatingThemeToggle";
+import { ThemeService } from "@/services/themeService";
+import { KeyboardShortcutService } from "@/services/keyboardShortcutService";
+import { MobileUIService } from "@/services/mobileUIService";
+import { AccessibilityService } from "@/services/accessibilityService";
+import performanceOptimizationService from "@/services/performanceOptimizationService";
+import { initializePreloading } from "@/utils/routePreloader";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { onboardingService } from "@/services/onboardingService";
+
+// Lazy load components for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const Unauthorized = lazy(() => import("./pages/Unauthorized"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DashboardWithSidebar = lazy(() => import("./pages/DashboardWithSidebar"));
+const Quotes = lazy(() => import("./pages/QuotesWithSidebar"));
+const Projects = lazy(() => import("./pages/ProjectsWithSidebar"));
+const Invoices = lazy(() => import("./pages/InvoicesWithSidebar"));
+const OrderConfirmations = lazy(
+  () => import("./pages/OrderConfirmationsWithSidebar")
+);
+const Customers = lazy(() => import("./pages/CustomersWithSidebar"));
+const Suppliers = lazy(() => import("./pages/SuppliersWithSidebar"));
+const Documents = lazy(() => import("./pages/DocumentsWithSidebar"));
+const Teams = lazy(() => import("./pages/TeamsWithSidebar"));
+const Analytics = lazy(() => import("./pages/AnalyticsWithSidebar"));
+const FieldWorker = lazy(() => import("./pages/FieldWorkerWithSidebar"));
+const CalendarSimple = lazy(() => import("./pages/CalendarWithSidebar"));
+const ChatWithSidebar = lazy(() => import("./pages/ChatWithSidebar"));
+const Admin = lazy(() => import("./pages/Admin"));
+const DatabaseConfigPage = lazy(() => import("./pages/DatabaseConfigPage"));
+const Documentation = lazy(() => import("./pages/DocumentationWithSidebar"));
+const Diagnostics = lazy(() => import("./pages/Diagnostics"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const DeliveryNotes = lazy(() => import("./pages/DeliveryNotesWithSidebar"));
+const Procurement = lazy(() => import("./pages/ProcurementWithSidebar"));
+const Settings = lazy(() => import("./pages/Settings"));
+const SettingsStorage = lazy(() => import("./pages/SettingsStorage"));
+
+const queryClient = new QueryClient();
+
+declare global {
+  interface Window {
+    __bauplanServicesInitialized?: boolean;
+  }
+}
+
+// Initialize all services
+const initializeServices = () => {
+  try {
+    console.log("App: Initializing services...");
+
+    // Initialize services by accessing their getInstance methods
+    try {
+      ThemeService.getInstance();
+      console.log("App: ThemeService initialized");
+    } catch (error) {
+      console.warn("App: ThemeService initialization failed:", error);
+    }
+
+    try {
+      KeyboardShortcutService.getInstance();
+      console.log("App: KeyboardShortcutService initialized");
+    } catch (error) {
+      console.warn(
+        "App: KeyboardShortcutService initialization failed:",
+        error
+      );
+    }
+
+    try {
+      MobileUIService.getInstance();
+      console.log("App: MobileUIService initialized");
+    } catch (error) {
+      console.warn("App: MobileUIService initialization failed:", error);
+    }
+
+    try {
+      AccessibilityService.getInstance();
+      console.log("App: AccessibilityService initialized");
+    } catch (error) {
+      console.warn("App: AccessibilityService initialization failed:", error);
+    }
+
+    try {
+      // Performance optimization service is already a singleton instance
+      performanceOptimizationService.analyzeBundleSize();
+      console.log("App: PerformanceOptimizationService initialized");
+    } catch (error) {
+      console.warn(
+        "App: PerformanceOptimizationService initialization failed:",
+        error
+      );
+    }
+
+    try {
+      // Initialize route preloading
+      initializePreloading();
+      console.log("App: Route preloading initialized");
+    } catch (error) {
+        </ThemeProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
+
+export default App;

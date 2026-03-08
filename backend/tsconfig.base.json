@@ -1,0 +1,21 @@
+﻿{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node10",
+    "strict": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@bauplan/common": ["common/src"],
+      "@bauplan/database": ["libs/database/src"],
+      "@bauplan/cache": ["libs/cache/src"],
+      "@bauplan/messaging": ["libs/messaging/src"]
+    }
+  }
+}

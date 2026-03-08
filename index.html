@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+    />
+    <title>Bauplan Buddy - Construction Management</title>
+    <meta
+      name="description"
+      content="Professional construction project management and planning tool for contractors and builders"
+    />
+    <meta name="author" content="Bauplan Buddy" />
+    <meta
+      name="keywords"
+      content="construction, building, project management, planning, contractor, field work"
+    />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Bauplan Buddy" />
+    <meta name="application-name" content="Bauplan Buddy" />
+    <meta name="msapplication-TileColor" content="#2563eb" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Icons -->
+    <!-- <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" /> -->
+    <!-- <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-120x120.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="114x114" href="/icons/icon-114x114.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="76x76" href="/icons/icon-76x76.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="60x60" href="/icons/icon-60x60.png" /> -->
+    <!-- <link rel="apple-touch-icon" sizes="57x57" href="/icons/icon-57x57.png" /> -->
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Splash Screens for iOS -->
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+      href="/splash/iphone5_splash.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+      href="/splash/iphone6_splash.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+      href="/splash/iphoneplus_splash.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+      href="/splash/iphonex_splash.png"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+      href="/splash/ipad_splash.png"
+    />
+
+    <!-- Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; connect-src 'self' http://localhost:3001 http://localhost:4001 http://localhost:4002 http://localhost:4003 http://localhost:4004 https: ws: wss:; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'; worker-src 'self' blob:;"
+    />
+
+
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!-- Open Graph -->
+    <meta
+      property="og:title"
+      content="Bauplan Buddy - Construction Management"
+    />
+    <meta
+      property="og:description"
+      content="Professional construction project management and planning tool for contractors and builders"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    <meta property="og:url" content="https://bauplan-buddy.app" />
+    <meta property="og:site_name" content="Bauplan Buddy" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Bauplan Buddy - Construction Management"
+    />
+    <meta
+      name="twitter:description"
+      content="Professional construction project management and planning tool for contractors and builders"
+    />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+
+    <!-- Preload Critical Resources -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+  </head>
+
+  <body>
+    <div id="root">
+      <!-- IMMEDIATE FALLBACK CONTENT -->
+      <div
+        style="
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+            sans-serif;
+          text-align: center;
+          padding: 20px;
+        "
+      >
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+          "
+        >
+          <h1 style="margin: 0 0 20px 0; font-size: 2em">🏗️ Bauplan Buddy</h1>
+          <p style="margin: 0 0 20px 0; opacity: 0.9">
+            Construction Management
+          </p>
+          <div
+            style="
+              width: 40px;
+              height: 40px;
+              border: 3px solid rgba(255, 255, 255, 0.3);
+              border-radius: 50%;
+              border-top-color: white;
+              animation: spin 1s linear infinite;
+              margin: 20px auto;
+            "
+          ></div>
+          <p style="margin: 0; font-size: 0.9em; opacity: 0.8">
+            Lädt React App...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div
+      id="loading-screen"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #2563eb;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      "
+    >
+      <div style="text-align: center; color: white">
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
+          "
+        ></div>
+        <h2
+          style="margin: 0; font-family: system-ui, -apple-system, sans-serif"
+        >
+          Bauplan Buddy
+        </h2>
+        <p
+          style="
+            margin: 10px 0 0;
+            opacity: 0.8;
+            font-family: system-ui, -apple-system, sans-serif;
+          "
+        >
+          Wird geladen...
+        </p>
+      </div>
+    </div>
+
+    <style>
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Hide loading screen when app is ready - ULTRA STRONG OVERRIDES */
+      .app-ready #loading-screen,
+      #loading-screen {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -9999 !important;
+        position: absolute !important;
+        left: -10000px !important;
+        top: -10000px !important;
+      }
+
+      /* Force hide any loading elements */
+      [id*="loading"],
+      [class*="loading"],
+      [class*="spinner"] {
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+      }
+
+      /* Automatic hide after 1.5 seconds as failsafe - REMOVE THIS */
+      /* #loading-screen {
+        animation: fadeOut 0.5s ease-in-out 1.5s forwards;
+      }
+      
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; display: none; }
+      } */
+
+      /* Prevent zoom on input focus on iOS */
+      @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        select,
+        textarea,
+        input[type="text"],
+        input[type="password"],
+        input[type="datetime"],
+        input[type="datetime-local"],
+        input[type="date"],
+        input[type="month"],
+        input[type="time"],
+        input[type="week"],
+        input[type="number"],
+        input[type="email"],
+        input[type="url"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="color"] {
+          font-size: 16px !important;
+        }
+      }
+
+      /* Touch optimizations - Firefox compatible */
+      * {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+      }
+
+      /* Firefox-specific fixes */
+      @-moz-document url-prefix() {
+        button,
+        [role="button"] {
+          -moz-appearance: none;
+          appearance: none; /* Standard property for compatibility */
+          -moz-user-select: auto;
+          user-select: auto; /* Standard property for compatibility */
+          pointer-events: auto !important;
+        }
+      }
+
+      /* Disable text selection for non-interactive elements */
+      .no-select {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      input,
+      textarea,
+      [contenteditable] {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+      }
+    </style>
+
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- INSTANT EXECUTION SCRIPT -->
+    <script>
+      // Execute immediately when this script is parsed
+      (function () {
+        console.log(
+          "INSTANT: Hiding loading screen immediately on script parse"
+        );
+        const loadingScreen = document.getElementById("loading-screen");
+        if (loadingScreen) {
+          loadingScreen.style.cssText =
+            "display: none !important; visibility: hidden !important; opacity: 0 !important;";
+        }
+        document.body.classList.add("app-ready");
+      })();
+    </script>
+
+    <!-- OPTIMIZED LOADING SCREEN REMOVAL -->
+    <script>
+      // Single efficient loading screen removal
+      function hideLoadingScreen() {
+        document.body.classList.add("app-ready");
+        const loadingScreen = document.getElementById("loading-screen");
+        if (loadingScreen) {
+          loadingScreen.style.display = "none";
+          loadingScreen.style.visibility = "hidden";
+          loadingScreen.style.opacity = "0";
+        }
+      }
+
+      // Hide loading screen when DOM is ready
+      document.addEventListener("DOMContentLoaded", function () {
+        hideLoadingScreen();
+        console.log("Loading screen removed: DOMContentLoaded");
+      });
+
+      // Fallback timeout
+      setTimeout(function () {
+        hideLoadingScreen();
+        console.log("Loading screen removed: 2s fallback");
+      }, 2000);
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then(function (registration) {
+              console.log(
+                "ServiceWorker registration successful with scope: ",
+                registration.scope
+              );
+
+              // Ensure loading screen is hidden
+              document.body.classList.add("app-ready");
+
+              // Check for updates
+              registration.addEventListener("updatefound", function () {
+                const newWorker = registration.installing;
+                newWorker.addEventListener("statechange", function () {
+                  if (
+                    newWorker.state === "installed" &&
+                    navigator.serviceWorker.controller
+                  ) {
+                    // New content is available
+                    if (
+                      confirm(
+                        "Eine neue Version ist verfügbar. Jetzt aktualisieren?"
+                      )
+                    ) {
+                      window.location.reload();
+                    }
+                  }
+                });
+              });
+            })
+            .catch(function (err) {
+              console.log("ServiceWorker registration failed: ", err);
+              // Still hide loading screen even if service worker fails
+              document.body.classList.add("app-ready");
+            });
+        });
+      }
+
+      // Install prompt
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", function (e) {
+        console.log("beforeinstallprompt Event fired");
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Show install button/banner
+        const installBanner = document.createElement("div");
+        installBanner.innerHTML = `
+          <div style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: #2563eb; color: white; padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            <div>
+              <strong>Bauplan Buddy installieren</strong><br>
+              <small>Für bessere Performance und Offline-Nutzung</small>
+            </div>
+            <button onclick="installApp()" style="background: white; color: #2563eb; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold;">Installieren</button>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: transparent; color: white; border: none; padding: 8px; margin-left: 8px;">×</button>
+          </div>
+        `;
+        document.body.appendChild(installBanner);
+      });
+
+      function installApp() {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(function (choiceResult) {
+            if (choiceResult.outcome === "accepted") {
+              console.log("User accepted the install prompt");
+            }
+            deferredPrompt = null;
+            // Remove install banner
+            const banner = document.querySelector('[style*="position: fixed"]');
+            if (banner) banner.remove();
+          });
+        }
+      }
+
+      // Handle app installed
+      window.addEventListener("appinstalled", function (e) {
+        console.log("App was installed");
+      });
+
+      // COMPREHENSIVE WINDOW RESPONSIVENESS MONITORING
+      window.addEventListener("load", function () {
+        if ("performance" in window) {
+          setTimeout(function () {
+            const perfData = performance.getEntriesByType("navigation")[0];
+            console.log(
+              "Page load time:",
+              perfData.loadEventEnd - perfData.fetchStart,
+              "ms"
+            );
+          }, 0);
+        }
+
+        // Real-time window responsiveness monitoring
+        let lastResponseTime = Date.now();
+        let isEmergencyModeActive = false;
+
+        const responseCheckInterval = setInterval(function () {
+          const now = Date.now();
+          const timeDiff = now - lastResponseTime;
+
+          // Warning after 3 seconds of unresponsiveness
+          if (timeDiff > 3000 && !isEmergencyModeActive) {
+            console.warn(
+              "Window may be unresponsive, timeDiff:",
+              timeDiff + "ms"
+            );
+
+            // Show warning indicator
+            const warningDiv = document.createElement("div");
+            warningDiv.id = "responsiveness-warning";
+            warningDiv.innerHTML = `
+              <div style="
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: #f59e0b;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                z-index: 10000;
+                font-family: system-ui, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+              ">
+                ⚠️ Window may be unresponsive
+              </div>
+            `;
+            document.body.appendChild(warningDiv);
+          }
+
+          // Emergency mode after 5 seconds of unresponsiveness
+          if (timeDiff > 5000 && !isEmergencyModeActive) {
+            console.error(
+              "Window unresponsive for 5+ seconds, triggering EMERGENCY MODE"
+            );
+            isEmergencyModeActive = true;
+
+            // Remove warning
+            const warning = document.getElementById("responsiveness-warning");
+            if (warning) warning.remove();
+
+            // Trigger emergency mode
+            const rootElement = document.getElementById("root");
+            if (rootElement) {
+              rootElement.innerHTML = `
+                <div style="
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+                  color: #dc2626;
+                  font-family: system-ui, -apple-system, sans-serif;
+                  padding: 20px;
+                  text-align: center;
+                ">
+                  <div style="
+                    background: white;
+                    padding: 40px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    max-width: 600px;
+                    width: 100%;
+                    border: 3px solid #dc2626;
+                  ">
+                    <h1 style="margin: 0 0 20px 0; color: #dc2626; font-size: 2.5em;">⚠️ Fenster reagiert nicht</h1>
+                    <p style="margin: 0 0 20px 0; color: #374151; font-size: 1.2em;">Das Browser-Fenster ist nicht mehr reaktionsfähig.</p>
+                    <div style="
+                      margin: 30px 0;
+                      padding: 20px;
+                      background: #fef3c7;
+                      border-radius: 10px;
+                      color: #92400e;
+                      text-align: left;
+                    ">
+                      <strong style="display: block; margin-bottom: 10px;">🔧 Lösungsvorschläge:</strong>
+                      <div style="margin-left: 20px;">
+                        1. Seite neu laden (empfohlen)<br>
+                        2. Browser neu starten<br>
+                        3. Entwicklerkonsole überprüfen (F12)<br>
+                        4. Neues Fenster öffnen<br>
+                        5. Browser-Cache leeren
+                      </div>
+                    </div>
+                    <div style="margin: 20px 0;">
+                      <button onclick="window.location.reload()" style="
+                        background: #dc2626;
+                        color: white;
+                        border: none;
+                        padding: 15px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        margin: 5px;
+                        font-weight: bold;
+                        transition: background 0.3s;
+                      " onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                        🔄 Seite neu laden
+                      </button>
+                      <button onclick="window.open(window.location.origin + '/', '_blank')" style="
+                        background: #2563eb;
+                        color: white;
+                        border: none;
+                        padding: 15px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        margin: 5px;
+                        font-weight: bold;
+                      ">
+                        🌐 Neues Fenster
+                      </button>
+                      <button onclick="window.close()" style="
+                        background: #6b7280;
+                        color: white;
+                        border: none;
+                        padding: 15px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        margin: 5px;
+                      ">
+                        ❌ Fenster schließen
+                      </button>
+                    </div>
+                    <div style="
+                      margin-top: 30px;
+                      padding: 15px;
+                      background: #e5e7eb;
+                      border-radius: 8px;
+                      font-size: 14px;
+                      color: #6b7280;
+                    ">
+                      <strong>Technische Details:</strong><br>
+                      Unresponsive time: ${timeDiff}ms<br>
+                      Timestamp: ${new Date().toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+            clearInterval(responseCheckInterval);
+          }
+
+          lastResponseTime = now;
+        }, 1000); // Check every second
+
+        // Auto-cleanup after 30 seconds to prevent memory leaks
+        setTimeout(function () {
+          if (!isEmergencyModeActive) {
+            clearInterval(responseCheckInterval);
+            console.log("Responsiveness monitoring ended after 30s");
+          }
+        }, 30000);
+
+        // Additional failsafe: Check if React app mounted properly
+        setTimeout(function () {
+          const rootElement = document.getElementById("root");
+          if (
+            rootElement &&
+            (!rootElement.hasChildNodes() ||
+              rootElement.innerHTML.trim() === "")
+          ) {
+            console.warn("React app may have failed to mount, forcing reload");
+            window.location.reload();
+          }
+        }, 8000); // Check after 8 seconds
+
+        // Emergency keyboard shortcuts
+        document.addEventListener("keydown", function (e) {
+          // Ctrl+Shift+R or Ctrl+F5 for emergency reload
+          if (
+            (e.ctrlKey && e.shiftKey && e.key === "R") ||
+            (e.ctrlKey && e.key === "F5")
+          ) {
+            console.log("Emergency reload triggered by keyboard shortcut");
+            window.location.reload(true);
+          }
+          // Ctrl+Shift+E for emergency escape
+          if (e.ctrlKey && e.shiftKey && e.key === "E") {
+            console.log("Emergency escape triggered");
+            window.open(window.location.origin + "/", "_blank");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - region "Notifications (F8)":
+      - list
+    - region "Notifications alt+T"
+    - button "KI-Assistent öffnen" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - heading "We respect your privacy" [level=3] [ref=e12]
+        - paragraph [ref=e13]:
+          - text: We use cookies to enhance your experience. Some are necessary for site functionality, while others help us analyze usage and show relevant content.
+          - button "Learn more" [ref=e14] [cursor=pointer]
+      - generic [ref=e15]:
+        - button "Reject" [ref=e16] [cursor=pointer]
+        - button "Accept All" [ref=e17] [cursor=pointer]
+    - link "Zum Hauptinhalt springen" [ref=e18] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e20]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - img [ref=e25]
+          - heading "BauPlan Buddy" [level=1] [ref=e33]
+          - paragraph [ref=e34]: Sign in to your account
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - heading "Login" [level=3] [ref=e38]
+            - paragraph [ref=e39]: Enter your credentials to continue
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - text: Email
+              - textbox "Email" [ref=e42]:
+                - /placeholder: Enter your email
+            - generic [ref=e43]:
+              - text: Password
+              - generic [ref=e44]:
+                - textbox "Password" [ref=e45]:
+                  - /placeholder: Enter your password
+                - button [ref=e46] [cursor=pointer]:
+                  - img [ref=e47]
+            - link "Forgot password?" [ref=e51] [cursor=pointer]:
+              - /url: /forgot-password
+          - generic [ref=e52]:
+            - button "Sign In" [disabled] [ref=e53]:
+              - img
+              - text: Sign In
+            - generic [ref=e54]:
+              - text: Don't have an account?
+              - link "Sign up" [ref=e55] [cursor=pointer]:
+                - /url: /register
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - heading "Demo Accounts" [level=3] [ref=e58]
+            - paragraph [ref=e59]: Tap a role to auto-fill credentials
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - button "Admin" [ref=e62] [cursor=pointer]
+              - button "Manager" [ref=e63] [cursor=pointer]
+              - button "User" [ref=e64] [cursor=pointer]
+              - button "Client" [ref=e65] [cursor=pointer]
+            - button "Quick Login to Dashboard (Admin)" [ref=e66] [cursor=pointer]:
+              - img
+              - text: Quick Login to Dashboard (Admin)
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - img [ref=e74]
+            - text: BauPlan Buddy Insights
+          - heading "Digitale Bauleitung auf einen Blick." [level=2] [ref=e80]
+          - paragraph [ref=e81]: Koordinieren Sie Projekte, Teams und Budgets in Echtzeit. Unsere Plattform bringt alle Beteiligten an einen Tisch.
+        - generic [ref=e82]:
+          - paragraph [ref=e83]: Heute auf Ihrer Agenda
+          - list [ref=e84]:
+            - listitem [ref=e85]:
+              - generic [ref=e86]: 08:30
+              - text: Baustellen-Check-in Projekt Suedtor
+            - listitem [ref=e87]:
+              - generic [ref=e88]: 11:00
+              - text: Lieferantengespraech Stahlkonstruktion
+            - listitem [ref=e89]:
+              - generic [ref=e90]: 15:15
+              - text: Freigabe Finanzbericht Q2
+```

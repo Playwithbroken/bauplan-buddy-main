@@ -1,0 +1,1552 @@
+<testsuites id="" name="" tests="95" failures="95" skipped="0" errors="0" time="37.383404999999996">
+<testsuite name="appointments.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="chromium" tests="6" failures="6" skipped="0" time="0.065" errors="0">
+<testcase name="Appointment Management › should display the homepage and navigate to calendar" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:12:3 should display the homepage and navigate to calendar" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:12:3 › Appointment Management › should display the homepage and navigate to calendar 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should create a new appointment" classname="appointments.spec.ts" time="0.01">
+<failure message="appointments.spec.ts:27:3 should create a new appointment" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:27:3 › Appointment Management › should create a new appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should edit an existing appointment" classname="appointments.spec.ts" time="0.011">
+<failure message="appointments.spec.ts:84:3 should edit an existing appointment" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:84:3 › Appointment Management › should edit an existing appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should delete an appointment" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:123:3 should delete an appointment" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:123:3 › Appointment Management › should delete an appointment ──
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should navigate between different calendar views" classname="appointments.spec.ts" time="0.013">
+<failure message="appointments.spec.ts:152:3 should navigate between different calendar views" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:152:3 › Appointment Management › should navigate between different calendar views 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should filter appointments by type" classname="appointments.spec.ts" time="0.014">
+<failure message="appointments.spec.ts:176:3 should filter appointments by type" type="FAILURE">
+<![CDATA[  [chromium] › appointments.spec.ts:176:3 › Appointment Management › should filter appointments by type 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="delivery-notes.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="chromium" tests="4" failures="4" skipped="0" time="0.052" errors="0">
+<testcase name="Delivery Notes › should show delivery notes overview" classname="delivery-notes.spec.ts" time="0.015">
+<failure message="delivery-notes.spec.ts:9:3 should show delivery notes overview" type="FAILURE">
+<![CDATA[  [chromium] › delivery-notes.spec.ts:9:3 › Delivery Notes › should show delivery notes overview ───
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should create and highlight a new delivery note entry" classname="delivery-notes.spec.ts" time="0.01">
+<failure message="delivery-notes.spec.ts:14:3 should create and highlight a new delivery note entry" type="FAILURE">
+<![CDATA[  [chromium] › delivery-notes.spec.ts:14:3 › Delivery Notes › should create and highlight a new delivery note entry 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should filter delivery notes when status changes" classname="delivery-notes.spec.ts" time="0.018">
+<failure message="delivery-notes.spec.ts:33:3 should filter delivery notes when status changes" type="FAILURE">
+<![CDATA[  [chromium] › delivery-notes.spec.ts:33:3 › Delivery Notes › should filter delivery notes when status changes 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should update status from preview" classname="delivery-notes.spec.ts" time="0.009">
+<failure message="delivery-notes.spec.ts:40:3 should update status from preview" type="FAILURE">
+<![CDATA[  [chromium] › delivery-notes.spec.ts:40:3 › Delivery Notes › should update status from preview ────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="projects.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="chromium" tests="9" failures="9" skipped="0" time="0.099" errors="0">
+<testcase name="Project Management › should display projects page" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:9:3 should display projects page" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:9:3 › Project Management › should display projects page ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should create a new project" classname="projects.spec.ts" time="0.011">
+<failure message="projects.spec.ts:23:3 should create a new project" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:23:3 › Project Management › should create a new project ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should view project details" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:72:3 should view project details" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:72:3 › Project Management › should view project details ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should filter projects" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:88:3 should filter projects" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:88:3 › Project Management › should filter projects ─────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should edit a project" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:119:3 should edit a project" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:119:3 › Project Management › should edit a project ─────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should manage project status" classname="projects.spec.ts" time="0.011">
+<failure message="projects.spec.ts:155:3 should manage project status" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:155:3 › Project Management › should manage project status ──────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should delete a project" classname="projects.spec.ts" time="0.013">
+<failure message="projects.spec.ts:182:3 should delete a project" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:182:3 › Project Management › should delete a project ───────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should export project data" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:209:3 should export project data" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:209:3 › Project Management › should export project data ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should add team members to project" classname="projects.spec.ts" time="0.017">
+<failure message="projects.spec.ts:237:3 should add team members to project" type="FAILURE">
+<![CDATA[  [chromium] › projects.spec.ts:237:3 › Project Management › should add team members to project ────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="appointments.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="firefox" tests="6" failures="6" skipped="0" time="0.069" errors="0">
+<testcase name="Appointment Management › should display the homepage and navigate to calendar" classname="appointments.spec.ts" time="0.012">
+<failure message="appointments.spec.ts:12:3 should display the homepage and navigate to calendar" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:12:3 › Appointment Management › should display the homepage and navigate to calendar 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should create a new appointment" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:27:3 should create a new appointment" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:27:3 › Appointment Management › should create a new appointment ─
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should edit an existing appointment" classname="appointments.spec.ts" time="0.01">
+<failure message="appointments.spec.ts:84:3 should edit an existing appointment" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:84:3 › Appointment Management › should edit an existing appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should delete an appointment" classname="appointments.spec.ts" time="0.014">
+<failure message="appointments.spec.ts:123:3 should delete an appointment" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:123:3 › Appointment Management › should delete an appointment ───
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should navigate between different calendar views" classname="appointments.spec.ts" time="0.013">
+<failure message="appointments.spec.ts:152:3 should navigate between different calendar views" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:152:3 › Appointment Management › should navigate between different calendar views 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should filter appointments by type" classname="appointments.spec.ts" time="0.011">
+<failure message="appointments.spec.ts:176:3 should filter appointments by type" type="FAILURE">
+<![CDATA[  [firefox] › appointments.spec.ts:176:3 › Appointment Management › should filter appointments by type 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="delivery-notes.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="firefox" tests="4" failures="4" skipped="0" time="0.039" errors="0">
+<testcase name="Delivery Notes › should show delivery notes overview" classname="delivery-notes.spec.ts" time="0.013">
+<failure message="delivery-notes.spec.ts:9:3 should show delivery notes overview" type="FAILURE">
+<![CDATA[  [firefox] › delivery-notes.spec.ts:9:3 › Delivery Notes › should show delivery notes overview ────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should create and highlight a new delivery note entry" classname="delivery-notes.spec.ts" time="0.008">
+<failure message="delivery-notes.spec.ts:14:3 should create and highlight a new delivery note entry" type="FAILURE">
+<![CDATA[  [firefox] › delivery-notes.spec.ts:14:3 › Delivery Notes › should create and highlight a new delivery note entry 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should filter delivery notes when status changes" classname="delivery-notes.spec.ts" time="0.011">
+<failure message="delivery-notes.spec.ts:33:3 should filter delivery notes when status changes" type="FAILURE">
+<![CDATA[  [firefox] › delivery-notes.spec.ts:33:3 › Delivery Notes › should filter delivery notes when status changes 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should update status from preview" classname="delivery-notes.spec.ts" time="0.007">
+<failure message="delivery-notes.spec.ts:40:3 should update status from preview" type="FAILURE">
+<![CDATA[  [firefox] › delivery-notes.spec.ts:40:3 › Delivery Notes › should update status from preview ─────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="projects.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="firefox" tests="9" failures="9" skipped="0" time="0.101" errors="0">
+<testcase name="Project Management › should display projects page" classname="projects.spec.ts" time="0.013">
+<failure message="projects.spec.ts:9:3 should display projects page" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:9:3 › Project Management › should display projects page ─────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should create a new project" classname="projects.spec.ts" time="0.012">
+<failure message="projects.spec.ts:23:3 should create a new project" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:23:3 › Project Management › should create a new project ─────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should view project details" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:72:3 should view project details" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:72:3 › Project Management › should view project details ─────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should filter projects" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:88:3 should filter projects" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:88:3 › Project Management › should filter projects ──────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should edit a project" classname="projects.spec.ts" time="0.011">
+<failure message="projects.spec.ts:119:3 should edit a project" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:119:3 › Project Management › should edit a project ──────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should manage project status" classname="projects.spec.ts" time="0.019">
+<failure message="projects.spec.ts:155:3 should manage project status" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:155:3 › Project Management › should manage project status ───────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should delete a project" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:182:3 should delete a project" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:182:3 › Project Management › should delete a project ────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should export project data" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:209:3 should export project data" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:209:3 › Project Management › should export project data ─────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should add team members to project" classname="projects.spec.ts" time="0.013">
+<failure message="projects.spec.ts:237:3 should add team members to project" type="FAILURE">
+<![CDATA[  [firefox] › projects.spec.ts:237:3 › Project Management › should add team members to project ─────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\firefox-1495\firefox\firefox.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="appointments.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="webkit" tests="6" failures="6" skipped="0" time="0.056" errors="0">
+<testcase name="Appointment Management › should display the homepage and navigate to calendar" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:12:3 should display the homepage and navigate to calendar" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:12:3 › Appointment Management › should display the homepage and navigate to calendar 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should create a new appointment" classname="appointments.spec.ts" time="0.012">
+<failure message="appointments.spec.ts:27:3 should create a new appointment" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:27:3 › Appointment Management › should create a new appointment ──
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should edit an existing appointment" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:84:3 should edit an existing appointment" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:84:3 › Appointment Management › should edit an existing appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should delete an appointment" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:123:3 should delete an appointment" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:123:3 › Appointment Management › should delete an appointment ────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should navigate between different calendar views" classname="appointments.spec.ts" time="0.01">
+<failure message="appointments.spec.ts:152:3 should navigate between different calendar views" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:152:3 › Appointment Management › should navigate between different calendar views 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should filter appointments by type" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:176:3 should filter appointments by type" type="FAILURE">
+<![CDATA[  [webkit] › appointments.spec.ts:176:3 › Appointment Management › should filter appointments by type 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="delivery-notes.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="webkit" tests="4" failures="4" skipped="0" time="0.046" errors="0">
+<testcase name="Delivery Notes › should show delivery notes overview" classname="delivery-notes.spec.ts" time="0.012">
+<failure message="delivery-notes.spec.ts:9:3 should show delivery notes overview" type="FAILURE">
+<![CDATA[  [webkit] › delivery-notes.spec.ts:9:3 › Delivery Notes › should show delivery notes overview ─────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should create and highlight a new delivery note entry" classname="delivery-notes.spec.ts" time="0.011">
+<failure message="delivery-notes.spec.ts:14:3 should create and highlight a new delivery note entry" type="FAILURE">
+<![CDATA[  [webkit] › delivery-notes.spec.ts:14:3 › Delivery Notes › should create and highlight a new delivery note entry 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should filter delivery notes when status changes" classname="delivery-notes.spec.ts" time="0.014">
+<failure message="delivery-notes.spec.ts:33:3 should filter delivery notes when status changes" type="FAILURE">
+<![CDATA[  [webkit] › delivery-notes.spec.ts:33:3 › Delivery Notes › should filter delivery notes when status changes 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should update status from preview" classname="delivery-notes.spec.ts" time="0.009">
+<failure message="delivery-notes.spec.ts:40:3 should update status from preview" type="FAILURE">
+<![CDATA[  [webkit] › delivery-notes.spec.ts:40:3 › Delivery Notes › should update status from preview ──────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="projects.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="webkit" tests="9" failures="9" skipped="0" time="0.104" errors="0">
+<testcase name="Project Management › should display projects page" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:9:3 should display projects page" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:9:3 › Project Management › should display projects page ──────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should create a new project" classname="projects.spec.ts" time="0.012">
+<failure message="projects.spec.ts:23:3 should create a new project" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:23:3 › Project Management › should create a new project ──────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should view project details" classname="projects.spec.ts" time="0.022">
+<failure message="projects.spec.ts:72:3 should view project details" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:72:3 › Project Management › should view project details ──────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should filter projects" classname="projects.spec.ts" time="0.015">
+<failure message="projects.spec.ts:88:3 should filter projects" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:88:3 › Project Management › should filter projects ───────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should edit a project" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:119:3 should edit a project" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:119:3 › Project Management › should edit a project ───────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should manage project status" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:155:3 should manage project status" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:155:3 › Project Management › should manage project status ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should delete a project" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:182:3 should delete a project" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:182:3 › Project Management › should delete a project ─────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should export project data" classname="projects.spec.ts" time="0.011">
+<failure message="projects.spec.ts:209:3 should export project data" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:209:3 › Project Management › should export project data ──────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should add team members to project" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:237:3 should add team members to project" type="FAILURE">
+<![CDATA[  [webkit] › projects.spec.ts:237:3 › Project Management › should add team members to project ──────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="appointments.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Chrome" tests="6" failures="6" skipped="0" time="0.061" errors="0">
+<testcase name="Appointment Management › should display the homepage and navigate to calendar" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:12:3 should display the homepage and navigate to calendar" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:12:3 › Appointment Management › should display the homepage and navigate to calendar 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should create a new appointment" classname="appointments.spec.ts" time="0.011">
+<failure message="appointments.spec.ts:27:3 should create a new appointment" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:27:3 › Appointment Management › should create a new appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should edit an existing appointment" classname="appointments.spec.ts" time="0.014">
+<failure message="appointments.spec.ts:84:3 should edit an existing appointment" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:84:3 › Appointment Management › should edit an existing appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should delete an appointment" classname="appointments.spec.ts" time="0.007">
+<failure message="appointments.spec.ts:123:3 should delete an appointment" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:123:3 › Appointment Management › should delete an appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should navigate between different calendar views" classname="appointments.spec.ts" time="0.009">
+<failure message="appointments.spec.ts:152:3 should navigate between different calendar views" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:152:3 › Appointment Management › should navigate between different calendar views 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should filter appointments by type" classname="appointments.spec.ts" time="0.011">
+<failure message="appointments.spec.ts:176:3 should filter appointments by type" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › appointments.spec.ts:176:3 › Appointment Management › should filter appointments by type 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="delivery-notes.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Chrome" tests="4" failures="4" skipped="0" time="0.055" errors="0">
+<testcase name="Delivery Notes › should show delivery notes overview" classname="delivery-notes.spec.ts" time="0.022">
+<failure message="delivery-notes.spec.ts:9:3 should show delivery notes overview" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › delivery-notes.spec.ts:9:3 › Delivery Notes › should show delivery notes overview 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should create and highlight a new delivery note entry" classname="delivery-notes.spec.ts" time="0.014">
+<failure message="delivery-notes.spec.ts:14:3 should create and highlight a new delivery note entry" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › delivery-notes.spec.ts:14:3 › Delivery Notes › should create and highlight a new delivery note entry 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should filter delivery notes when status changes" classname="delivery-notes.spec.ts" time="0.012">
+<failure message="delivery-notes.spec.ts:33:3 should filter delivery notes when status changes" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › delivery-notes.spec.ts:33:3 › Delivery Notes › should filter delivery notes when status changes 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should update status from preview" classname="delivery-notes.spec.ts" time="0.007">
+<failure message="delivery-notes.spec.ts:40:3 should update status from preview" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › delivery-notes.spec.ts:40:3 › Delivery Notes › should update status from preview 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="projects.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Chrome" tests="9" failures="9" skipped="0" time="0.095" errors="0">
+<testcase name="Project Management › should display projects page" classname="projects.spec.ts" time="0.013">
+<failure message="projects.spec.ts:9:3 should display projects page" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:9:3 › Project Management › should display projects page ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should create a new project" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:23:3 should create a new project" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:23:3 › Project Management › should create a new project ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should view project details" classname="projects.spec.ts" time="0.02">
+<failure message="projects.spec.ts:72:3 should view project details" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:72:3 › Project Management › should view project details ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should filter projects" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:88:3 should filter projects" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:88:3 › Project Management › should filter projects ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should edit a project" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:119:3 should edit a project" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:119:3 › Project Management › should edit a project ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should manage project status" classname="projects.spec.ts" time="0.007">
+<failure message="projects.spec.ts:155:3 should manage project status" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:155:3 › Project Management › should manage project status ─────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should delete a project" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:182:3 should delete a project" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:182:3 › Project Management › should delete a project ──────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should export project data" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:209:3 should export project data" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:209:3 › Project Management › should export project data ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should add team members to project" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:237:3 should add team members to project" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › projects.spec.ts:237:3 › Project Management › should add team members to project 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\chromium_headless_shell-1194\chrome-win\headless_shell.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="appointments.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Safari" tests="6" failures="6" skipped="0" time="0.052" errors="0">
+<testcase name="Appointment Management › should display the homepage and navigate to calendar" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:12:3 should display the homepage and navigate to calendar" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:12:3 › Appointment Management › should display the homepage and navigate to calendar 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should create a new appointment" classname="appointments.spec.ts" time="0.012">
+<failure message="appointments.spec.ts:27:3 should create a new appointment" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:27:3 › Appointment Management › should create a new appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should edit an existing appointment" classname="appointments.spec.ts" time="0.006">
+<failure message="appointments.spec.ts:84:3 should edit an existing appointment" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:84:3 › Appointment Management › should edit an existing appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should delete an appointment" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:123:3 should delete an appointment" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:123:3 › Appointment Management › should delete an appointment 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should navigate between different calendar views" classname="appointments.spec.ts" time="0.008">
+<failure message="appointments.spec.ts:152:3 should navigate between different calendar views" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:152:3 › Appointment Management › should navigate between different calendar views 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Appointment Management › should filter appointments by type" classname="appointments.spec.ts" time="0.01">
+<failure message="appointments.spec.ts:176:3 should filter appointments by type" type="FAILURE">
+<![CDATA[  [Mobile Safari] › appointments.spec.ts:176:3 › Appointment Management › should filter appointments by type 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="delivery-notes.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Safari" tests="4" failures="4" skipped="0" time="0.049" errors="0">
+<testcase name="Delivery Notes › should show delivery notes overview" classname="delivery-notes.spec.ts" time="0.011">
+<failure message="delivery-notes.spec.ts:9:3 should show delivery notes overview" type="FAILURE">
+<![CDATA[  [Mobile Safari] › delivery-notes.spec.ts:9:3 › Delivery Notes › should show delivery notes overview 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should create and highlight a new delivery note entry" classname="delivery-notes.spec.ts" time="0.011">
+<failure message="delivery-notes.spec.ts:14:3 should create and highlight a new delivery note entry" type="FAILURE">
+<![CDATA[  [Mobile Safari] › delivery-notes.spec.ts:14:3 › Delivery Notes › should create and highlight a new delivery note entry 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should filter delivery notes when status changes" classname="delivery-notes.spec.ts" time="0.017">
+<failure message="delivery-notes.spec.ts:33:3 should filter delivery notes when status changes" type="FAILURE">
+<![CDATA[  [Mobile Safari] › delivery-notes.spec.ts:33:3 › Delivery Notes › should filter delivery notes when status changes 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Delivery Notes › should update status from preview" classname="delivery-notes.spec.ts" time="0.01">
+<failure message="delivery-notes.spec.ts:40:3 should update status from preview" type="FAILURE">
+<![CDATA[  [Mobile Safari] › delivery-notes.spec.ts:40:3 › Delivery Notes › should update status from preview 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="projects.spec.ts" timestamp="2025-11-17T16:18:49.965Z" hostname="Mobile Safari" tests="9" failures="9" skipped="0" time="0.071" errors="0">
+<testcase name="Project Management › should display projects page" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:9:3 should display projects page" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:9:3 › Project Management › should display projects page ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should create a new project" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:23:3 should create a new project" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:23:3 › Project Management › should create a new project ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should view project details" classname="projects.spec.ts" time="0.009">
+<failure message="projects.spec.ts:72:3 should view project details" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:72:3 › Project Management › should view project details ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should filter projects" classname="projects.spec.ts" time="0.008">
+<failure message="projects.spec.ts:88:3 should filter projects" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:88:3 › Project Management › should filter projects ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should edit a project" classname="projects.spec.ts" time="0.01">
+<failure message="projects.spec.ts:119:3 should edit a project" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:119:3 › Project Management › should edit a project ────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should manage project status" classname="projects.spec.ts" time="0.007">
+<failure message="projects.spec.ts:155:3 should manage project status" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:155:3 › Project Management › should manage project status ─────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should delete a project" classname="projects.spec.ts" time="0.006">
+<failure message="projects.spec.ts:182:3 should delete a project" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:182:3 › Project Management › should delete a project ──────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should export project data" classname="projects.spec.ts" time="0.005">
+<failure message="projects.spec.ts:209:3 should export project data" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:209:3 › Project Management › should export project data ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+<testcase name="Project Management › should add team members to project" classname="projects.spec.ts" time="0.006">
+<failure message="projects.spec.ts:237:3 should add team members to project" type="FAILURE">
+<![CDATA[  [Mobile Safari] › projects.spec.ts:237:3 › Project Management › should add team members to project 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\menke\AppData\Local\ms-playwright\webkit-2215\Playwright.exe
+    ╔═════════════════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+    ║ Please run the following command to download new browsers:              ║
+    ║                                                                         ║
+    ║     npx playwright install                                              ║
+    ║                                                                         ║
+    ║ <3 Playwright Team                                                      ║
+    ╚═════════════════════════════════════════════════════════════════════════╝
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

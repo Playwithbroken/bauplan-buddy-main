@@ -1,0 +1,30 @@
+{
+  "version": "2.1.0",
+  "releaseDate": "2025-01-28T10:00:00Z",
+  "critical": false,
+  "changelog": {
+    "features": [
+      "🎨 Custom branding: Upload your company logo and set brand colors",
+      "👥 Team management: Invite and manage multiple employees",
+      "🔒 Granular permissions: Control what each team member can see (financials, salaries, etc.)",
+      "🤖 AI-powered support: Get instant answers to common questions",
+      "📊 Enhanced analytics dashboard with real-time metrics"
+    ],
+    "improvements": [
+      "⚡ Faster page load times with optimized code splitting",
+      "📱 Better mobile experience with responsive UI improvements",
+      "🔄 Improved offline sync with conflict resolution",
+      "🎯 More intuitive onboarding wizard",
+      "💾 Enhanced data export capabilities"
+    ],
+    "bugfixes": [
+      "Fixed issue with invoice PDF generation",
+      "Resolved calendar sync conflicts",
+      "Fixed permission checks for project deletion",
+      "Corrected tax calculation rounding errors",
+      "Fixed mobile navigation menu overflow"
+    ]
+  },
+  "downloadUrl": "https://your-app-domain.com/releases/v2.1.0",
+  "requiredVersion": "2.0.0"
+}

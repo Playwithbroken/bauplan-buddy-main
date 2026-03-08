@@ -1,0 +1,222 @@
+export const userGuides = {
+  appointments: {
+    gettingStarted: {
+      title: "Erste Schritte mit der Terminverwaltung",
+      content: `
+## Überblick der Terminverwaltung
+
+Die Terminverwaltung ermöglicht:
+- Termine für Baustellen und Besprechungen planen
+- Teams und Ressourcen koordinieren
+- Automatische Erinnerungen versenden
+- Mit externen Kalendern synchronisieren
+
+## Navigation zum Kalender
+
+1. Öffnen Sie Bauplan Buddy
+2. Klicken Sie auf "Kalender" in der Seitennavigation
+3. Wählen Sie gewünschte Ansicht (Monat/Woche/Tag)
+
+## Grundlegende Bedienung
+
+### Kalenderansichten
+- **Monatsansicht**: Überblick über alle Termine
+- **Wochenansicht**: Detaillierte Wochenplanung
+- **Tagesansicht**: Stundenweise Tagesplanung
+
+### Navigation
+- Pfeile für Zeitraum-Navigation
+- "Heute"-Button für aktuelles Datum
+- Datumsfeld für direkte Navigation
+      `,
+      tags: ["Grundlagen", "Navigation", "Kalender"],
+      difficulty: "Anfänger",
+      readTime: "3 min"
+    },
+    createAppointment: {
+      title: "Termine erstellen",
+      content: `
+## Neuen Termin erstellen
+
+### Methoden
+1. **Button "Neuer Termin"** oben rechts
+2. **Direkt im Kalender** auf gewünschte Zeit klicken
+
+## Grundlegende Details
+
+### Pflichtfelder
+- **Titel**: Aussagekräftige Bezeichnung
+- **Datum/Zeit**: Start- und Endzeit
+- **Typ**: Kategorie auswählen
+
+### Erweiterte Einstellungen
+- **Teilnehmer**: Aus Kontaktliste wählen
+- **Team**: Zuständiges Team zuweisen
+- **Ausrüstung**: Benötigte Geräte reservieren
+- **Priorität**: Wichtigkeit festlegen
+
+### Benachrichtigungen
+- E-Mail-Einladungen an Teilnehmer
+- Automatische Erinnerungen
+- Kundenbenachrichtigung
+
+## Speichern
+1. Alle Felder ausfüllen
+2. "Termin erstellen" klicken
+3. Bestätigung erhalten
+      `,
+      tags: ["Erstellen", "Grundlagen"],
+      difficulty: "Anfänger",
+      readTime: "4 min"
+    },
+    recurringAppointments: {
+      title: "Wiederkehrende Termine",
+      content: `
+## Wann sinnvoll?
+- Wöchentliche Baubesprechungen
+- Monatliche Inspektionen
+- Regelmäßige Wartung
+
+## Serie erstellen
+1. Normalen Termin erstellen
+2. "Wiederkehrend" aktivieren
+3. Wiederholungsmuster wählen
+
+### Wiederholungsoptionen
+- **Täglich**: Jeden Tag oder nur Werktage
+- **Wöchentlich**: Bestimmte Wochentage
+- **Monatlich**: Gleicher Tag/Wochentag
+- **Jährlich**: Jährliche Wiederholung
+
+### Endoptionen
+- Anzahl Wiederholungen
+- Enddatum
+- Unbegrenzt
+
+## Serienverwaltung
+- **Einzeltermin ändern**: Nur einen Termin
+- **Serie ändern**: Alle Termine
+- **Ab Termin ändern**: Diesen und folgende
+      `,
+      tags: ["Wiederholung", "Fortgeschritten"],
+      difficulty: "Fortgeschritten",
+      readTime: "5 min"
+    }
+  },
+  projects: {
+    projectCreation: {
+      title: "Projekte anlegen",
+      content: `
+## Projekt erstellen
+
+### Schritt 1: Grunddaten
+- **Projektname**: Aussagekräftige Bezeichnung
+- **Projektnummer**: Eindeutige ID
+- **Projekttyp**: Neubau, Sanierung, etc.
+- **Kunde**: Bestehenden wählen oder neu anlegen
+
+### Schritt 2: Standort & Termine
+- **Adresse**: Vollständige Projektadresse
+- **Laufzeit**: Start- und Enddatum
+- **Meilensteine**: Wichtige Zwischentermine
+
+### Schritt 3: Team & Ressourcen
+- **Projektleiter**: Hauptverantwortlicher
+- **Team**: Beteiligte Mitarbeiter
+- **Ressourcen**: Fahrzeuge und Geräte
+
+### Schritt 4: Budget
+- **Gesamtbudget**: Projektwert
+- **Kostenstellen**: Aufteilung nach Gewerken
+- **Abrechnungsmodell**: Festpreis/Zeit & Material
+
+## Aktivierung
+1. Alle Daten prüfen
+2. "Projekt erstellen" klicken
+3. Projektdashboard öffnet sich
+      `,
+      tags: ["Projekte", "Grundlagen"],
+      difficulty: "Anfänger",
+      readTime: "6 min"
+    },
+    projectTemplates: {
+      title: "Projektvorlagen nutzen",
+      content: `
+## Vorteile von Vorlagen
+- Zeitersparnis bei Projekterstellung
+- Konsistente Projektstruktur
+- Bewährte Abläufe nutzen
+
+## Standard-Vorlagen
+- **Einfamilienhaus-Neubau**
+- **Bürogebäude-Projekt**
+- **Sanierungsprojekt**
+- **Wartungsvertrag**
+
+## Vorlage verwenden
+1. "Aus Vorlage erstellen" wählen
+2. Passende Vorlage auswählen
+3. Details anpassen
+4. Projekt erstellen
+
+## Eigene Vorlage erstellen
+1. Erfolgreiches Projekt auswählen
+2. "Als Vorlage speichern" klicken
+3. Namen und Beschreibung vergeben
+4. Für künftige Projekte nutzen
+
+## Best Practices
+- Vorlagen flexibel gestalten
+- Regelmäßig aktualisieren
+- Team schulen
+- Feedback sammeln
+      `,
+      tags: ["Vorlagen", "Effizienz"],
+      difficulty: "Fortgeschritten",
+      readTime: "4 min"
+    }
+  },
+  calendar: {
+    calendarIntegration: {
+      title: "Kalender-Integration",
+      content: `
+## Unterstützte Systeme
+- Google Calendar
+- Microsoft Outlook/Exchange
+- Apple iCloud
+- CalDAV-kompatible Kalender
+
+## Google Calendar einrichten
+1. "Einstellungen" → "Integrationen"
+2. "Google Calendar" wählen
+3. "Mit Google verbinden"
+4. Berechtigungen erteilen
+5. Synchronisation konfigurieren
+
+## Synchronisationsoptionen
+- **Bidirektional**: Änderungen in beide Richtungen
+- **Nur Export**: Bauplan Buddy → Google
+- **Nur Import**: Google → Bauplan Buddy
+
+## Was wird synchronisiert?
+- Termindetails (Titel, Zeit, Ort)
+- Teilnehmer-E-Mails
+- Erinnerungen
+- Grundlegende Anhänge
+
+## Konfliktmanagement
+- Automatische Konflikterkennung
+- Prioritätsregeln konfigurieren
+- Manuelle Auflösung bei Bedarf
+
+## Troubleshooting
+- Verbindung und Berechtigungen prüfen
+- Synchronisation manuell anstoßen
+- Support kontaktieren bei Problemen
+      `,
+      tags: ["Integration", "Kalender"],
+      difficulty: "Fortgeschritten",
+      readTime: "5 min"
+    }
+  }
+};

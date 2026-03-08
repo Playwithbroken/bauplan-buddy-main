@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "strict": false,
+    "strictNullChecks": false,
+    "paths": {
+      "@bauplan/database": ["../../libs/database/src"],
+      "@bauplan/messaging": ["../../libs/messaging/src"],
+      "@bauplan/common": ["../../common/src"]
+    }
+  },
+  "include": [
+    "src",
+    "../../libs/database/src",
+    "../../libs/messaging/src",
+    "../../common/src"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

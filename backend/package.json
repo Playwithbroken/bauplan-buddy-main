@@ -1,0 +1,30 @@
+{
+  "name": "bauplan-backend",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "common",
+    "libs/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build": "pnpm run --recursive build",
+    "dev": "pnpm run --filter services/quote-service dev",
+    "lint": "pnpm run --recursive lint",
+    "prisma:generate": "npx prisma generate --schema prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema prisma/schema.prisma",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.8.3",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.10.0"
+  },
+  "dependencies": {
+    "@prisma/client": "5.22.0"
+  }
+}

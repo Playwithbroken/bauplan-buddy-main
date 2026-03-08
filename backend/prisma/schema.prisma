@@ -1,0 +1,563 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../libs/database/src/generated"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+model Quote {
+  id            String        @id @default(uuid())
+  number        String        @unique
+  customerId    String
+  status        QuoteStatus   @default(DRAFT)
+  totalAmount   Decimal       @default(0)
+  currency      String        @default("EUR")
+  validUntil    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  items         QuoteItem[]
+  projects      Project[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  CONVERTED
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid())
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  quoteId     String
+  position    Int
+  description String
+  quantity    Decimal
+  unit        String
+  unitPrice   Decimal
+  category    String?
+  metadata    Json?
+}
+
+model Project {
+  id            String        @id @default(uuid())
+  number        String        @unique
+  quote         Quote?        @relation(fields: [quoteId], references: [id])
+  quoteId       String?
+  customerId    String
+  name          String
+  status        ProjectStatus @default(PLANNING)
+  budget        Decimal?
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deliveryNotes DeliveryNote[]
+  invoices      Invoice[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+model DeliveryNote {
+  id             String            @id @default(uuid())
+  number         String            @unique
+  project        Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      String
+  customerId     String
+  status         DeliveryNoteStatus @default(DRAFT)
+  issuedAt       DateTime           @default(now())
+  signedAt       DateTime?
+  notes          String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  items          DeliveryNoteItem[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum DeliveryNoteStatus {
+  DRAFT
+  SENT
+  DELIVERED
+  CANCELLED
+}
+
+model DeliveryNoteItem {
+  id                String       @id @default(uuid())
+  deliveryNote      DeliveryNote @relation(fields: [deliveryNoteId], references: [id], onDelete: Cascade)
+  deliveryNoteId    String
+  quoteItemId       String?
+  description       String
+  quantity          Decimal
+  deliveredQuantity Decimal
+  unit              String
+  metadata          Json?
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  number        String        @unique
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String
+  customerId    String
+  status        InvoiceStatus @default(DRAFT)
+  issueDate     DateTime
+  dueDate       DateTime
+  subtotalAmount Decimal       @default(0)
+  taxAmount     Decimal       @default(0)
+  totalAmount   Decimal       @default(0)
+  currency      String        @default("EUR")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  items         InvoiceItem[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model InvoiceItem {
+  id                String   @id @default(uuid())
+  invoice           Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId         String
+  deliveryNoteItemId String?
+  quoteItemId        String?
+  description        String
+  quantity           Decimal
+  unit               String
+  unitPrice          Decimal
+  taxRate            Decimal
+  metadata           Json?
+}
+
+model EventOutbox {
+  id        String   @id
+  eventType String
+  payload   Json
+  status    String
+  attempts  Int      @default(0)
+  lastError String?
+  updatedAt DateTime @default(now())
+
+  @@map("event_outbox")
+}
+
+// ==================== Procurement Module ====================
+
+model Supplier {
+  id                String            @id @default(uuid())
+  name              String
+  code              String            @unique
+  contactPerson     String?
+  email             String?
+  phone             String?
+  address           String?
+  paymentTerms      String?
+  status            SupplierStatus    @default(ACTIVE)
+  onTimeDeliveryRate Decimal?         @default(0)
+  qualityScore      Decimal?          @default(0)
+  totalSpendYtd     Decimal           @default(0)
+  certifications    String[]          @default([])
+  rating            Int?              @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  inventoryItems    InventoryItem[]
+  purchaseOrders    PurchaseOrder[]
+  deliveries        SupplierDelivery[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+model InventoryItem {
+  id                String              @id @default(uuid())
+  sku               String              @unique
+  name              String
+  description       String?
+  category          String
+  unit              String
+  unitPrice         Decimal             @default(0)
+  supplier          Supplier?           @relation(fields: [supplierId], references: [id])
+  supplierId        String?
+  onHand            Int                 @default(0)
+  reserved          Int                 @default(0)
+  incoming          Int                 @default(0)
+  reorderPoint      Int                 @default(0)
+  reorderQuantity   Int                 @default(0)
+  storageLocation   String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  purchaseOrderLines PurchaseOrderLine[]
+  goodsReceiptLines  GoodsReceiptLine[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+model PurchaseOrder {
+  id            String              @id @default(uuid())
+  number        String              @unique
+  supplier      Supplier            @relation(fields: [supplierId], references: [id])
+  supplierId    String
+  projectId     String?
+  status        PurchaseOrderStatus @default(DRAFT)
+  priority      PurchaseOrderPriority @default(MEDIUM)
+  costCenter    String?
+  orderDate     DateTime            @default(now())
+  expectedDate  DateTime?
+  totalAmount   Decimal             @default(0)
+  currency      String              @default("EUR")
+  notes         String?
+  approvedBy    String?
+  approvedAt    DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  lines         PurchaseOrderLine[]
+  goodsReceipts GoodsReceipt[]
+  approvals     PurchaseOrderApproval[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  ORDERED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+enum PurchaseOrderPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model PurchaseOrderLine {
+  id                String        @id @default(uuid())
+  purchaseOrder     PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  purchaseOrderId   String
+  inventoryItem     InventoryItem @relation(fields: [inventoryItemId], references: [id])
+  inventoryItemId   String
+  quantity          Int
+  unitPrice         Decimal
+  totalPrice        Decimal
+  requiredDate      DateTime?
+  receivedQuantity  Int           @default(0)
+  notes             String?
+  goodsReceiptLines GoodsReceiptLine[]
+}
+
+model PurchaseOrderApproval {
+  id                String        @id @default(uuid())
+  purchaseOrder     PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  purchaseOrderId   String
+  approver          String
+  approverRole      String
+  status            ApprovalStatus @default(PENDING)
+  comment           String?
+  approvedAt        DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model GoodsReceipt {
+  id                String            @id @default(uuid())
+  number            String            @unique
+  purchaseOrder     PurchaseOrder     @relation(fields: [purchaseOrderId], references: [id])
+  purchaseOrderId   String
+  receiptDate       DateTime          @default(now())
+  receivedBy        String
+  status            GoodsReceiptStatus @default(PENDING)
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  lines             GoodsReceiptLine[]
+}
+
+enum GoodsReceiptStatus {
+  PENDING
+  COMPLETED
+  REJECTED
+}
+
+model GoodsReceiptLine {
+  id                  String           @id @default(uuid())
+  goodsReceipt        GoodsReceipt     @relation(fields: [goodsReceiptId], references: [id], onDelete: Cascade)
+  goodsReceiptId      String
+  purchaseOrderLine   PurchaseOrderLine @relation(fields: [purchaseOrderLineId], references: [id])
+  purchaseOrderLineId String
+  inventoryItem       InventoryItem    @relation(fields: [inventoryItemId], references: [id])
+  inventoryItemId     String
+  receivedQuantity    Int
+  qualityCheck        QualityCheckStatus @default(PENDING)
+  notes               String?
+}
+
+enum QualityCheckStatus {
+  PENDING
+  PASSED
+  FAILED
+}
+
+model SupplierDelivery {
+  id                String   @id @default(uuid())
+  supplier          Supplier @relation(fields: [supplierId], references: [id])
+  supplierId        String
+  purchaseOrderNumber String
+  deliveryDate      DateTime
+  onTime            Boolean  @default(true)
+  qualityRating     Int?     @default(5)
+  amount            Decimal
+  notes             String?
+  createdAt         DateTime @default(now())
+}
+
+model BudgetAllocation {
+  id              String   @id @default(uuid())
+  projectId       String
+  projectName     String
+  category        String
+  budgetAmount    Decimal
+  spentAmount     Decimal  @default(0)
+  committedAmount Decimal  @default(0)
+  fiscalYear      Int
+  costCenter      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  transactions    BudgetTransaction[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}
+
+model BudgetTransaction {
+  id                  String           @id @default(uuid())
+  budgetAllocation    BudgetAllocation @relation(fields: [budgetAllocationId], references: [id], onDelete: Cascade)
+  budgetAllocationId  String
+  transactionType     BudgetTransactionType
+  amount              Decimal
+  description         String
+  referenceNumber     String?
+  transactionDate     DateTime         @default(now())
+  createdAt           DateTime         @default(now())
+}
+
+enum BudgetTransactionType {
+  ALLOCATION
+  COMMITMENT
+  EXPENSE
+  ADJUSTMENT
+  RELEASE
+}
+
+// ==================== Auth Module ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  role          UserRole  @default(USER)
+  status        UserStatus @default(ACTIVE)
+  emailVerified Boolean   @default(false)
+  verificationToken String?
+  verificationTokenExpiresAt DateTime?
+  lastLogin     DateTime?
+  loginAttempts Int       @default(0)
+  lockedUntil   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+  userRoles     UserRoleRelation[]
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  supabaseId     String?       @unique
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  USER
+  GUEST
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DELETED
+}
+
+model Organization {
+  id            String         @id @default(uuid())
+  name          String
+  slug          String         @unique
+  logoUrl       String?
+  website       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscription  Subscription?
+  users         User[]
+  projects      Project[]
+  quotes        Quote[]
+  invoices      Invoice[]
+  deliveryNotes DeliveryNote[]
+  suppliers     Supplier[]
+  inventoryItems InventoryItem[]
+  purchaseOrders PurchaseOrder[]
+  budgetAllocations BudgetAllocation[]
+  auditLogs     AuditLog[]
+  roles         Role[]
+}
+
+// RBAC Models
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique // e.g., "project:create"
+  description String?
+  resource    String   // e.g., "project", "invoice"
+  action      String   // e.g., "create", "view", "edit", "delete"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  rolePermissions RolePermission[]
+  
+  @@index([resource, action])
+}
+
+model Role {
+  id             String   @id @default(uuid())
+  name           String   // e.g., "Admin", "Manager"
+  description    String?
+  isSystemRole   Boolean  @default(false) // Cannot be deleted if true
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  permissions    RolePermission[]
+  userRoles      UserRoleRelation[]
+  
+  @@unique([name, organizationId])
+  @@index([organizationId])
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+  
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+model UserRoleRelation {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles_relation")
+}
+
+model Subscription {
+  id             String       @id @default(uuid())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @unique
+  plan           SubscriptionPlan
+  status         SubscriptionStatus
+  startDate      DateTime     @default(now())
+  endDate        DateTime?
+  stripeCustomerId String?
+  stripeSubscriptionId String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  BUSINESS
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+model RefreshToken {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  token         String    @unique
+  expiresAt     DateTime
+  revokedAt     DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model AuditLog {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  action        String
+  resource      String?
+  resourceId    String?
+  changes       Json?
+  ipAddress     String?
+  userAgent     String?
+  timestamp     DateTime  @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+}

@@ -1,0 +1,302 @@
+/* Premium Micro-Interactions */
+
+/* Animation Variables */
+:root {
+  /* Durations */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+
+  /* Easing Functions - Spring-based */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-spring-snappy: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --ease-spring-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Button Interactions */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width var(--duration-fast) var(--ease-out),
+              height var(--duration-fast) var(--ease-out);
+}
+
+.btn-ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-magnetic {
+  transition: transform var(--duration-fast) var(--ease-spring);
+  will-change: transform;
+}
+ 
+.btn-magnetic:hover {
+  transform: scale(1.02) translateY(-1px);
+}
+ 
+.btn-magnetic:active {
+  transform: scale(0.96) translateY(0px);
+}
+
+.tactile-press {
+  transition: transform var(--duration-instant) var(--ease-out);
+}
+
+.tactile-press:active {
+  transform: scale(0.97);
+}
+
+/* Card Interactions */
+.card-lift {
+  transition: transform var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth);
+}
+
+.card-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-glow {
+  position: relative;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.5), 
+    rgba(168, 85, 247, 0.5),
+    rgba(236, 72, 153, 0.5)
+  );
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-smooth);
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* Input Interactions */
+.input-glow {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2),
+              0 0 20px rgba(99, 102, 241, 0.3);
+  border-color: rgb(99, 102, 241);
+}
+
+.input-float-label {
+  position: relative;
+}
+
+.input-float-label label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all var(--duration-fast) var(--ease-smooth);
+  pointer-events: none;
+  color: hsl(var(--muted-foreground));
+}
+
+.input-float-label input:focus + label,
+.input-float-label input:not(:placeholder-shown) + label {
+  top: -8px;
+  font-size: 0.75rem;
+  background: hsl(var(--background));
+  padding: 0 4px;
+  color: hsl(var(--primary));
+}
+
+/* Loading States */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.1) 0%,
+    hsl(var(--muted) / 0.3) 50%,
+    hsl(var(--muted) / 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+  }
+}
+
+/* Navigation Interactions */
+.nav-underline {
+  position: relative;
+}
+
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    rgb(99, 102, 241), 
+    rgb(168, 85, 247)
+  );
+  transition: width var(--duration-normal) var(--ease-smooth);
+}
+
+.nav-underline:hover::after,
+.nav-underline.active::after {
+  width: 100%;
+}
+
+.icon-rotate {
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.icon-rotate:hover {
+  transform: rotate(180deg);
+}
+
+.badge-pulse {
+  animation: badge-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Reusable Animation Classes */
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-smooth);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-normal) var(--ease-smooth);
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-spring);
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 1s ease-in-out infinite;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Accessibility - Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Performance - GPU Acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-fast {
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.transition-slow {
+  transition: all var(--duration-slow) var(--ease-smooth);
+}

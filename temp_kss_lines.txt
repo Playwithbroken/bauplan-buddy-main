@@ -1,0 +1,645 @@
+   1export interface KeyboardShortcut {
+   2  id: string;
+   3  key: string;
+   4  description: string;
+   5  category: ShortcutCategory;
+   6  action: () => void;
+   7  enabled: boolean;
+   8  modifiers?: {
+   9    ctrl?: boolean;
+  10    alt?: boolean;
+  11    shift?: boolean;
+  12    meta?: boolean;
+  13  };
+  14  preventDefault?: boolean;
+  15  global?: boolean; // Works across all pages
+  16}
+  17
+  18export type ShortcutCategory = 
+  19  | 'navigation' 
+  20  | 'editing' 
+  21  | 'view' 
+  22  | 'search' 
+  23  | 'actions' 
+  24  | 'system';
+  25
+  26export interface ShortcutGroup {
+  27  category: ShortcutCategory;
+  28  label: string;
+  29  description: string;
+  30  shortcuts: KeyboardShortcut[];
+  31}
+  32
+  33export interface KeyboardShortcutConfig {
+  34  enabled: boolean;
+  35  showHints: boolean;
+  36  customShortcuts: Record<string, Partial<KeyboardShortcut>>;
+  37}
+  38
+  39export class KeyboardShortcutService {
+  40  private static instance: KeyboardShortcutService;
+  41  private shortcuts: Map<string, KeyboardShortcut> = new Map();
+  42  private listeners: Map<string, Array<(shortcut: KeyboardShortcut) => void>> = new Map();
+  43  private config: KeyboardShortcutConfig;
+  44  private isActive = true;
+  45  private pressedKeys = new Set<string>();
+  46
+  47  private constructor() {
+  48    this.config = this.loadConfig();
+  49    this.setupEventListeners();
+  50    this.registerDefaultShortcuts();
+  51  }
+  52
+  53  static getInstance(): KeyboardShortcutService {
+  54    if (!KeyboardShortcutService.instance) {
+  55      KeyboardShortcutService.instance = new KeyboardShortcutService();
+  56    }
+  57    return KeyboardShortcutService.instance;
+  58  }
+  59
+  60  private loadConfig(): KeyboardShortcutConfig {
+  61    try {
+  62      const stored = localStorage.getItem('keyboard-shortcuts-config');
+  63      if (stored) {
+  64        return { ...this.getDefaultConfig(), ...JSON.parse(stored) };
+  65      }
+  66    } catch (error) {
+  67      console.error('Failed to load keyboard shortcuts config:', error);
+  68    }
+  69    return this.getDefaultConfig();
+  70  }
+  71
+  72  private getDefaultConfig(): KeyboardShortcutConfig {
+  73    return {
+  74      enabled: true,
+  75      showHints: true,
+  76      customShortcuts: {}
+  77    };
+  78  }
+  79
+  80  private saveConfig(): void {
+  81    try {
+  82      localStorage.setItem('keyboard-shortcuts-config', JSON.stringify(this.config));
+  83    } catch (error) {
+  84      console.error('Failed to save keyboard shortcuts config:', error);
+  85    }
+  86  }
+  87
+  88  private setupEventListeners(): void {
+  89    // Global keydown listener
+  90    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+  91    document.addEventListener('keyup', this.handleKeyUp.bind(this));
+  92
+  93    // Prevent shortcuts when typing in input fields
+  94    document.addEventListener('focusin', this.handleFocusIn.bind(this));
+  95    document.addEventListener('focusout', this.handleFocusOut.bind(this));
+  96  }
+  97
+  98  private handleKeyDown(event: KeyboardEvent): void {
+  99    if (!this.config.enabled || !this.isActive) return;
+ 100
+ 101    // Don't trigger shortcuts when typing in input fields
+ 102    if (this.isInputFocused(event.target as Element)) return;
+ 103
+ 104    this.pressedKeys.add(event.key.toLowerCase());
+ 105    
+ 106    const shortcutKey = this.buildShortcutKey(event);
+ 107    const shortcut = this.shortcuts.get(shortcutKey);
+ 108
+ 109    if (shortcut && shortcut.enabled) {
+ 110      if (shortcut.preventDefault !== false) {
+ 111        event.preventDefault();
+ 112      }
+ 113      
+ 114      try {
+ 115        shortcut.action();
+ 116        this.notifyShortcutUsed(shortcut);
+ 117      } catch (error) {
+ 118        console.error(`Error executing shortcut ${shortcut.id}:`, error);
+ 119      }
+ 120    }
+ 121  }
+ 122
+ 123  private handleKeyUp(event: KeyboardEvent): void {
+ 124    this.pressedKeys.delete(event.key.toLowerCase());
+ 125  }
+ 126
+ 127  private handleFocusIn(event: Event): void {
+ 128    if (this.isInputFocused(event.target as Element)) {
+ 129      this.isActive = false;
+ 130    }
+ 131  }
+ 132
+ 133  private handleFocusOut(): void {
+ 134    this.isActive = true;
+ 135  }
+ 136
+ 137  private isInputFocused(element: Element): boolean {
+ 138    if (!element) return false;
+ 139    
+ 140    const tagName = element.tagName.toLowerCase();
+ 141    const inputTypes = ['input', 'textarea', 'select'];
+ 142    const isEditable = element.getAttribute('contenteditable') === 'true';
+ 143    
+ 144    return inputTypes.includes(tagName) || isEditable;
+ 145  }
+ 146
+ 147  private buildShortcutKey(event: KeyboardEvent): string {
+ 148    const parts: string[] = [];
+ 149    
+ 150    if (event.ctrlKey || event.metaKey) parts.push('ctrl');
+ 151    if (event.altKey) parts.push('alt');
+ 152    if (event.shiftKey) parts.push('shift');
+ 153    
+ 154    parts.push(event.key.toLowerCase());
+ 155    
+ 156    return parts.join('+');
+ 157  }
+ 158
+ 159  private registerDefaultShortcuts(): void {
+ 160    const defaultShortcuts: Omit<KeyboardShortcut, 'action'>[] = [
+ 161      // Navigation
+ 162      {
+ 163        id: 'nav-dashboard',
+ 164        key: 'ctrl+1',
+ 165        description: 'Dashboard öffnen',
+ 166        category: 'navigation',
+ 167        enabled: true,
+ 168        global: true
+ 169      },
+ 170      {
+ 171        id: 'nav-projects',
+ 172        key: 'ctrl+2',
+ 173        description: 'Projekte öffnen',
+ 174        category: 'navigation',
+ 175        enabled: true,
+ 176        global: true
+ 177      },
+ 178      {
+ 179        id: 'nav-calendar',
+ 180        key: 'ctrl+3',
+ 181        description: 'Kalender öffnen',
+ 182        category: 'navigation',
+ 183        enabled: true,
+ 184        global: true
+ 185      },
+ 186      {
+ 187        id: 'nav-chat',
+ 188        key: 'ctrl+4',
+ 189        description: 'Chat öffnen',
+ 190        category: 'navigation',
+ 191        enabled: true,
+ 192        global: true
+ 193      },
+ 194      {
+ 195        id: 'nav-documents',
+ 196        key: 'ctrl+5',
+ 197        description: 'Dokumente öffnen',
+ 198        category: 'navigation',
+ 199        enabled: true,
+ 200        global: true
+ 201      },
+ 202      {
+ 203        id: 'nav-analytics',
+ 204        key: 'ctrl+6',
+ 205        description: 'Analytics öffnen',
+ 206        category: 'navigation',
+ 207        enabled: true,
+ 208        global: true
+ 209      },
+ 210
+ 211      // Search
+ 212      {
+ 213        id: 'search-global',
+ 214        key: 'ctrl+k',
+ 215        description: 'Globale Suche',
+ 216        category: 'search',
+ 217        enabled: true,
+ 218        global: true
+ 219      },
+ 220      {
+ 221        id: 'search-projects',
+ 222        key: 'ctrl+shift+p',
+ 223        description: 'Projekte durchsuchen',
+ 224        category: 'search',
+ 225        enabled: true,
+ 226        global: true
+ 227      },
+ 228      {
+ 229        id: 'search-customers',
+ 230        key: 'ctrl+shift+c',
+ 231        description: 'Kunden durchsuchen',
+ 232        category: 'search',
+ 233        enabled: true,
+ 234        global: true
+ 235      },
+ 236
+ 237      // Actions
+ 238      {
+ 239        id: 'action-new-project',
+ 240        key: 'ctrl+n',
+ 241        description: 'Neues Projekt erstellen',
+ 242        category: 'actions',
+ 243        enabled: true,
+ 244        global: true
+ 245      },
+ 246      {
+ 247        id: 'action-new-quote',
+ 248        key: 'ctrl+shift+q',
+ 249        description: 'Neues Angebot erstellen',
+ 250        category: 'actions',
+ 251        enabled: true,
+ 252        global: true
+ 253      },
+ 254      {
+ 255        id: 'action-new-invoice',
+ 256        key: 'ctrl+shift+i',
+ 257        description: 'Neue Rechnung erstellen',
+ 258        category: 'actions',
+ 259        enabled: true,
+ 260        global: true
+ 261      },
+ 262      {
+ 263        id: 'action-save',
+ 264        key: 'ctrl+s',
+ 265        description: 'Speichern',
+ 266        category: 'actions',
+ 267        enabled: true,
+ 268        preventDefault: true
+ 269      },
+ 270
+ 271      // View
+ 272      {
+ 273        id: 'view-toggle-sidebar',
+ 274        key: 'ctrl+b',
+ 275        description: 'Sidebar ein/ausblenden',
+ 276        category: 'view',
+ 277        enabled: true,
+ 278        global: true
+ 279      },
+ 280      {
+ 281        id: 'view-toggle-theme',
+ 282        key: 'ctrl+shift+t',
+ 283        description: 'Theme wechseln',
+ 284        category: 'view',
+ 285        enabled: true,
+ 286        global: true
+ 287      },
+ 288      {
+ 289        id: 'view-fullscreen',
+ 290        key: 'f11',
+ 291        description: 'Vollbild ein/aus',
+ 292        category: 'view',
+ 293        enabled: true,
+ 294        global: true,
+ 295        preventDefault: false
+ 296      },
+ 297
+ 298      // System
+ 299      {
+ 300        id: 'system-help',
+ 301        key: 'f1',
+ 302        description: 'Hilfe anzeigen',
+ 303        category: 'system',
+ 304        enabled: true,
+ 305        global: true
+ 306      },
+ 307      {
+ 308        id: 'system-shortcuts',
+ 309        key: 'ctrl+shift+?',
+ 310        description: 'Tastaturkürzel anzeigen',
+ 311        category: 'system',
+ 312        enabled: true,
+ 313        global: true
+ 314      },
+ 315      {
+ 316        id: 'system-settings',
+ 317        key: 'ctrl+comma',
+ 318        description: 'Einstellungen öffnen',
+ 319        category: 'system',
+ 320        enabled: true,
+ 321        global: true
+ 322      },
+ 323
+ 324      // Editing
+ 325      {
+ 326        id: 'edit-undo',
+ 327        key: 'ctrl+z',
+ 328        description: 'Rückgängig',
+ 329        category: 'editing',
+ 330        enabled: true
+ 331      },
+ 332      {
+ 333        id: 'edit-redo',
+ 334        key: 'ctrl+y',
+ 335        description: 'Wiederholen',
+ 336        category: 'editing',
+ 337        enabled: true
+ 338      },
+ 339      {
+ 340        id: 'edit-select-all',
+ 341        key: 'ctrl+a',
+ 342        description: 'Alles auswählen',
+ 343        category: 'editing',
+ 344        enabled: true
+ 345      },
+ 346      {
+ 347        id: 'edit-copy',
+ 348        key: 'ctrl+c',
+ 349        description: 'Kopieren',
+ 350        category: 'editing',
+ 351        enabled: true,
+ 352        preventDefault: false
+ 353      },
+ 354      {
+ 355        id: 'edit-paste',
+ 356        key: 'ctrl+v',
+ 357        description: 'Einfügen',
+ 358        category: 'editing',
+ 359        enabled: true,
+ 360        preventDefault: false
+ 361      }
+ 362    ];
+ 363
+ 364    // Register shortcuts with default actions
+ 365    defaultShortcuts.forEach(shortcut => {
+ 366      this.registerShortcut({
+ 367        ...shortcut,
+ 368        action: this.getDefaultAction(shortcut.id)
+ 369      });
+ 370    });
+ 371  }
+ 372
+ 373  private getDefaultAction(shortcutId: string): () => void {
+ 374    const actions: Record<string, () => void> = {
+ 375      'nav-dashboard': () => this.navigate('/dashboard'),
+ 376      'nav-projects': () => this.navigate('/projects'),
+ 377      'nav-calendar': () => this.navigate('/calendar'),
+ 378      'nav-chat': () => this.navigate('/chat'),
+ 379      'nav-documents': () => this.navigate('/documents'),
+ 380      'nav-analytics': () => this.navigate('/analytics'),
+ 381      
+ 382      'search-global': () => this.triggerGlobalSearch(),
+ 383      'search-projects': () => this.triggerProjectSearch(),
+ 384      'search-customers': () => this.triggerCustomerSearch(),
+ 385      
+ 386      'action-new-project': () => this.triggerNewProject(),
+ 387      'action-new-quote': () => this.triggerNewQuote(),
+ 388      'action-new-invoice': () => this.triggerNewInvoice(),
+ 389      'action-save': () => this.triggerSave(),
+ 390      
+ 391      'view-toggle-sidebar': () => this.toggleSidebar(),
+ 392      'view-toggle-theme': () => this.toggleTheme(),
+ 393      'view-fullscreen': () => this.toggleFullscreen(),
+ 394      
+ 395      'system-help': () => this.showHelp(),
+ 396      'system-shortcuts': () => this.showShortcuts(),
+ 397      'system-settings': () => this.showSettings(),
+ 398      
+ 399      'edit-undo': () => this.triggerUndo(),
+ 400      'edit-redo': () => this.triggerRedo(),
+ 401      'edit-select-all': () => this.triggerSelectAll(),
+ 402      'edit-copy': () => this.triggerCopy(),
+ 403      'edit-paste': () => this.triggerPaste()
+ 404    };
+ 405
+ 406    return actions[shortcutId] || (() => console.log(`Action for ${shortcutId} not implemented`));
+ 407  }
+ 408
+ 409  // Navigation actions
+ 410  private navigate(path: string): void {
+ 411    if (window.location.pathname !== path) {
+ 412      window.history.pushState({}, '', path);
+ 413      window.dispatchEvent(new PopStateEvent('popstate'));
+ 414    }
+ 415  }
+ 416
+ 417  // Search actions
+ 418  private triggerGlobalSearch(): void {
+ 419    this.triggerEvent('global-search');
+ 420  }
+ 421
+ 422  private triggerProjectSearch(): void {
+ 423    this.triggerEvent('project-search');
+ 424  }
+ 425
+ 426  private triggerCustomerSearch(): void {
+ 427    this.triggerEvent('customer-search');
+ 428  }
+ 429
+ 430  // Action triggers
+ 431  private triggerNewProject(): void {
+ 432    this.triggerEvent('new-project');
+ 433  }
+ 434
+ 435  private triggerNewQuote(): void {
+ 436    this.triggerEvent('new-quote');
+ 437  }
+ 438
+ 439  private triggerNewInvoice(): void {
+ 440    this.triggerEvent('new-invoice');
+ 441  }
+ 442
+ 443  private triggerSave(): void {
+ 444    this.triggerEvent('save');
+ 445  }
+ 446
+ 447  // View actions
+ 448  private toggleSidebar(): void {
+ 449    this.triggerEvent('toggle-sidebar');
+ 450  }
+ 451
+ 452  private toggleTheme(): void {
+ 453    this.triggerEvent('toggle-theme');
+ 454  }
+ 455
+ 456  private toggleFullscreen(): void {
+ 457    if (document.fullscreenElement) {
+ 458      document.exitFullscreen();
+ 459    } else {
+ 460      document.documentElement.requestFullscreen();
+ 461    }
+ 462  }
+ 463
+ 464  // System actions
+ 465  private showHelp(): void {
+ 466    this.triggerEvent('show-help');
+ 467  }
+ 468
+ 469  private showShortcuts(): void {
+ 470    this.triggerEvent('show-shortcuts');
+ 471  }
+ 472
+ 473  private showSettings(): void {
+ 474    this.triggerEvent('show-settings');
+ 475  }
+ 476
+ 477  // Editing actions
+ 478  private triggerUndo(): void {
+ 479    this.triggerEvent('undo');
+ 480  }
+ 481
+ 482  private triggerRedo(): void {
+ 483    this.triggerEvent('redo');
+ 484  }
+ 485
+ 486  private triggerSelectAll(): void {
+ 487    this.triggerEvent('select-all');
+ 488  }
+ 489
+ 490  private triggerCopy(): void {
+ 491    this.triggerEvent('copy');
+ 492  }
+ 493
+ 494  private triggerPaste(): void {
+ 495    this.triggerEvent('paste');
+ 496  }
+ 497
+ 498  // Event system
+ 499  private triggerEvent(eventName: string, data?: unknown): void {
+ 500    const event = new CustomEvent(`shortcut:${eventName}`, { detail: data });
+ 501    window.dispatchEvent(event);
+ 502  }
+ 503
+ 504  private notifyShortcutUsed(shortcut: KeyboardShortcut): void {
+ 505    const listeners = this.listeners.get(shortcut.id) || [];
+ 506    listeners.forEach((listener) => listener(shortcut));
+ 507  }
+ 508
+ 509  // Public API
+ 510  registerShortcut(shortcut: KeyboardShortcut): void {
+ 511    this.shortcuts.set(shortcut.key, shortcut);
+ 512  }
+ 513
+ 514  unregisterShortcut(key: string): void {
+ 515    this.shortcuts.delete(key);
+ 516  }
+ 517
+ 518  updateShortcut(key: string, updates: Partial<KeyboardShortcut>): void {
+ 519    const existing = this.shortcuts.get(key);
+ 520    if (existing) {
+ 521      this.shortcuts.set(key, { ...existing, ...updates });
+ 522    }
+ 523  }
+ 524
+ 525  getShortcut(key: string): KeyboardShortcut | undefined {
+ 526    return this.shortcuts.get(key);
+ 527  }
+ 528
+ 529  getAllShortcuts(): KeyboardShortcut[] {
+ 530    return Array.from(this.shortcuts.values());
+ 531  }
+ 532
+ 533  getShortcutsByCategory(category: ShortcutCategory): KeyboardShortcut[] {
+ 534    return this.getAllShortcuts().filter(s => s.category === category);
+ 535  }
+ 536
+ 537  getShortcutGroups(): ShortcutGroup[] {
+ 538    const categories: Record<ShortcutCategory, { label: string; description: string }> = {
+ 539      navigation: { label: 'Navigation', description: 'Zwischen Seiten navigieren' },
+ 540      search: { label: 'Suche', description: 'Suche und Filter' },
+ 541      actions: { label: 'Aktionen', description: 'Neue Elemente erstellen und Aktionen ausführen' },
+ 542      view: { label: 'Ansicht', description: 'UI-Elemente und Ansichten steuern' },
+ 543      editing: { label: 'Bearbeitung', description: 'Text und Daten bearbeiten' },
+ 544      system: { label: 'System', description: 'Systemfunktionen und Hilfe' }
+ 545    };
+ 546
+ 547    return Object.entries(categories).map(([category, info]) => ({
+ 548      category: category as ShortcutCategory,
+ 549      label: info.label,
+ 550      description: info.description,
+ 551      shortcuts: this.getShortcutsByCategory(category as ShortcutCategory)
+ 552    }));
+ 553  }
+ 554
+ 555  // Event listeners
+ 556  onShortcutUsed(shortcutId: string, callback: (shortcut: KeyboardShortcut) => void): () => void {
+ 557    if (!this.listeners.has(shortcutId)) {
+ 558      this.listeners.set(shortcutId, []);
+ 559    }
+ 560    this.listeners.get(shortcutId)!.push(callback);
+ 561
+ 562    return () => {
+ 563      const listeners = this.listeners.get(shortcutId) || [];
+ 564      const index = listeners.indexOf(callback);
+ 565      if (index > -1) {
+ 566        listeners.splice(index, 1);
+ 567      }
+ 568    };
+ 569  }
+ 570
+ 571  // Configuration
+ 572  setEnabled(enabled: boolean): void {
+ 573    this.config.enabled = enabled;
+ 574    this.saveConfig();
+ 575  }
+ 576
+ 577  isEnabled(): boolean {
+ 578    return this.config.enabled;
+ 579  }
+ 580
+ 581  setShowHints(show: boolean): void {
+ 582    this.config.showHints = show;
+ 583    this.saveConfig();
+ 584  }
+ 585
+ 586  shouldShowHints(): boolean {
+ 587    return this.config.showHints;
+ 588  }
+ 589
+ 590  getConfig(): KeyboardShortcutConfig {
+ 591    return { ...this.config };
+ 592  }
+ 593
+ 594  // Import/Export
+ 595  exportShortcuts(): string {
+ 596    const data = {
+ 597      shortcuts: Array.from(this.shortcuts.entries()),
+ 598      config: this.config
+ 599    };
+ 600    return JSON.stringify(data, null, 2);
+ 601  }
+ 602
+ 603  importShortcuts(jsonData: string): boolean {
+ 604    try {
+ 605      const data = JSON.parse(jsonData);
+ 606      if (data.shortcuts && Array.isArray(data.shortcuts)) {
+ 607        this.shortcuts.clear();
+ 608        data.shortcuts.forEach(([key, shortcut]: [string, KeyboardShortcut]) => {
+ 609          this.shortcuts.set(key, shortcut);
+ 610        });
+ 611        
+ 612        if (data.config) {
+ 613          this.config = { ...this.config, ...data.config };
+ 614          this.saveConfig();
+ 615        }
+ 616        
+ 617        return true;
+ 618      }
+ 619    } catch (error) {
+ 620      console.error('Failed to import shortcuts:', error);
+ 621    }
+ 622    return false;
+ 623  }
+ 624
+ 625  // Power user features
+ 626  getPressedKeys(): string[] {
+ 627    return Array.from(this.pressedKeys);
+ 628  }
+ 629
+ 630  isKeyPressed(key: string): boolean {
+ 631    return this.pressedKeys.has(key.toLowerCase());
+ 632  }
+ 633
+ 634  // Accessibility
+ 635  getShortcutHint(key: string): string {
+ 636    const shortcut = this.shortcuts.get(key);
+ 637    return shortcut ? `${shortcut.key.toUpperCase()}: ${shortcut.description}` : '';
+ 638  }
+ 639
+ 640  getShortcutForAction(actionId: string): KeyboardShortcut | undefined {
+ 641    return this.getAllShortcuts().find(s => s.id === actionId);
+ 642  }
+ 643}
+ 644
+ 645export default KeyboardShortcutService.getInstance();

@@ -1,0 +1,287 @@
+   1import * as React from "react";
+   2import { Link, useLocation } from "react-router-dom";
+   3import {
+   4  Building,
+   5  LayoutDashboard,
+   6  FolderOpen,
+   7  FileText,
+   8  Receipt,
+   9  CheckCircle,
+  10  Calendar,
+  11  Users,
+  12  FileImage,
+  13  Users2,
+  14  BarChart3,
+  15  HardHat,
+  16  Home,
+  17  Settings,
+  18  LogOut,
+  19  ChevronUp,
+  20  User2,
+  21  Truck,
+  22  MessageCircle,
+  23  Keyboard,
+  24  HelpCircle
+  25} from "lucide-react";
+  26import { useLanguage } from "@/contexts/LanguageContext";
+  27import { useAuth } from "@/hooks/useAuth";
+  28import { useMobileUI } from "@/hooks/useMobileUI";
+  29import LanguageSelector from "@/components/LanguageSelector";
+  30import { KeyboardShortcutsPanel } from "@/components/ui/keyboard-shortcuts-panel";
+  31
+  32import {
+  33  Sidebar,
+  34  SidebarContent,
+  35  SidebarFooter,
+  36  SidebarGroup,
+  37  SidebarGroupContent,
+  38  SidebarGroupLabel,
+  39  SidebarHeader,
+  40  SidebarMenu,
+  41  SidebarMenuButton,
+  42  SidebarMenuItem,
+  43  SidebarMenuSub,
+  44  SidebarMenuSubButton,
+  45  SidebarMenuSubItem,
+  46} from "@/components/ui/sidebar";
+  47import {
+  48  DropdownMenu,
+  49  DropdownMenuContent,
+  50  DropdownMenuItem,
+  51  DropdownMenuTrigger,
+  52} from "@/components/ui/dropdown-menu";
+  53
+  54export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  55  const location = useLocation();
+  56  const { t } = useLanguage();
+  57  const { user, logout } = useAuth();
+  58  const { isMobile, triggerHapticFeedback } = useMobileUI();
+  59
+  60  const handleLogout = () => {
+  61    triggerHapticFeedback(10);
+  62    logout();
+  63  };
+  64
+  65  const handleNavigation = (path: string) => {
+  66    if (isMobile) {
+  67      triggerHapticFeedback(10);
+  68    }
+  69  };
+  70
+  71  // Navigation data based on the current application structure
+  72  const navigationItems = [
+  73    {
+  74      title: t('navigation.mainSection'),
+  75      items: [
+  76        {
+  77          title: t('navigation.dashboard'),
+  78          url: "/dashboard",
+  79          icon: LayoutDashboard,
+  80          description: t('navigation.dashboardDesc')
+  81        },
+  82        {
+  83          title: t('navigation.projects'),
+  84          url: "/projects", 
+  85          icon: FolderOpen,
+  86          description: t('navigation.projectsDesc')
+  87        },
+  88        {
+  89          title: t('navigation.quotes'),
+  90          url: "/quotes",
+  91          icon: FileText,
+  92          description: t('navigation.quotesDesc')
+  93        },
+  94        {
+  95          title: "Auftragsbestätigungen",
+  96          url: "/order-confirmations",
+  97          icon: CheckCircle,
+  98          description: "Verwaltung und Übersicht aller Auftragsbestätigungen"
+  99        },
+ 100        {
+ 101          title: t('navigation.invoices'),
+ 102          url: "/invoices",
+ 103          icon: Receipt,
+ 104          description: t('navigation.invoicesDesc')
+ 105        }
+ 106      ]
+ 107    },
+ 108    {
+ 109      title: t('navigation.scheduling'), 
+ 110      items: [
+ 111        {
+ 112          title: t('navigation.calendar'),
+ 113          url: "/calendar",
+ 114          icon: Calendar,
+ 115          description: t('navigation.calendarDesc')
+ 116        },
+ 117        {
+ 118          title: "Team-Chat",
+ 119          url: "/chat",
+ 120          icon: MessageCircle,
+ 121          description: "Echtzeitchat für Teams und Projektkoordination"
+ 122        },
+ 123        {
+ 124          title: t('navigation.customers'),
+ 125          url: "/customers",
+ 126          icon: Users,
+ 127          description: t('navigation.customersDesc')
+ 128        },
+ 129        {
+ 130          title: t('navigation.suppliers'),
+ 131          url: "/suppliers",
+ 132          icon: Truck,
+ 133          description: t('navigation.suppliersDesc')
+ 134        },
+ 135        {
+ 136          title: t('navigation.documents'), 
+ 137          url: "/documents",
+ 138          icon: FileImage,
+ 139          description: t('navigation.documentsDesc')
+ 140        },
+ 141        {
+ 142          title: t('navigation.teams'),
+ 143          url: "/teams",
+ 144          icon: Users2,
+ 145          description: t('navigation.teamsDesc')
+ 146        }
+ 147      ]
+ 148    },
+ 149    {
+ 150      title: t('navigation.analysis'),
+ 151      items: [
+ 152        {
+ 153          title: t('navigation.analytics'),
+ 154          url: "/analytics",
+ 155          icon: BarChart3,
+ 156          description: t('navigation.analyticsDesc')
+ 157        },
+ 158        {
+ 159          title: t('navigation.fieldService'),
+ 160          url: "/field",
+ 161          icon: HardHat,
+ 162          description: t('navigation.fieldServiceDesc')
+ 163        }
+ 164      ]
+ 165    },
+ 166    {
+ 167      title: "Support",
+ 168      items: [
+ 169        {
+ 170          title: "Dokumentation",
+ 171          url: "/documentation",
+ 172          icon: HelpCircle,
+ 173          description: "Hilfe und Anleitungen für Bauplan Buddy"
+ 174        }
+ 175      ]
+ 176    }
+ 177  ];
+ 178
+ 179  return (
+ 180    <Sidebar variant="inset" {...props}>
+ 181      <SidebarHeader>
+ 182        <SidebarMenu>
+ 183          <SidebarMenuItem>
+ 184            <SidebarMenuButton size="lg" asChild>
+ 185              <Link to="/">
+ 186                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+ 187                  <Building className="size-4" />
+ 188                </div>
+ 189                <div className="grid flex-1 text-left text-sm leading-tight">
+ 190                  <span className="truncate font-semibold">Bauplan Buddy</span>
+ 191                  <span className="truncate text-xs">Construction Management</span>
+ 192                </div>
+ 193              </Link>
+ 194            </SidebarMenuButton>
+ 195          </SidebarMenuItem>
+ 196        </SidebarMenu>
+ 197      </SidebarHeader>
+ 198
+ 199      <SidebarContent>
+ 200        {navigationItems.map((group) => (
+ 201          <SidebarGroup key={group.title}>
+ 202            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+ 203            <SidebarGroupContent>
+ 204              <SidebarMenu>
+ 205                {group.items.map((item) => {
+ 206                  const isActive = location.pathname === item.url;
+ 207                  return (
+ 208                    <SidebarMenuItem key={item.title}>
+ 209                      <SidebarMenuButton 
+ 210                        asChild 
+ 211                        isActive={isActive}
+ 212                        tooltip={item.description}
+ 213                        className={isMobile ? "mobile-button touch-target" : ""}
+ 214                      >
+ 215                        <Link 
+ 216                          to={item.url}
+ 217                          onClick={() => handleNavigation(item.url)}
+ 218                        >
+ 219                          <item.icon />
+ 220                          <span>{item.title}</span>
+ 221                        </Link>
+ 222                      </SidebarMenuButton>
+ 223                    </SidebarMenuItem>
+ 224                  );
+ 225                })}
+ 226              </SidebarMenu>
+ 227            </SidebarGroupContent>
+ 228          </SidebarGroup>
+ 229        ))}
+ 230      </SidebarContent>
+ 231
+ 232      <SidebarFooter>
+ 233        <SidebarMenu>
+ 234          <SidebarMenuItem>
+ 235            <LanguageSelector />
+ 236          </SidebarMenuItem>
+ 237          <SidebarMenuItem>
+ 238            <DropdownMenu>
+ 239              <DropdownMenuTrigger asChild>
+ 240                <SidebarMenuButton
+ 241                  size="lg"
+ 242                  className={`data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ${
+ 243                    isMobile ? "mobile-button touch-target" : ""
+ 244                  }`}
+ 245                >
+ 246                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+ 247                    <User2 className="size-4" />
+ 248                  </div>
+ 249                  <div className="grid flex-1 text-left text-sm leading-tight">
+ 250                    <span className="truncate font-semibold">{user?.name || t('common.user')}</span>
+ 251                    <span className="truncate text-xs">{user?.email || 'admin@bauplan-buddy.de'}</span>
+ 252                  </div>
+ 253                  <ChevronUp className="ml-auto size-4" />
+ 254                </SidebarMenuButton>
+ 255              </DropdownMenuTrigger>
+ 256              <DropdownMenuContent
+ 257                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+ 258                side="bottom"
+ 259                align="end"
+ 260                sideOffset={4}
+ 261              >
+ 262                <DropdownMenuItem>
+ 263                  <Settings className="mr-2 size-4" />
+ 264                  <span>{t('common.settings')}</span>
+ 265                </DropdownMenuItem>
+ 266                <DropdownMenuItem asChild>
+ 267                  <KeyboardShortcutsPanel
+ 268                    trigger={
+ 269                      <div className="flex items-center w-full cursor-pointer">
+ 270                        <Keyboard className="mr-2 size-4" />
+ 271                        <span>Tastaturkürzel</span>
+ 272                      </div>
+ 273                    }
+ 274                  />
+ 275                </DropdownMenuItem>
+ 276                <DropdownMenuItem onClick={handleLogout}>
+ 277                  <LogOut className="mr-2 size-4" />
+ 278                  <span>{t('common.logout')}</span>
+ 279                </DropdownMenuItem>
+ 280              </DropdownMenuContent>
+ 281            </DropdownMenu>
+ 282          </SidebarMenuItem>
+ 283        </SidebarMenu>
+ 284      </SidebarFooter>
+ 285    </Sidebar>
+ 286  );
+ 287}

@@ -1,0 +1,638 @@
+import React, { useMemo, useState } from 'react';
+import { useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Sun,
+  Moon,
+  Monitor,
+  Settings,
+  Palette,
+  Download,
+  Upload,
+  Contrast,
+  ChevronDown,
+} from 'lucide-react';
+import { useTheme, useThemeTransition } from '@/hooks/useTheme';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import type { Theme } from '@/services/themeService';
+
+interface ThemeToggleProps {
+  variant?: 'button' | 'dropdown' | 'switch';
+  size?: 'sm' | 'default' | 'lg';
+  showLabel?: boolean;
+  className?: string;
+}
+
+const getThemeIcon = (themeName: string) => {
+  switch (themeName) {
+    case 'light':
+      return <Sun className="h-4 w-4" />;
+    case 'dark':
+      return <Moon className="h-4 w-4" />;
+    case 'system':
+      return <Monitor className="h-4 w-4" />;
+    default:
+      return <Monitor className="h-4 w-4" />;
+  }
+};
+
+export function ThemeToggle({
+  variant = 'dropdown',
+  size = 'default',
+  showLabel = false,
+  className,
+}: ThemeToggleProps) {
+  const {
+    theme,
+    effectiveTheme,
+    isDarkMode,
+    availableThemes,
+    config,
+    setAutoSwitch,
+    exportConfig,
+    importConfig,
+    themeColors,
+    contrastRatio,
+  } = useTheme();
+  const { transitionToTheme, isTransitioning } = useThemeTransition();
+  const { toast } = useToast();
+  const [showSettings, setShowSettings] = useState(false);
+  const [showManualImportModal, setShowManualImportModal] = useState(false);
+  const [manualImportText, setManualImportText] = useState('');
+  const [manualImportError, setManualImportError] = useState<string | null>(null);
+  const [autoSwitchTime, setAutoSwitchTime] = useState(config.switchTime || {
+    lightStart: '06:00',
+    darkStart: '18:00',
+  });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const currentThemeMeta = useMemo(
+    () => availableThemes.find((themeOption) => themeOption.value === theme),
+    [availableThemes, theme]
+  );
+  const previewColors = useMemo(() => Object.entries(themeColors).slice(0, 8), [themeColors]);
+  const currentThemeLabel = currentThemeMeta?.label ?? (effectiveTheme === 'dark' ? 'Dunkel' : 'Hell');
+  const quickToggleTarget: Theme = isDarkMode ? 'light' : 'dark';
+  const quickToggleLabel = quickToggleTarget === 'dark' ? 'Dunkel' : 'Hell';
+  const quickToggleTitle = `Zu ${quickToggleLabel} wechseln`;
+  const currentIcon = effectiveTheme === 'dark' ? (
+    <Moon className="h-4 w-4" />
+  ) : (
+    <Sun className="h-4 w-4" />
+  );
+
+  const triggerConfigDownload = (filename: string, content: string) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined' || typeof URL === 'undefined' || typeof Blob === 'undefined') {
+      return false;
+    }
+
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    return true;
+  };
+
+  const handleThemeChange = (newTheme: Theme) => {
+    transitionToTheme(newTheme);
+    const label = availableThemes.find((option) => option.value === newTheme)?.label ?? newTheme;
+    toast({
+      title: 'Theme gewechselt',
+      description: `${label} Modus aktiviert`,
+      duration: 1800,
+    });
+  };
+
+  const handleQuickToggle = () => {
+    handleThemeChange(quickToggleTarget);
+  };
+
+  const handleAutoSwitchToggle = (enabled: boolean) => {
+    setAutoSwitch(enabled, autoSwitchTime);
+    toast({
+      title: enabled ? 'Automatischer Wechsel aktiviert' : 'Automatischer Wechsel deaktiviert',
+      description: enabled
+        ? `Wechselt um ${autoSwitchTime.lightStart} zu hell und um ${autoSwitchTime.darkStart} zu dunkel`
+        : 'Themes muessen manuell gewechselt werden',
+    });
+  };
+
+  const handleTimeChange = (type: 'lightStart' | 'darkStart', value: string) => {
+    const newTime = { ...autoSwitchTime, [type]: value };
+    setAutoSwitchTime(newTime);
+    if (config.autoSwitch) {
+      setAutoSwitch(true, newTime);
+    }
+  };
+
+  const resetManualImportState = () => {
+    setManualImportText('');
+    setManualImportError(null);
+  };
+
+  const applyImportedConfig = (payload: string, options?: { fromManualDialog?: boolean }) => {
+    try {
+      const success = importConfig(payload);
+      if (success) {
+        toast({
+          title: 'Konfiguration importiert',
+          description: 'Theme-Konfiguration wurde erfolgreich geladen',
+        });
+        resetManualImportState();
+        setShowManualImportModal(false);
+        setShowSettings(false);
+        return true;
+      }
+
+      if (options?.fromManualDialog) {
+        setManualImportError('Ungueltige Theme-Konfiguration bereitgestellt.');
+      } else {
+        toast({
+          title: 'Import fehlgeschlagen',
+          description: 'Ungueltige Theme-Konfiguration bereitgestellt.',
+          variant: 'destructive',
+        });
+      }
+      return false;
+    } catch (error) {
+      console.error('Error importing theme configuration:', error);
+      if (options?.fromManualDialog) {
+        setManualImportError('Konfiguration konnte nicht verarbeitet werden.');
+      } else {
+        toast({
+          title: 'Import fehlgeschlagen',
+          description: 'Konfiguration konnte nicht verarbeitet werden.',
+          variant: 'destructive',
+        });
+      }
+      return false;
+    }
+  };
+
+  const handleManualImportConfirm = () => {
+    const trimmed = manualImportText.trim();
+    if (!trimmed.length) {
+      setManualImportError('Bitte fuegen Sie eine Konfiguration ein.');
+      return;
+    }
+
+    applyImportedConfig(trimmed, { fromManualDialog: true });
+  };
+
+  const handleManualImportFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      if (!text.trim().length) {
+        setManualImportError('Ausgewaehlte Datei ist leer.');
+        return;
+      }
+      applyImportedConfig(text, { fromManualDialog: true });
+    } catch (error) {
+      console.error('Error reading theme configuration file:', error);
+      setManualImportError('Datei konnte nicht gelesen werden.');
+    }
+  };
+
+  const handleManualFileButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleExportConfig = async () => {
+    const configJson = exportConfig();
+    const canUseClipboard =
+      typeof window !== 'undefined' &&
+      window.isSecureContext &&
+      typeof navigator !== 'undefined' &&
+      typeof navigator.clipboard?.writeText === 'function';
+
+    if (canUseClipboard) {
+      try {
+        await navigator.clipboard.writeText(configJson);
+        toast({
+          title: 'Konfiguration exportiert',
+          description: 'Theme-Konfiguration wurde in die Zwischenablage kopiert',
+        });
+        return;
+      } catch (error) {
+        console.error('Error writing theme configuration to clipboard:', error);
+      }
+    }
+
+    const downloadSuccessful = triggerConfigDownload('bauplan-theme-config.json', configJson);
+
+    if (downloadSuccessful) {
+      toast({
+        title: 'Konfiguration exportiert',
+        description: 'Clipboard nicht verfuegbar - Theme-Konfiguration als Datei heruntergeladen.',
+      });
+    } else {
+      toast({
+        title: 'Export fehlgeschlagen',
+        description: 'Konfiguration konnte nicht exportiert werden.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleImportConfig = async () => {
+    try {
+      const canReadClipboard =
+        typeof window !== 'undefined' &&
+        window.isSecureContext &&
+        typeof navigator !== 'undefined' &&
+        typeof navigator.clipboard?.readText === 'function';
+
+      let importedText: string | null = null;
+
+      if (canReadClipboard) {
+        try {
+          importedText = await navigator.clipboard.readText();
+        } catch (clipboardError) {
+          console.error('Error reading theme configuration from clipboard:', clipboardError);
+        }
+      }
+
+      if (importedText && importedText.trim().length) {
+        const success = applyImportedConfig(importedText.trim());
+        if (success) {
+          return;
+        }
+      }
+
+      resetManualImportState();
+      setShowManualImportModal(true);
+      toast({
+        title: canReadClipboard ? 'Zwischenablage leer' : 'Clipboard nicht verfuegbar',
+        description: 'Fügen Sie die Konfiguration manuell ein oder laden Sie eine JSON-Datei hoch.',
+      });
+    } catch (error) {
+      console.error('Error importing theme configuration:', error);
+      toast({
+        title: 'Import fehlgeschlagen',
+        description: 'Ungueltige Theme-Konfiguration bereitgestellt.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (variant === 'switch') {
+    return (
+      <div className={cn('flex items-center gap-2', className)}>
+        <Sun className="h-4 w-4 text-muted-foreground" />
+        <Switch
+          style="default"
+          size="sm"
+          checked={isDarkMode}
+          onCheckedChange={(checked) => handleThemeChange((checked ? 'dark' : 'light') as Theme)}
+          disabled={isTransitioning}
+        />
+        <Moon className="h-4 w-4 text-muted-foreground" />
+        {showLabel && (
+          <Label className="text-sm">{isDarkMode ? 'Dunkel' : 'Hell'}</Label>
+        )}
+      </div>
+    );
+  }
+
+  if (variant === 'button') {
+    return (
+      <Button
+        variant="outline"
+        size={size}
+        onClick={handleQuickToggle}
+        disabled={isTransitioning}
+        className={className}
+        title={quickToggleTitle}
+        aria-label={quickToggleTitle}
+      >
+        {currentIcon}
+        {showLabel && (
+          <span className="ml-2">{effectiveTheme === 'dark' ? 'Dunkel' : 'Hell'}</span>
+        )}
+      </Button>
+    );
+  }
+
+  return (
+    <>
+      <div className={cn('flex items-center gap-2', className)}>
+        <Button
+          variant="outline"
+          size={size}
+          onClick={handleQuickToggle}
+          disabled={isTransitioning}
+          className={cn('justify-start gap-2', showLabel ? 'px-3' : 'px-2')}
+          title={quickToggleTitle}
+          aria-label={quickToggleTitle}
+        >
+          {currentIcon}
+          {showLabel && (
+            <span>{effectiveTheme === 'dark' ? 'Dunkel' : 'Hell'}</span>
+          )}
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size={size}
+              disabled={isTransitioning}
+              className="px-2"
+              aria-label="Weitere Theme-Optionen"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+              <Palette className="h-4 w-4" />
+              Theme auswaehlen
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {availableThemes.map((themeOption) => (
+              <DropdownMenuItem
+                key={themeOption.value}
+                onSelect={() => handleThemeChange(themeOption.value as Theme)}
+                className="flex items-center justify-between gap-2"
+              >
+                <span className="flex items-center gap-2">
+                  {getThemeIcon(themeOption.value)}
+                  {themeOption.label}
+                </span>
+                {theme === themeOption.value && (
+                  <Badge variant="secondary" className="text-[10px]">Aktiv</Badge>
+                )}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                setShowSettings(true);
+              }}
+              className="flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Erweiterte Einstellungen
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <Dialog open={showSettings} onOpenChange={setShowSettings}>
+        <DialogContent className="max-w-xl overflow-hidden p-0 sm:max-h-[85vh]">
+          <div className="flex h-full flex-col">
+            <DialogHeader className="px-6 pt-6 pb-4">
+              <DialogTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Theme-Einstellungen
+              </DialogTitle>
+              <DialogDescription>
+                Passen Sie Erscheinungsbild, Kontrast und Automatisierung an.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex-1 space-y-6 overflow-y-auto px-6 pb-6">
+              <section className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/80">Status</p>
+                <div className="flex items-center justify-between rounded-lg border bg-muted/40 p-3">
+                  <div className="flex items-center gap-3">
+                    {currentIcon}
+                    <div>
+                      <p className="text-sm font-medium">{currentThemeLabel}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Effektiv: {effectiveTheme === 'dark' ? 'Dunkel' : 'Hell'}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge
+                    variant={isDarkMode ? 'secondary' : 'outline'}
+                    className="flex items-center gap-1 text-xs"
+                  >
+                    <Contrast className="h-3 w-3" />
+                    {contrastRatio.toFixed(1)}:1
+                  </Badge>
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/80">Theme Auswahl</p>
+                <div className="space-y-2">
+                  <Label htmlFor="theme-select">Theme auswaehlen</Label>
+                  <Select value={theme} onValueChange={(value) => handleThemeChange(value as Theme)}>
+                    <SelectTrigger id="theme-select">
+                      <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableThemes.map((themeOption) => (
+                        <SelectItem key={themeOption.value} value={themeOption.value}>
+                          <div className="flex items-center gap-2">
+                            {getThemeIcon(themeOption.value)}
+                            <span>{themeOption.label}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/80">Automatischer Wechsel</p>
+                <div className="space-y-4 rounded-lg border bg-muted/30 p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Zeitplaene aktivieren</p>
+                      <p className="text-xs text-muted-foreground">
+                        Wechselt automatisch zwischen Hell und Dunkel zu festen Zeiten.
+                      </p>
+                    </div>
+                    <Switch
+                      style="default"
+                      size="sm"
+                      checked={config.autoSwitch}
+                      onCheckedChange={handleAutoSwitchToggle}
+                    />
+                  </div>
+                  {config.autoSwitch && (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="light-start" className="flex items-center gap-1 text-xs font-medium">
+                          <Sun className="h-3 w-3" />
+                          Hell ab
+                        </Label>
+                        <Input
+                          id="light-start"
+                          type="time"
+                          value={autoSwitchTime.lightStart}
+                          onChange={(event) => handleTimeChange('lightStart', event.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="dark-start" className="flex items-center gap-1 text-xs font-medium">
+                          <Moon className="h-3 w-3" />
+                          Dunkel ab
+                        </Label>
+                        <Input
+                          id="dark-start"
+                          type="time"
+                          value={autoSwitchTime.darkStart}
+                          onChange={(event) => handleTimeChange('darkStart', event.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/80">Farbuebersicht</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {previewColors.map(([name, color]) => (
+                    <div key={name} className="rounded-md border bg-background p-2 text-center">
+                      <div
+                        className="mb-2 h-8 w-full rounded-sm"
+                        style={{ backgroundColor: color }}
+                      />
+                      <p className="truncate text-xs font-medium" title={name}>
+                        {name}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground" title={color}>
+                        {color}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground/80">Konfiguration</p>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Button variant="outline" size="sm" onClick={handleExportConfig} className="flex-1">
+                    <Download className="mr-2 h-4 w-4" />
+                    Exportieren
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleImportConfig} className="flex-1">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Importieren
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Exportieren Sie Ihre Theme-Konfiguration, um sie mit Teammitgliedern zu teilen oder zu sichern.
+                </p>
+              </section>
+            </div>
+
+            <div className="border-t bg-background px-6 py-4 text-right">
+              <Button variant="secondary" onClick={() => setShowSettings(false)}>
+                Schliessen
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={showManualImportModal}
+        onOpenChange={(open) => {
+          setShowManualImportModal(open);
+          if (!open) {
+            resetManualImportState();
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Konfiguration importieren</DialogTitle>
+            <DialogDescription>
+              Fuegen Sie die exportierte JSON-Konfiguration ein oder laden Sie eine Datei hoch.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Textarea
+              value={manualImportText}
+              onChange={(event) => {
+                setManualImportText(event.target.value);
+                if (manualImportError) {
+                  setManualImportError(null);
+                }
+              }}
+              rows={8}
+              placeholder="{\"theme\":\"custom\",\"settings\":{...}}"
+            />
+            {manualImportError && (
+              <p className="text-xs text-destructive">{manualImportError}</p>
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={handleManualFileButtonClick}>
+                <Upload className="mr-2 h-4 w-4" />
+                JSON-Datei waehlen
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={handleManualImportFileUpload}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setShowManualImportModal(false)}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleManualImportConfirm}>
+              Importieren
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+export default ThemeToggle;
+
+
+
+
+

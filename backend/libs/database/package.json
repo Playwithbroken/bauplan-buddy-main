@@ -1,0 +1,16 @@
+{
+  "name": "@bauplan/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "prisma generate --schema ../../prisma/schema.prisma && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

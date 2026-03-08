@@ -1,0 +1,337 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Stage 1: Lint & Type Check
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+  # Stage 2: Unit Tests
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test -- --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+
+      - name: Check coverage threshold (>80%)
+        run: |
+          COVERAGE=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "❌ Code coverage is ${COVERAGE}%, must be >=80%"
+            exit 1
+          fi
+          echo "✅ Code coverage is ${COVERAGE}%"
+
+  # Stage 3: SAST (Static Application Security Testing)
+  sast:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SonarQube Scanner
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=bauplan-buddy
+            -Dsonar.organization=bauplan-buddy-org
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.spec.ts,**/*.test.ts
+            -Dsonar.coverage.exclusions=**/*.spec.ts,**/*.test.ts
+
+      - name: Run Semgrep SAST
+        run: |
+          npm install -g semgrep
+          semgrep --config=p/security-audit --config=p/owasp-top-ten src/
+
+      - name: Dependency vulnerability check
+        run: npm audit --production --audit-level=moderate
+
+  # Stage 4: Build
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, sast]
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+      - name: Build backend services
+        run: |
+          npm run build --workspace=backend/common
+          npm run build --workspace=backend/libs/database
+          npm run build --workspace=backend/libs/messaging
+          npm run build --workspace=backend/services/auth-service
+          npm run build --workspace=backend/services/quote-service
+          npm run build --workspace=backend/services/delivery-service
+          npm run build --workspace=backend/services/procurement-service
+
+  # Stage 5: E2E Tests
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: bauplan_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+      - name: Run database migrations (test)
+        env:
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/bauplan_test
+        run: npm run prisma:migrate
+
+      - name: Seed test database
+        env:
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/bauplan_test
+        run: npm run seed:test
+
+      - name: Start dev servers (background)
+        env:
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/bauplan_test
+        run: |
+          npm run dev &
+          sleep 10
+
+      - name: Run Playwright E2E tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+  # Stage 6: Security Scanning (Container)
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image for scanning
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: bauplan-buddy:scan
+          outputs: type=docker,dest=/tmp/image.tar
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          input: '/tmp/image.tar'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Stage 7: Docker Build & Push (on main only)
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, e2e-tests, security-scan]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Stage 8: Deploy (on main only)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://bauplan-buddy.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production..."
+          # Add your deployment script here
+          # Examples: kubectl apply, AWS CodeDeploy, Vercel, etc.
+
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1
+        if: always()
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "Deployment completed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*BauplanBuddy Deployment*\nStatus: ${{ job.status }}\nCommit: ${{ github.sha }}\nBranch: ${{ github.ref }}"
+                  }
+                }
+              ]
+            }
+
+  # Final: Summary
+  status-check:
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, sast, build, e2e-tests, security-scan]
+    if: always()
+    steps:
+      - name: Check job status
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.unit-tests.result }}" != "success" ] || \
+             [ "${{ needs.sast.result }}" != "success" ] || \
+             [ "${{ needs.build.result }}" != "success" ] || \
+             [ "${{ needs.e2e-tests.result }}" != "success" ] || \
+             [ "${{ needs.security-scan.result }}" != "success" ]; then
+            echo "❌ Pipeline failed"
+            exit 1
+          fi
+          echo "✅ Pipeline completed successfully"

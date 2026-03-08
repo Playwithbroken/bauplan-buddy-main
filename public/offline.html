@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bauplan Buddy - Offline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .features h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .features ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features li {
+            padding: 6px 0;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status.online {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">📡 Offline</div>
+    
+    <div class="container">
+        <div class="icon">
+            🏗️
+        </div>
+        
+        <h1>Bauplan Buddy</h1>
+        <p>Sie sind momentan offline, aber Sie können trotzdem arbeiten!</p>
+        
+        <div class="features">
+            <h3>Offline verfügbar:</h3>
+            <ul>
+                <li>Gespeicherte Projekte ansehen</li>
+                <li>Dokumente und Pläne durchsuchen</li>
+                <li>Terminkalender einsehen</li>
+                <li>Neue Einträge erstellen (werden später synchronisiert)</li>
+                <li>Berechnungen und Kostenvoranschläge</li>
+            </ul>
+        </div>
+        
+        <a href="/" class="button" onclick="window.location.reload(); return false;">
+            🔄 App neu laden
+        </a>
+        
+        <a href="/" class="button">
+            🏠 Zur Startseite
+        </a>
+    </div>
+
+    <script>
+        // Monitor online/offline status
+        function updateStatus() {
+            const status = document.getElementById('status');
+            if (navigator.onLine) {
+                status.textContent = '📡 Online';
+                status.classList.add('online');
+            } else {
+                status.textContent = '📡 Offline';
+                status.classList.remove('online');
+            }
+        }
+
+        // Initial status check
+        updateStatus();
+
+        // Listen for status changes
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+
+        // Auto-refresh when back online
+        window.addEventListener('online', function() {
+            setTimeout(() => {
+                if (confirm('Internetverbindung wiederhergestellt! Möchten Sie die App neu laden?')) {
+                    window.location.reload();
+                }
+            }, 1000);
+        });
+
+        // Service worker message handling
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', function(event) {
+                if (event.data.type === 'SYNC_COMPLETED') {
+                    console.log('Offline data synced:', event.data.data);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

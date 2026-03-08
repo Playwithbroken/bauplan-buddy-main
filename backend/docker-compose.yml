@@ -1,0 +1,191 @@
+﻿services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bauplan_buddy
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3001
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  project-service:
+    build:
+      context: .
+      dockerfile: services/project-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3002
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  procurement-service:
+    build:
+      context: .
+      dockerfile: services/procurement-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3003
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  delivery-service:
+    build:
+      context: .
+      dockerfile: services/delivery-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3004
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  quote-service:
+    build:
+      context: .
+      dockerfile: services/quote-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3005
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  invoice-service:
+    build:
+      context: .
+      dockerfile: services/invoice-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3006
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  audit-service:
+    build:
+      context: .
+      dockerfile: services/audit-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3007
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  calendar-service:
+    build:
+      context: .
+      dockerfile: services/calendar-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3008
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  datev-service:
+    build:
+      context: .
+      dockerfile: services/datev-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3009
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3010
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  order-confirmation-service:
+    build:
+      context: .
+      dockerfile: services/order-confirmation-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3011
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  pdf-service:
+    build:
+      context: .
+      dockerfile: services/pdf-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bauplan_buddy?schema=public
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      PORT: 3012
+    depends_on:
+      - postgres
+      - rabbitmq
+
+volumes:
+  postgres_data:

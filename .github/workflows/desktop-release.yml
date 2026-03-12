@@ -56,12 +56,10 @@ jobs:
       - name: Preflight checks
         env:
           PUBLISH_ENABLED: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
-          RELEASE_TAG: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') ? github.ref_name : '' }}
         run: >
           node scripts/desktop-release-preflight.cjs
           --platform=${{ matrix.verify_platform }}
           --publish=${{ env.PUBLISH_ENABLED }}
-          --tag=${{ env.RELEASE_TAG }}
 
       - name: Build web bundle
         run: npm run build

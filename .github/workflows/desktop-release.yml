@@ -97,21 +97,8 @@ jobs:
           --config.${{ matrix.platform }}.target=${{ matrix.target }}
           --publish always
 
-      - name: Build and publish desktop artifacts (mac multi-target, signed)
-        if: (github.event_name == 'push' || github.event.inputs.publish == 'true') && matrix.platform == 'mac' && secrets.CSC_LINK != '' && secrets.CSC_KEY_PASSWORD != ''
-        env:
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: >
-          npx electron-builder
-          --mac dmg zip
-          --publish always
-
-      - name: Build and publish desktop artifacts (mac multi-target, unsigned)
-        if: (github.event_name == 'push' || github.event.inputs.publish == 'true') && matrix.platform == 'mac' && (secrets.CSC_LINK == '' || secrets.CSC_KEY_PASSWORD == '')
+      - name: Build and publish desktop artifacts (mac multi-target)
+        if: (github.event_name == 'push' || github.event.inputs.publish == 'true') && matrix.platform == 'mac'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: >

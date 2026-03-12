@@ -34,11 +34,6 @@ jobs:
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CSC_LINK: ${{ secrets.CSC_LINK }}
-      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
     steps:
       - name: Checkout
@@ -66,6 +61,8 @@ jobs:
 
       - name: Build desktop artifacts (no publish)
         if: github.event_name != 'push' && github.event.inputs.publish != 'true'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: >
           npx electron-builder
           --${{ matrix.platform }}
@@ -74,6 +71,12 @@ jobs:
 
       - name: Build and publish desktop artifacts
         if: github.event_name == 'push' || github.event.inputs.publish == 'true'
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: >
           npx electron-builder
           --${{ matrix.platform }}

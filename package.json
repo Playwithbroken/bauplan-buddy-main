@@ -8,7 +8,11 @@
     "dev": "vite",
     "dev:desktop": "concurrently \"vite\" \"wait-on http://localhost:5173 && cross-env ELECTRON_START_URL=http://localhost:5173 electron .\"",
     "build": "vite build",
-    "build:desktop": "vite build && electron-builder --win",
+    "build:desktop": "vite build && electron-builder",
+    "build:desktop:win": "vite build && electron-builder --win",
+    "build:desktop:mac": "vite build && electron-builder --mac",
+    "build:desktop:publish:win": "vite build && electron-builder --win --publish always",
+    "build:desktop:publish:mac": "vite build && electron-builder --mac --publish always",
     "build:dev": "vite build --mode development",
     "build:analyze": "vite build --mode production && npx vite-bundle-analyzer dist",
     "lint": "eslint .",
@@ -20,10 +24,13 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
+    "preflight:desktop-release": "node scripts/desktop-release-preflight.cjs",
+    "verify:desktop-release": "node scripts/verify-desktop-release.cjs",
     "seed": "ts-node --esm backend/prisma/seed.ts",
     "seed:test": "ts-node --esm backend/prisma/seed-test.ts"
   },
   "dependencies": {
+    "@e965/xlsx": "^0.20.3",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -62,12 +69,13 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "dexie": "^4.2.1",
+    "electron-updater": "^6.8.3",
     "embla-carousel-react": "^8.6.0",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.23.24",
     "fuse.js": "^7.1.0",
     "input-otp": "^1.4.2",
-    "jspdf": "^3.0.1",
+    "jspdf": "^4.2.0",
     "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
@@ -86,7 +94,6 @@
     "tw-animate-css": "^1.3.7",
     "uuid": "^11.1.0",
     "vaul": "^0.9.9",
-    "xlsx": "^0.18.5",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -105,8 +112,8 @@
     "autoprefixer": "^10.4.27",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8",
+    "electron": "^40.8.0",
+    "electron-builder": "^26.8.1",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
@@ -153,6 +160,24 @@
           ]
         }
       ]
-    }
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.bauplanbuddy.com/desktop"
+      }
+    ]
   }
 }

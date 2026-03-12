@@ -41,7 +41,9 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   const platform = (args.platform || "").toLowerCase();
   const publish = String(args.publish || "false").toLowerCase() === "true";
-  const tag = args.tag || process.env.GITHUB_REF_NAME || "";
+  const envTag =
+    process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME || "" : "";
+  const tag = args.tag || envTag;
 
   if (!["win", "mac"].includes(platform)) {
     fail('Provide --platform=win or --platform=mac');

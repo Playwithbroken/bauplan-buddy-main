@@ -1,0 +1,101 @@
+name: Desktop Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish artifacts to GitHub Releases"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build-desktop:
+    name: Build ${{ matrix.platform }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            target: nsis
+            verify_platform: win
+          - os: macos-latest
+            platform: mac
+            target: dmg
+            verify_platform: mac
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CSC_LINK: ${{ secrets.CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Preflight checks
+        env:
+          PUBLISH_ENABLED: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
+        run: >
+          node scripts/desktop-release-preflight.cjs
+          --platform=${{ matrix.verify_platform }}
+          --publish=${{ env.PUBLISH_ENABLED }}
+          --tag=${{ github.ref_name }}
+
+      - name: Build web bundle
+        run: npm run build
+
+      - name: Build desktop artifacts (no publish)
+        if: github.event_name != 'push' && github.event.inputs.publish != 'true'
+        run: >
+          npx electron-builder
+          --${{ matrix.platform }}
+          --config.${{ matrix.platform }}.target=${{ matrix.target }}
+          --publish never
+
+      - name: Build and publish desktop artifacts
+        if: github.event_name == 'push' || github.event.inputs.publish == 'true'
+        run: >
+          npx electron-builder
+          --${{ matrix.platform }}
+          --config.${{ matrix.platform }}.target=${{ matrix.target }}
+          --publish always
+          --config.publish.provider=github
+          --config.publish.owner=${{ github.repository_owner }}
+          --config.publish.repo=${{ github.event.repository.name }}
+          --config.publish.releaseType=release
+
+      - name: Smoke check release artifacts
+        run: node scripts/verify-desktop-release.cjs --platform=${{ matrix.verify_platform }} --dir=release
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.platform }}-release
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+            release/*.yml
+            release/*.blockmap
+          if-no-files-found: error

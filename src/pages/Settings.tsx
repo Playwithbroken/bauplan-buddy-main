@@ -45,6 +45,7 @@ import EmailSettingsDialog from "@/components/dialogs/EmailSettingsDialog";
 import PresetsManagerDialog from "@/components/dialogs/PresetsManagerDialog";
 import AccessibilityPanel from "@/components/AccessibilityPanel";
 import { useToast } from "@/hooks/use-toast";
+import DesktopUpdaterPanel from "@/components/settings/DesktopUpdaterPanel";
 
 // Helper function to extract dominant colors from an image
 const extractColorsFromImage = (
@@ -382,6 +383,20 @@ const Settings = () => {
       ],
     },
     {
+      id: "storage",
+      title: "Speicher & Cloud",
+      description: "Lokaler Speicher und Cloud-Lösungen (Google Drive, OneDrive)",
+      icon: <Database className="h-6 w-6" />,
+      color: "indigo",
+      action: () => navigate("/settings/storage"),
+      items: [
+        "Cloud-Speicher verbinden",
+        "Speichernutzung anzeigen",
+        "Backups verwalten",
+        "Offline-Daten löschen",
+      ],
+    },
+    {
       id: "billing",
       title: "Abrechnung & Abo",
       description: "Zahlungsmethoden, Rechnungen und Abo-Verwaltung",
@@ -416,8 +431,8 @@ const Settings = () => {
     ? "space-y-6 max-h-[calc(100vh-220px)] overflow-auto pr-1"
     : "space-y-6";
   const tabsListClass = isFullscreen
-    ? "sticky top-0 z-20 grid w-full grid-cols-6 h-14 p-2 rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border border-border/60"
-    : "grid w-full grid-cols-6 h-14 p-2 bg-muted/50 rounded-lg";
+    ? "sticky top-0 z-20 grid w-full grid-cols-7 h-14 p-2 rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border border-border/60"
+    : "grid w-full grid-cols-7 h-14 p-2 bg-muted/50 rounded-lg";
 
   return (
     <LayoutWithSidebar
@@ -468,6 +483,12 @@ const Settings = () => {
               className="px-6 py-3 text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
             >
               Erweitert
+            </TabsTrigger>
+            <TabsTrigger
+              value="desktop"
+              className="px-6 py-3 text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+            >
+              Desktop
             </TabsTrigger>
           </TabsList>
 
@@ -1351,6 +1372,9 @@ const Settings = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+          <TabsContent value="desktop" className="space-y-6">
+            <DesktopUpdaterPanel />
           </TabsContent>
         </Tabs>
       </div>

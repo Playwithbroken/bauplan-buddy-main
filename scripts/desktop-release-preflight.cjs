@@ -37,10 +37,15 @@ function requireEnv(names) {
   }
 }
 
+function findMissingEnv(names) {
+  return names.filter((name) => !process.env[name] || !String(process.env[name]).trim());
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const platform = (args.platform || "").toLowerCase();
   const publish = String(args.publish || "false").toLowerCase() === "true";
+  const eventName = String(process.env.GITHUB_EVENT_NAME || "").toLowerCase();
   const envTag =
     process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME || "" : "";
   const tag = args.tag || envTag;
@@ -75,11 +80,19 @@ function main() {
   if (publish) {
     requireEnv(["GH_TOKEN"]);
 
-    // Signing for Windows and macOS typically shares CSC_* secrets.
-    requireEnv(["CSC_LINK", "CSC_KEY_PASSWORD"]);
-
+    const signingEnv = ["CSC_LINK", "CSC_KEY_PASSWORD"];
     if (platform === "mac") {
-      requireEnv(["APPLE_ID", "APPLE_APP_SPECIFIC_PASSWORD", "APPLE_TEAM_ID"]);
+      signingEnv.push("APPLE_ID", "APPLE_APP_SPECIFIC_PASSWORD", "APPLE_TEAM_ID");
+    }
+    const missingSigningEnv = findMissingEnv(signingEnv);
+    if (missingSigningEnv.length > 0) {
+      if (eventName === "workflow_dispatch") {
+        warn(
+          `Missing signing/notarization env for manual publish; continuing with unsigned artifacts: ${missingSigningEnv.join(", ")}`
+        );
+      } else {
+        fail(`Missing required environment variables: ${missingSigningEnv.join(", ")}`);
+      }
     }
   } else {
     info("Publish disabled; signing/notarization secrets are optional for this run.");

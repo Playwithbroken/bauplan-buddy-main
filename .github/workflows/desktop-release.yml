@@ -96,10 +96,6 @@ jobs:
           --${{ matrix.platform }}
           --config.${{ matrix.platform }}.target=${{ matrix.target }}
           --publish always
-          --config.publish.provider=github
-          --config.publish.owner=${{ github.repository_owner }}
-          --config.publish.repo=${{ github.event.repository.name }}
-          --config.publish.releaseType=release
 
       - name: Build and publish desktop artifacts (mac multi-target)
         if: (github.event_name == 'push' || github.event.inputs.publish == 'true') && matrix.platform == 'mac'
@@ -113,10 +109,6 @@ jobs:
           npx electron-builder
           --mac dmg zip
           --publish always
-          --config.publish.provider=github
-          --config.publish.owner=${{ github.repository_owner }}
-          --config.publish.repo=${{ github.event.repository.name }}
-          --config.publish.releaseType=release
 
       - name: Smoke check release artifacts
         run: node scripts/verify-desktop-release.cjs --platform=${{ matrix.verify_platform }} --dir=release

@@ -57,6 +57,11 @@ End-to-end construction project planning suite covering scheduling, document wor
 |---------|-------------|
 | `npm run dev` | Start Vite dev server |
 | `npm run build` | Production build |
+| `npm run build:desktop` | Build desktop artifacts via Electron Builder |
+| `npm run build:desktop:win` | Build Windows desktop installer (`.exe`) |
+| `npm run build:desktop:mac` | Build macOS desktop installer (`.dmg`) |
+| `npm run preflight:desktop-release -- --platform=win|mac --publish=true|false --tag=vX.Y.Z` | Validate release prerequisites (version/tag/secrets) |
+| `npm run verify:desktop-release -- --platform=win|mac --dir=release` | Smoke-check desktop release artifacts |
 | `npm run preview` | Preview prod build |
 | `npm run build:dev` | Build using development mode (faster JS, useful for smoke tests) |
 | `npm run build:analyze` | Production build + bundle analyzer report |
@@ -92,6 +97,7 @@ End-to-end construction project planning suite covering scheduling, document wor
 - Testing guides: `FILTERING_TESTING_GUIDE.md`, `TESTING_README.md`
 - Reporting pipeline: `ENHANCED_REPORTING.md`
 - Backend roadmap: `docs/backend-implementation-roadmap.md`
+- Desktop release pipeline: `docs/DESKTOP_RELEASE_PIPELINE.md`
 
 ## UI Follow-Up Items
 - `src/components/NotificationSettingsDialog.tsx`: No user-facing confirmation when `handleSave` succeeds; add toast/snackbar so the dialog close is not the only signal. Also surface permission errors instead of logging to console.

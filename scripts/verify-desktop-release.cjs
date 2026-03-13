@@ -45,7 +45,11 @@ function main() {
 
   if (platform === "win") {
     ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
-    ensureAnyMatch(files, [/latest\.yml$/i], "Windows update metadata (latest.yml)");
+    ensureAnyMatch(
+      files,
+      [/latest\.yml$/i, /beta\.yml$/i],
+      "Windows update metadata (latest.yml or beta.yml)"
+    );
     ensureAnyMatch(files, [/\.blockmap$/i], "Windows blockmap");
   }
 

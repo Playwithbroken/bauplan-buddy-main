@@ -40,7 +40,6 @@ import OfflineSyncService from "@/services/offlineSyncService";
 import { PresetService } from "@/services/presetService";
 import { aiSupport } from "@/services/aiSupportService";
 import { updateService } from "@/services/updateService";
-import { WEB_APP_READY_EVENT } from "@/desktop/bootMode";
 import {
   getPerformanceOptimizationService,
   isPerformanceMonitoringEnabled,
@@ -150,8 +149,13 @@ const FABWithNavigation = () => {
   );
 };
 
-const App = () => {
+interface WebAppProps {
+  onDesktopReady?: () => void;
+}
+
+const App = ({ onDesktopReady }: WebAppProps) => {
   const servicesInitialized = useRef(false);
+  const desktopReadyNotified = useRef(false);
   const isDesktopFileRuntime = isDesktopRuntime();
   const RouterComponent = isDesktopFileRuntime ? HashRouter : BrowserRouter;
   const LandingPage = useDesktopEagerRoutes ? LandingPageEager : LandingPageLazy;
@@ -181,12 +185,19 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!isDesktopFileRuntime) {
+    if (!isDesktopFileRuntime || !onDesktopReady || desktopReadyNotified.current) {
       return;
     }
 
-    window.dispatchEvent(new Event(WEB_APP_READY_EVENT));
-  }, [isDesktopFileRuntime]);
+    const frameId = window.requestAnimationFrame(() => {
+      desktopReadyNotified.current = true;
+      onDesktopReady();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [isDesktopFileRuntime, onDesktopReady]);
 
   return (
     <QueryClientProvider client={queryClient}>

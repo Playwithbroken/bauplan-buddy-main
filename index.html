@@ -80,7 +80,10 @@
 
     <script>
       (function () {
-        if (window.location.protocol !== "file:") return;
+        const isDesktopRuntime =
+          window.location.protocol === "file:" ||
+          window.desktop?.isDesktop === true;
+        if (!isDesktopRuntime) return;
         document.documentElement.setAttribute("data-runtime", "desktop");
         document.documentElement.style.background = "#020617";
         document.documentElement.style.colorScheme = "dark";
@@ -404,7 +407,10 @@
 
     <!-- Service Worker Registration -->
     <script>
-      if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
+      if (
+        "serviceWorker" in navigator &&
+        !(window.location.protocol === "file:" || window.desktop?.isDesktop === true)
+      ) {
         window.addEventListener("load", function () {
           navigator.serviceWorker
             .register("/sw.js")
@@ -446,7 +452,7 @@
       }
 
       // Install prompt
-      if (window.location.protocol !== "file:") {
+      if (!(window.location.protocol === "file:" || window.desktop?.isDesktop === true)) {
         let deferredPrompt;
         window.addEventListener("beforeinstallprompt", function (e) {
           console.log("beforeinstallprompt Event fired");

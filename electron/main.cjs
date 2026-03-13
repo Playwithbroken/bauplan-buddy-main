@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu, Tray, dialog, ipcMain, Notification, nativeImage, shell } = require('electron');
+const http = require('http');
 const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
@@ -8,6 +9,27 @@ let tray = null;
 let updateReadyToInstall = false;
 const tearOffWindows = new Set();
 let autoUpdater = null;
+let rendererServer = null;
+let rendererServerPromise = null;
+let rendererBaseUrl = null;
+
+const DIST_DIR = path.join(__dirname, "../dist");
+const STARTUP_LOG_PATH = path.join(
+  process.env.TEMP || process.env.TMP || process.cwd(),
+  "bauplan-buddy-desktop.log"
+);
+
+function writeStartupLog(message, details) {
+  try {
+    const timestamp = new Date().toISOString();
+    const suffix = details
+      ? ` ${typeof details === "string" ? details : JSON.stringify(details)}`
+      : "";
+    fsSync.appendFileSync(STARTUP_LOG_PATH, `[${timestamp}] ${message}${suffix}\n`, "utf8");
+  } catch (error) {
+    // Logging must never crash the desktop process.
+  }
+}
 
 const IPC_CHANNELS = {
   PING: "desktop:ping",
@@ -23,12 +45,128 @@ const IPC_CHANNELS = {
   INSTALL_UPDATE: "desktop:updater:install",
 };
 
-function getStartUrl() {
-  return process.env.ELECTRON_START_URL || `file://${path.join(__dirname, "../dist/index.html")}`;
+function getMimeTypeForServer(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  switch (ext) {
+    case ".html":
+      return "text/html; charset=utf-8";
+    case ".js":
+      return "application/javascript; charset=utf-8";
+    case ".css":
+      return "text/css; charset=utf-8";
+    case ".json":
+      return "application/json; charset=utf-8";
+    case ".svg":
+      return "image/svg+xml";
+    case ".ico":
+      return "image/x-icon";
+    case ".png":
+      return "image/png";
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".webp":
+      return "image/webp";
+    case ".woff":
+      return "font/woff";
+    case ".woff2":
+      return "font/woff2";
+    case ".ttf":
+      return "font/ttf";
+    default:
+      return "application/octet-stream";
+  }
+}
+
+function resolveRendererFile(requestPath) {
+  const decodedPath = decodeURIComponent(requestPath || "/");
+  const sanitizedPath = decodedPath.replace(/^\/+/, "");
+  const normalizedPath = path.normalize(sanitizedPath);
+  const candidatePath = path.join(DIST_DIR, normalizedPath);
+  const isInsideDist = candidatePath.startsWith(DIST_DIR);
+  const hasFileExtension = path.extname(normalizedPath) !== "";
+
+  if (!isInsideDist) {
+    return path.join(DIST_DIR, "index.html");
+  }
+
+  if (hasFileExtension && fsSync.existsSync(candidatePath) && fsSync.statSync(candidatePath).isFile()) {
+    return candidatePath;
+  }
+
+  return path.join(DIST_DIR, "index.html");
+}
+
+function ensureRendererServer() {
+  if (isDev()) {
+    return Promise.resolve(process.env.ELECTRON_START_URL);
+  }
+
+  if (rendererBaseUrl) {
+    return Promise.resolve(rendererBaseUrl);
+  }
+
+  if (rendererServerPromise) {
+    return rendererServerPromise;
+  }
+
+  rendererServerPromise = new Promise((resolve, reject) => {
+    const server = http.createServer(async (request, response) => {
+      try {
+        const requestUrl = new URL(request.url || "/", "http://127.0.0.1");
+        const filePath = resolveRendererFile(requestUrl.pathname);
+        const fileContents = await fs.readFile(filePath);
+
+        response.writeHead(200, {
+          "Content-Type": getMimeTypeForServer(filePath),
+          "Cache-Control": "no-store",
+        });
+        response.end(fileContents);
+      } catch (error) {
+        writeStartupLog("renderer-server:error", error?.message || String(error));
+        response.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+        response.end("Renderer server error");
+      }
+    });
+
+    server.on("error", (error) => {
+      writeStartupLog("renderer-server:listen-error", error?.message || String(error));
+      rendererServerPromise = null;
+      reject(error);
+    });
+
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        rendererServerPromise = null;
+        reject(new Error("Could not determine renderer server address"));
+        return;
+      }
+
+      rendererServer = server;
+      rendererBaseUrl = `http://127.0.0.1:${address.port}`;
+      writeStartupLog("renderer-server:listening", rendererBaseUrl);
+      resolve(rendererBaseUrl);
+    });
+  });
+
+  return rendererServerPromise;
+}
+
+async function getStartUrl() {
+  if (isDev()) {
+    return process.env.ELECTRON_START_URL;
+  }
+
+  return ensureRendererServer();
 }
 
 function isDev() {
   return Boolean(process.env.ELECTRON_START_URL);
+}
+
+function getCurrentBaseUrl() {
+  return process.env.ELECTRON_START_URL || rendererBaseUrl || `file://${path.join(__dirname, "../dist/index.html")}`;
 }
 
 function isHttpUrl(value) {
@@ -86,7 +224,7 @@ function sanitizeTearOffRoute(routePath) {
 }
 
 function buildTearOffUrl(routePath) {
-  const startUrl = getStartUrl();
+  const startUrl = getCurrentBaseUrl();
   const sanitizedRoute = sanitizeTearOffRoute(routePath);
 
   if (isHttpUrl(startUrl) && sanitizedRoute.startsWith("/")) {
@@ -107,7 +245,8 @@ function buildTearOffUrl(routePath) {
   return `${startUrl}${separator}tearoff=true&route=${encodeURIComponent(sanitizedRoute)}`;
 }
 
-function createWindow() {
+async function createWindow() {
+  writeStartupLog("window:create:start");
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
@@ -125,23 +264,47 @@ function createWindow() {
   mainWindow.setMenuBarVisibility(false);
 
   // Determine URL to load based on environment
-  const startUrl = getStartUrl();
+  const startUrl = await getStartUrl();
+  writeStartupLog("window:create:load-url", startUrl);
   
-  mainWindow.loadURL(startUrl);
+  await mainWindow.loadURL(startUrl);
+  writeStartupLog("window:create:load-url-complete", startUrl);
 
   mainWindow.once('ready-to-show', () => {
+    writeStartupLog("window:ready-to-show");
     mainWindow.maximize();
     mainWindow.show();
   });
 
+  mainWindow.webContents.on("did-finish-load", () => {
+    writeStartupLog("window:webcontents:did-finish-load", mainWindow.webContents.getURL());
+  });
+
+  mainWindow.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL) => {
+    writeStartupLog("window:webcontents:did-fail-load", {
+      errorCode,
+      errorDescription,
+      validatedURL,
+    });
+  });
+
+  mainWindow.webContents.on("render-process-gone", (_event, details) => {
+    writeStartupLog("window:webcontents:render-process-gone", details);
+  });
+
+  mainWindow.webContents.on("console-message", (_event, level, message, line, sourceId) => {
+    writeStartupLog("window:webcontents:console", { level, message, line, sourceId });
+  });
+
   mainWindow.on('closed', () => {
+    writeStartupLog("window:closed");
     mainWindow = null;
   });
 }
 
 function focusMainWindow() {
   if (!mainWindow) {
-    createWindow();
+    void createWindow();
     return;
   }
 
@@ -461,20 +624,50 @@ ipcMain.on("open-tear-off", (_event, payload) => {
 });
 
 app.on('ready', () => {
-  createWindow();
-  createTray();
-  setupAutoUpdater();
+  writeStartupLog("app:ready");
+  void (async () => {
+    try {
+      await ensureRendererServer();
+      await createWindow();
+      createTray();
+      setupAutoUpdater();
+      writeStartupLog("app:startup-complete");
+    } catch (error) {
+      writeStartupLog("app:startup-error", error?.stack || error?.message || String(error));
+      throw error;
+    }
+  })();
 });
 
 app.on('window-all-closed', () => {
+  writeStartupLog("app:window-all-closed", process.platform);
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
 app.on('activate', () => {
+  writeStartupLog("app:activate");
   if (mainWindow === null) {
-    createWindow();
+    void createWindow();
     createTray();
   }
+});
+
+app.on("will-quit", () => {
+  writeStartupLog("app:will-quit");
+  if (rendererServer) {
+    rendererServer.close();
+    rendererServer = null;
+    rendererServerPromise = null;
+    rendererBaseUrl = null;
+  }
+});
+
+process.on("uncaughtException", (error) => {
+  writeStartupLog("process:uncaught-exception", error?.stack || error?.message || String(error));
+});
+
+process.on("unhandledRejection", (reason) => {
+  writeStartupLog("process:unhandled-rejection", reason?.stack || reason?.message || String(reason));
 });

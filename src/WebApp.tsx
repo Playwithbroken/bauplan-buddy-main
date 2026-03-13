@@ -47,6 +47,7 @@ import {
 } from "@/services/performanceOptimizationService";
 import { initializePreloading } from "@/utils/routePreloader";
 import { getEnvVar } from "@/utils/env";
+import { isDesktopRuntime } from "@/utils/runtime";
 import { supabase } from "@/services/supabaseClient";
 import { Suspense, lazy, useEffect, useRef } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -103,8 +104,7 @@ declare global {
   }
 }
 
-const useDesktopEagerRoutes =
-  typeof window !== "undefined" && window.location.protocol === "file:";
+const useDesktopEagerRoutes = isDesktopRuntime();
 
 // Initialize all services
 const initializeServices = () => {
@@ -152,8 +152,7 @@ const FABWithNavigation = () => {
 
 const App = () => {
   const servicesInitialized = useRef(false);
-  const isDesktopFileRuntime =
-    typeof window !== "undefined" && window.location.protocol === "file:";
+  const isDesktopFileRuntime = isDesktopRuntime();
   const RouterComponent = isDesktopFileRuntime ? HashRouter : BrowserRouter;
   const LandingPage = useDesktopEagerRoutes ? LandingPageEager : LandingPageLazy;
   const LoginPage = useDesktopEagerRoutes ? LoginPageEager : LoginPageLazy;
@@ -191,24 +190,25 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterComponent
-        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-      >
-        <ThemeProvider>
-          <DialogManagerProvider>
-            <OfflineProvider>
-              <AuthProvider>
-                <LanguageProvider>
-                  <TooltipProvider>
-                    <Toaster />
-                    <Sonner />
-                    <PWAInstallPrompt />
-                    <GlobalShortcutListener />
-                    <AISupportWidget />
-                    <FABWithNavigation />
+      <ErrorBoundary>
+        <RouterComponent
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
+          <ThemeProvider>
+            <DialogManagerProvider>
+              <OfflineProvider>
+                <AuthProvider>
+                  <LanguageProvider>
+                    <TooltipProvider>
+                      <Toaster />
+                      <Sonner />
+                      <PWAInstallPrompt />
+                      <GlobalShortcutListener />
+                      <AISupportWidget />
+                      <FABWithNavigation />
 
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <Routes>
+                      <Suspense fallback={<LoadingSpinner />}>
+                        <Routes>
                         <Route path="/landing" element={<LandingPage />} />
                         <Route path="/ai-demo" element={<AIFeaturesDemo />} />
                         <Route
@@ -452,15 +452,16 @@ const App = () => {
                           }
                         />
                         <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
-                  </TooltipProvider>
-                </LanguageProvider>
-              </AuthProvider>
-            </OfflineProvider>
-          </DialogManagerProvider>
-        </ThemeProvider>
-      </RouterComponent>
+                        </Routes>
+                      </Suspense>
+                    </TooltipProvider>
+                  </LanguageProvider>
+                </AuthProvider>
+              </OfflineProvider>
+            </DialogManagerProvider>
+          </ThemeProvider>
+        </RouterComponent>
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 };

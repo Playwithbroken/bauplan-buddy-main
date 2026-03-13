@@ -12,6 +12,7 @@ import SupabaseAuthService, {
   type SupabaseAuthUser,
 } from "@/services/supabaseAuthService";
 import { isSupabaseConfigured } from "@/lib/supabase";
+import { isDesktopRuntime } from "@/utils/runtime";
 
 export interface User {
   id: string;
@@ -57,8 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   );
   const refreshIntervalRef = React.useRef<NodeJS.Timer | null>(null);
   const configuredApiUrl = getEnvVar("VITE_API_URL")?.trim() || "";
-  const isDesktopFileRuntime =
-    typeof window !== "undefined" && window.location.protocol === "file:";
+  const isDesktopFileRuntime = isDesktopRuntime();
   const apiUrl = configuredApiUrl;
   const supabaseAuth = SupabaseAuthService.getInstance();
 

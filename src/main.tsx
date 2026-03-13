@@ -11,10 +11,10 @@ import "./styles/micro-interactions.css";
 import { offlineSync } from "./services/offlineSyncService";
 import { ErrorHandlingService } from "./services/errorHandlingService";
 import { isProduction } from "@/utils/env";
+import { isDesktopRuntime } from "@/utils/runtime";
 import designSystemService from "./services/designSystemService";
 
-const isDesktopFileRuntime =
-  typeof window !== "undefined" && window.location.protocol === "file:";
+const isDesktopFileRuntime = isDesktopRuntime();
 
 // Initialize offline services with better error handling
 try {

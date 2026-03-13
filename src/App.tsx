@@ -6,10 +6,10 @@ import {
   writeDesktopBootMode,
 } from "@/desktop/bootMode";
 import WebApp from "@/WebApp";
+import { isDesktopRuntime } from "@/utils/runtime";
 import { useEffect, useState } from "react";
 
-const isDesktopFileRuntime =
-  typeof window !== "undefined" && window.location.protocol === "file:";
+const isDesktopFileRuntime = isDesktopRuntime();
 
 export default function App() {
   const [desktopBootMode, setDesktopBootMode] = useState<"normal" | "safe">(

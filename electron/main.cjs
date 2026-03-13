@@ -2,12 +2,12 @@ const { app, BrowserWindow, Menu, Tray, dialog, ipcMain, Notification, nativeIma
 const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
-const { autoUpdater } = require('electron-updater');
 
 let mainWindow;
 let tray = null;
 let updateReadyToInstall = false;
 const tearOffWindows = new Set();
+let autoUpdater = null;
 
 const IPC_CHANNELS = {
   PING: "desktop:ping",
@@ -181,6 +181,14 @@ function createTray() {
 }
 
 function setupAutoUpdater() {
+  try {
+    ({ autoUpdater } = require("electron-updater"));
+  } catch (error) {
+    console.warn("Auto updater unavailable:", error);
+    autoUpdater = null;
+    return;
+  }
+
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.logger = console;
@@ -389,6 +397,9 @@ ipcMain.handle(IPC_CHANNELS.CHECK_FOR_UPDATES, async () => {
   if (isDev()) {
     return { ok: false, reason: "dev_mode" };
   }
+  if (!autoUpdater) {
+    return { ok: false, reason: "updater_unavailable" };
+  }
 
   try {
     const result = await autoUpdater.checkForUpdates();
@@ -410,6 +421,9 @@ ipcMain.handle(IPC_CHANNELS.DOWNLOAD_UPDATE, async () => {
   if (isDev()) {
     return { ok: false, reason: "dev_mode" };
   }
+  if (!autoUpdater) {
+    return { ok: false, reason: "updater_unavailable" };
+  }
 
   try {
     await autoUpdater.downloadUpdate();
@@ -426,6 +440,9 @@ ipcMain.handle(IPC_CHANNELS.DOWNLOAD_UPDATE, async () => {
 ipcMain.handle(IPC_CHANNELS.INSTALL_UPDATE, async () => {
   if (isDev()) {
     return { ok: false, reason: "dev_mode" };
+  }
+  if (!autoUpdater) {
+    return { ok: false, reason: "updater_unavailable" };
   }
   if (!updateReadyToInstall) {
     return { ok: false, reason: "no_downloaded_update" };

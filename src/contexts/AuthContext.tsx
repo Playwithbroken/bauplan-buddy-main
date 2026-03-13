@@ -355,7 +355,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         // ⚠️ OFFLINE MODE — Development Only
         // In production, Supabase or API must be configured. If neither is, we block login.
         const isProduction = import.meta.env.PROD;
-        if (isProduction) {
+        if (isProduction && !isDesktopFileRuntime) {
           throw new Error(
             'Authentifizierung nicht konfiguriert. Bitte wenden Sie sich an den Administrator.'
           );
@@ -365,7 +365,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const DEV_USERS: Array<{ email: string; password: string; role: User['role'] }> = [
           { email: 'admin@bauplan.de', password: 'admin123', role: 'ADMIN' },
           { email: 'admin@test.com', password: 'admin123', role: 'ADMIN' },
+          { email: 'manager@bauplan.de', password: 'manager123', role: 'MANAGER' },
           { email: 'test@test.com', password: 'test123', role: 'USER' },
+          { email: 'user@bauplan.de', password: 'user123', role: 'USER' },
+          { email: 'client@bauplan.de', password: 'client123', role: 'GUEST' },
         ];
         const devUser = DEV_USERS.find(
           (u) => u.email === email && u.password === password
@@ -399,7 +402,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setIsLoading(false);
       }
     },
-    [apiUrl, authMode, supabaseAuth]
+    [apiUrl, authMode, isDesktopFileRuntime, supabaseAuth]
   );
 
   const register = useCallback(

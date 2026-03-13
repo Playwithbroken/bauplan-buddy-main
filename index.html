@@ -78,6 +78,15 @@
       content="default-src 'self' file: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' file: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' file: data: blob:; connect-src 'self' file: http://localhost:3001 http://localhost:4001 http://localhost:4002 http://localhost:4003 http://localhost:4004 https: ws: wss:; font-src 'self' file: data: https://fonts.gstatic.com; frame-src 'self' file:; worker-src 'self' file: blob:;"
     />
 
+    <script>
+      (function () {
+        if (window.location.protocol !== "file:") return;
+        document.documentElement.setAttribute("data-runtime", "desktop");
+        document.documentElement.style.background = "#020617";
+        document.documentElement.style.colorScheme = "dark";
+      })();
+    </script>
+
 
     <!-- Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -120,7 +129,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: radial-gradient(circle at top, rgba(34, 211, 238, 0.16), transparent 30%),
+            linear-gradient(180deg, #020617, #0f172a);
           color: white;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
             sans-serif;
@@ -169,7 +179,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: #2563eb;
+        background: radial-gradient(circle at top, rgba(34, 211, 238, 0.16), transparent 30%),
+          linear-gradient(180deg, #020617, #0f172a);
         display: none;
         align-items: center;
         justify-content: center;
@@ -206,6 +217,20 @@
     </div>
 
     <style>
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+        background: #f8fafc;
+      }
+
+      html[data-runtime="desktop"],
+      html[data-runtime="desktop"] body,
+      html[data-runtime="desktop"] #root {
+        background: #020617;
+        color-scheme: dark;
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);

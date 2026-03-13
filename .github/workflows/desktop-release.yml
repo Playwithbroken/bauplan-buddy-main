@@ -139,6 +139,12 @@ jobs:
         with:
           tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('manual-{0}', github.run_id) }}
           name: ${{ github.ref_type == 'tag' && format('Desktop Release {0}', github.ref_name) || format('Manual Desktop Build {0}', github.run_id) }}
+          body: |
+            Desktop build published by GitHub Actions.
+
+            Tag: `${{ github.ref_type == 'tag' && github.ref_name || format('manual-{0}', github.run_id) }}`
+            Commit: `${{ github.sha }}`
+            Run: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
           files: |
             release-artifacts/*.exe
             release-artifacts/*.dmg
@@ -147,5 +153,4 @@ jobs:
             release-artifacts/*.blockmap
           draft: false
           prerelease: ${{ github.ref_type != 'tag' || contains(github.ref_name, '-') }}
-          generate_release_notes: true
           fail_on_unmatched_files: true

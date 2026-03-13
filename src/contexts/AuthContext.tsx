@@ -56,7 +56,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     "offline"
   );
   const refreshIntervalRef = React.useRef<NodeJS.Timer | null>(null);
-  const apiUrl = getEnvVar("VITE_API_URL") || "http://localhost:3001/api/v1";
+  const configuredApiUrl = getEnvVar("VITE_API_URL")?.trim() || "";
+  const isDesktopFileRuntime =
+    typeof window !== "undefined" && window.location.protocol === "file:";
+  const apiUrl = configuredApiUrl;
   const supabaseAuth = SupabaseAuthService.getInstance();
 
   // Determine auth mode on mount
@@ -64,18 +67,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (isSupabaseConfigured) {
       setAuthMode("supabase");
       console.log("🔐 Auth Mode: Supabase");
-    } else if (apiUrl) {
+    } else if (apiUrl && !isDesktopFileRuntime) {
       setAuthMode("api");
       console.log("🔐 Auth Mode: API Backend");
     } else {
       setAuthMode("offline");
       console.log("🔐 Auth Mode: Offline (localStorage only)");
     }
-  }, [apiUrl]);
+  }, [apiUrl, isDesktopFileRuntime]);
 
   // Check if user is authenticated on mount
   useEffect(() => {
     const checkAuth = async () => {
+      const timeoutId = window.setTimeout(() => {
+        setIsLoading(false);
+        console.warn("Auth check timed out, falling back to offline mode");
+      }, 2500);
+
       try {
         // Try Supabase first
         if (authMode === "supabase") {
@@ -141,6 +149,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       } catch (error) {
         console.error("Auth check failed:", error);
       } finally {
+        window.clearTimeout(timeoutId);
         setIsLoading(false);
       }
     };

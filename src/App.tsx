@@ -2,7 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  HashRouter,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import { queryClient } from "@/lib/queryClient";
 import { logger } from "@/lib/logger";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -77,6 +83,7 @@ const Procurement = lazy(() => import("./pages/Procurement"));
 const Settings = lazy(() => import("./pages/Settings"));
 const SettingsStorage = lazy(() => import("./pages/SettingsStoragePage"));
 const SettingsDeployment = lazy(() => import("./pages/SettingsDeploymentPage"));
+const CloudAuthCallbackPage = lazy(() => import("./pages/CloudAuthCallbackPage"));
 const BillingSettings = lazy(() => import("./pages/BillingSettings"));
 const OrganizationSettings = lazy(() => import("./pages/OrganizationSettings"));
 const RealtimeDemoPage = lazy(() => import("./pages/RealtimeDemoPage"));
@@ -134,6 +141,9 @@ const FABWithNavigation = () => {
 
 const App = () => {
   const servicesInitialized = useRef(false);
+  const isDesktopFileRuntime =
+    typeof window !== "undefined" && window.location.protocol === "file:";
+  const RouterComponent = isDesktopFileRuntime ? HashRouter : BrowserRouter;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -151,7 +161,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter
+      <RouterComponent
         future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
       >
         <ThemeProvider>
@@ -324,6 +334,22 @@ const App = () => {
                           }
                         />
                         <Route
+                          path="/settings/storage"
+                          element={
+                            <ProtectedRoute>
+                              <SettingsStorage />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path="/settings/storage/auth/callback"
+                          element={
+                            <ProtectedRoute>
+                              <CloudAuthCallbackPage />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
                           path="/teams"
                           element={
                             <ProtectedRoute>
@@ -404,7 +430,7 @@ const App = () => {
             </OfflineProvider>
           </DialogManagerProvider>
         </ThemeProvider>
-      </BrowserRouter>
+      </RouterComponent>
     </QueryClientProvider>
   );
 };

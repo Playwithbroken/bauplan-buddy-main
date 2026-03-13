@@ -99,6 +99,10 @@ function buildTearOffUrl(routePath) {
     return url.toString();
   }
 
+  if (sanitizedRoute.startsWith("/")) {
+    return `${startUrl}#${sanitizedRoute}`;
+  }
+
   const separator = startUrl.includes("?") ? "&" : "?";
   return `${startUrl}${separator}tearoff=true&route=${encodeURIComponent(sanitizedRoute)}`;
 }

@@ -49,17 +49,24 @@ import { getEnvVar } from "@/utils/env";
 import { supabase } from "@/services/supabaseClient";
 import { Suspense, lazy, useEffect, useRef } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import DashboardEager from "./pages/Dashboard";
+import LoginPageEager from "./pages/LoginPage";
+import RegisterPageEager from "./pages/RegisterPage";
+import ForgotPasswordPageEager from "./pages/ForgotPasswordPage";
+import ResetPasswordPageEager from "./pages/ResetPasswordPage";
+import LandingPageEager from "./pages/LandingPage";
+import NotFoundEager from "./pages/NotFound";
 
 // Lazy load components for code splitting
 const Index = lazy(() => import("./pages/Index"));
-const LandingPage = lazy(() => import("./pages/LandingPage"));
+const LandingPageLazy = lazy(() => import("./pages/LandingPage"));
 const AIFeaturesDemo = lazy(() => import("./pages/AIFeaturesDemo"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const RegisterPage = lazy(() => import("./pages/RegisterPage"));
-const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
-const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const LoginPageLazy = lazy(() => import("./pages/LoginPage"));
+const RegisterPageLazy = lazy(() => import("./pages/RegisterPage"));
+const ForgotPasswordPageLazy = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPageLazy = lazy(() => import("./pages/ResetPasswordPage"));
 const Unauthorized = lazy(() => import("./pages/Unauthorized"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DashboardLazy = lazy(() => import("./pages/Dashboard"));
 const Quotes = lazy(() => import("./pages/Quotes"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Invoices = lazy(() => import("./pages/Invoices"));
@@ -77,7 +84,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const DatabaseConfigPage = lazy(() => import("./pages/DatabaseConfigPage"));
 const Documentation = lazy(() => import("./pages/Documentation"));
 const Diagnostics = lazy(() => import("./pages/Diagnostics"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+const NotFoundLazy = lazy(() => import("./pages/NotFound"));
 const DeliveryNotes = lazy(() => import("./pages/delivery/DeliveryNotesPage"));
 const Procurement = lazy(() => import("./pages/Procurement"));
 const Settings = lazy(() => import("./pages/Settings"));
@@ -94,6 +101,9 @@ declare global {
     __bauplanServicesInitialized?: boolean;
   }
 }
+
+const useDesktopEagerRoutes =
+  typeof window !== "undefined" && window.location.protocol === "file:";
 
 // Initialize all services
 const initializeServices = () => {
@@ -144,6 +154,17 @@ const App = () => {
   const isDesktopFileRuntime =
     typeof window !== "undefined" && window.location.protocol === "file:";
   const RouterComponent = isDesktopFileRuntime ? HashRouter : BrowserRouter;
+  const LandingPage = useDesktopEagerRoutes ? LandingPageEager : LandingPageLazy;
+  const LoginPage = useDesktopEagerRoutes ? LoginPageEager : LoginPageLazy;
+  const RegisterPage = useDesktopEagerRoutes ? RegisterPageEager : RegisterPageLazy;
+  const ForgotPasswordPage = useDesktopEagerRoutes
+    ? ForgotPasswordPageEager
+    : ForgotPasswordPageLazy;
+  const ResetPasswordPage = useDesktopEagerRoutes
+    ? ResetPasswordPageEager
+    : ResetPasswordPageLazy;
+  const Dashboard = useDesktopEagerRoutes ? DashboardEager : DashboardLazy;
+  const NotFound = useDesktopEagerRoutes ? NotFoundEager : NotFoundLazy;
 
   useEffect(() => {
     if (typeof window === "undefined") return;

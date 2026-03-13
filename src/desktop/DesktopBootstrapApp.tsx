@@ -30,7 +30,13 @@ declare global {
 
 const STORAGE_KEY = "bauplan_offline_user";
 
-const DEMO_USERS: Array<{ email: string; password: string; role: DesktopUserRole; firstName: string; lastName: string }> = [
+const DEMO_USERS: Array<{
+  email: string;
+  password: string;
+  role: DesktopUserRole;
+  firstName: string;
+  lastName: string;
+}> = [
   {
     email: "admin@bauplan.de",
     password: "admin123",
@@ -91,7 +97,7 @@ function saveStoredUser(user: DesktopUser | null) {
 
 function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [error] = useState("");
 
   const quickLogin = (candidate: (typeof DEMO_USERS)[number]) => {
     saveStoredUser(buildOfflineUser(candidate));
@@ -103,7 +109,7 @@ function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-10">
         <div className="mb-10">
           <p className="mb-3 inline-flex rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200">
-            Desktop Beta Safe Boot
+            Desktop Recovery
           </p>
           <h1 className="text-4xl font-semibold tracking-tight">Bauplan Buddy</h1>
           {onSwitchToNormalMode ? (
@@ -111,13 +117,13 @@ function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
               className="mt-4 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/20"
               onClick={onSwitchToNormalMode}
             >
-              Normalmodus starten
+              App erneut versuchen
             </button>
           ) : null}
           <p className="mt-3 max-w-2xl text-sm text-slate-300">
-            Der Desktop startet in einem stabilen Beta-Modus, damit die App
-            zuverlässig oeffnet, auch wenn die volle Web-Shell auf manchen
-            Rechnern noch blockiert.
+            Der Desktop ist in einen stabilen Wiederherstellungsmodus gewechselt,
+            damit die App weiter benutzbar bleibt, falls der volle Startpfad
+            auf diesem Rechner gerade nicht sauber laeuft.
           </p>
         </div>
 
@@ -125,7 +131,7 @@ function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30 backdrop-blur">
             <h2 className="text-xl font-semibold">Schnell anmelden</h2>
             <p className="mt-2 text-sm text-slate-300">
-              Fuer den Desktop-Beta-Test wird direkt mit lokalen Demo-Konten gearbeitet.
+              Lokale Recovery-Anmeldung fuer Diagnose und Weiterarbeit.
             </p>
 
             <div className="mt-6 grid gap-3">
@@ -137,7 +143,9 @@ function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <div className="text-sm font-semibold">{candidate.firstName} {candidate.lastName}</div>
+                      <div className="text-sm font-semibold">
+                        {candidate.firstName} {candidate.lastName}
+                      </div>
                       <div className="mt-1 text-xs text-slate-400">{candidate.email}</div>
                     </div>
                     <div className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-200">
@@ -158,13 +166,13 @@ function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
           <aside className="rounded-3xl border border-amber-400/20 bg-amber-500/10 p-6">
             <h2 className="text-xl font-semibold text-amber-100">Aktueller Zustand</h2>
             <ul className="mt-4 space-y-3 text-sm text-amber-50/90">
-              <li>Desktop startet ohne die blockierende Web-Shell.</li>
-              <li>Datei-Auswahl und Update-Check bleiben direkt im Desktop verfuegbar.</li>
-              <li>Lokale Beta-Daten werden getrennt vom Web-Profil gehalten.</li>
+              <li>Die App verwendet gerade einen stabilen Recovery-Startpfad.</li>
+              <li>Datei-Auswahl und Update-Check bleiben direkt verfuegbar.</li>
+              <li>Lokale Daten bleiben getrennt vom normalen App-Profil.</li>
             </ul>
             <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-xs text-slate-300">
-              Wenn der volle Desktop-Stack wieder stabil ist, kann dieser Safe-Boot
-              Pfad entfernt werden.
+              Dieser Modus ist nur ein interner Fallback fuer Desktop-Starts,
+              bis der volle App-Pfad stabil genug ist.
             </div>
           </aside>
         </div>
@@ -177,7 +185,7 @@ function DesktopDashboardPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps
   const navigate = useNavigate();
   const [user, setUser] = useState<DesktopUser | null>(() => readStoredUser());
   const [selectedFile, setSelectedFile] = useState("");
-  const [status, setStatus] = useState("Desktop Beta bereit.");
+  const [status, setStatus] = useState("Desktop Recovery bereit.");
 
   useEffect(() => {
     setUser(readStoredUser());
@@ -252,11 +260,11 @@ function DesktopDashboardPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps
         <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200">
-              Desktop Beta Safe Boot
+              Desktop Recovery
             </p>
             <h1 className="mt-2 text-3xl font-semibold">Willkommen, {user.firstName}</h1>
             <p className="mt-2 text-sm text-slate-300">
-              Stabiler Desktop-Startpfad mit lokalen Beta-Funktionen.
+              Stabiler Recovery-Startpfad mit nativen Desktop-Funktionen.
             </p>
           </div>
           <div className="flex gap-3">
@@ -265,7 +273,7 @@ function DesktopDashboardPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps
                 className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 hover:bg-emerald-500/20"
                 onClick={onSwitchToNormalMode}
               >
-                Normalmodus
+                App erneut versuchen
               </button>
             ) : null}
             <button
@@ -325,20 +333,20 @@ function DesktopDashboardPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps
           </section>
 
           <aside className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <h2 className="text-xl font-semibold">Beta-Hinweise</h2>
+            <h2 className="text-xl font-semibold">Recovery-Hinweise</h2>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
-              <li>Dies ist ein stabiler Desktop-Bootpfad fuer die Beta.</li>
-              <li>Lokale Anmeldung erfolgt absichtlich offline-first.</li>
-              <li>Weitere Module werden nach dem Startup-Fix wieder schrittweise zugeschaltet.</li>
+              <li>Dies ist ein interner Recovery-Pfad fuer Desktop-Starts.</li>
+              <li>Lokale Anmeldung bleibt absichtlich offline-first.</li>
+              <li>Der volle App-Pfad kann danach erneut getestet werden.</li>
             </ul>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/40 p-4">
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Naechster Schritt
+                Hinweis
               </div>
               <div className="mt-2 text-sm text-slate-100">
-                Sobald dieser Build sauber startet, kann die volle Shell gezielt
-                wieder aktiviert werden.
+                Dieser Screen sollte nur erscheinen, wenn der normale Desktop-Start
+                nicht sauber abgeschlossen wurde.
               </div>
             </div>
           </aside>
@@ -378,9 +386,9 @@ export default function DesktopBootstrapApp({
           element={
             <div className="min-h-screen bg-slate-950 px-6 py-12 text-slate-50">
               <div className="mx-auto max-w-xl rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h1 className="text-2xl font-semibold">Desktop Beta</h1>
+                <h1 className="text-2xl font-semibold">Desktop Recovery</h1>
                 <p className="mt-3 text-sm text-slate-300">
-                  Diese Route ist im stabilen Desktop-Bootpfad noch nicht aktiv.
+                  Diese Route ist im internen Recovery-Pfad nicht aktiv.
                 </p>
                 <Link
                   to="/dashboard"

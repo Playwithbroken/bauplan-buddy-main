@@ -4,10 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
-  readDesktopBootMode,
-  writeDesktopBootMode,
-} from "@/desktop/bootMode";
-import {
   ArrowRight,
   Bell,
   Download,
@@ -30,9 +26,6 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
   const [isDownloadingDesktopUpdate, setIsDownloadingDesktopUpdate] = useState(false);
   const [isInstallingDesktopUpdate, setIsInstallingDesktopUpdate] = useState(false);
   const [desktopUpdateReady, setDesktopUpdateReady] = useState(false);
-  const [desktopBootMode, setDesktopBootMode] = useState<"normal" | "safe">(
-    () => readDesktopBootMode()
-  );
   const isDesktopApp = Boolean(window.desktop?.isDesktop);
 
   useEffect(() => {
@@ -231,24 +224,6 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
     }
   };
 
-  const handleSetNormalDesktopBoot = () => {
-    writeDesktopBootMode("normal");
-    setDesktopBootMode("normal");
-    toast({
-      title: "Normalmodus aktiviert",
-      description: "Die App startet nach Neustart im vollen Desktop-Modus.",
-    });
-  };
-
-  const handleSetSafeDesktopBoot = () => {
-    writeDesktopBootMode("safe");
-    setDesktopBootMode("safe");
-    toast({
-      title: "Safe-Boot aktiviert",
-      description: "Die App startet beim naechsten Neustart im stabilen Safe-Modus.",
-    });
-  };
-
   return (
     <Card className={className}>
       <CardHeader>
@@ -271,35 +246,6 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
           <Badge variant={isDesktopApp ? "default" : "secondary"}>
             {isDesktopApp ? "Desktop aktiv" : "Web aktiv"}
           </Badge>
-        </div>
-
-        <div className="flex items-center justify-between p-3 border rounded-lg bg-muted/20">
-          <div>
-            <p className="font-medium">Desktop Startmodus</p>
-            <p className="text-xs text-muted-foreground">
-              Standard ist Safe-Boot. Normalmodus nur fuer gezielte Tests.
-            </p>
-          </div>
-          <Badge variant={desktopBootMode === "safe" ? "secondary" : "default"}>
-            {desktopBootMode === "safe" ? "Safe-Boot" : "Normal"}
-          </Badge>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button
-            variant="outline"
-            onClick={handleSetNormalDesktopBoot}
-            disabled={!isDesktopApp || desktopBootMode === "normal"}
-          >
-            Normalmodus setzen
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleSetSafeDesktopBoot}
-            disabled={!isDesktopApp || desktopBootMode === "safe"}
-          >
-            Safe-Boot setzen
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -124,6 +124,7 @@
     <div id="root">
       <!-- IMMEDIATE FALLBACK CONTENT -->
       <div
+        id="initial-fallback"
         style="
           min-height: 100vh;
           display: flex;
@@ -139,6 +140,7 @@
         "
       >
         <div
+          id="initial-fallback-card"
           style="
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -229,6 +231,19 @@
       html[data-runtime="desktop"] #root {
         background: #020617;
         color-scheme: dark;
+      }
+
+      html[data-runtime="desktop"] #initial-fallback {
+        background: radial-gradient(circle at top, rgba(34, 211, 238, 0.16), transparent 30%),
+          linear-gradient(180deg, #020617, #0f172a) !important;
+      }
+
+      html[data-runtime="desktop"] #initial-fallback-card,
+      html[data-runtime="desktop"] #loading-screen {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
       }
 
       @keyframes spin {

@@ -13,6 +13,9 @@ import { ErrorHandlingService } from "./services/errorHandlingService";
 import { isProduction } from "@/utils/env";
 import designSystemService from "./services/designSystemService";
 
+const isDesktopFileRuntime =
+  typeof window !== "undefined" && window.location.protocol === "file:";
+
 // Initialize offline services with better error handling
 try {
   if (isProduction()) {
@@ -90,7 +93,8 @@ setTimeout(() => {
 }, 500);
 
 // EMERGENCY: If React doesn't fully load within 3 seconds, show enhanced emergency dashboard
-setTimeout(() => {
+if (!isDesktopFileRuntime) {
+  setTimeout(() => {
   const rootElement = document.getElementById("root");
   if (
     rootElement &&
@@ -560,7 +564,8 @@ setTimeout(() => {
       </div>
     `;
   }
-}, 3000);
+  }, 3000);
+}
 
 try {
   const rootElement = document.getElementById("root");

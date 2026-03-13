@@ -54,6 +54,10 @@ const DEMO_USERS: Array<{ email: string; password: string; role: DesktopUserRole
   },
 ];
 
+interface DesktopBootstrapAppProps {
+  onSwitchToNormalMode?: () => void;
+}
+
 function buildOfflineUser(candidate: (typeof DEMO_USERS)[number]): DesktopUser {
   return {
     id: `offline-${candidate.email}`,
@@ -85,7 +89,7 @@ function saveStoredUser(user: DesktopUser | null) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
 }
 
-function DesktopLoginPage() {
+function DesktopLoginPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -102,6 +106,14 @@ function DesktopLoginPage() {
             Desktop Beta Safe Boot
           </p>
           <h1 className="text-4xl font-semibold tracking-tight">Bauplan Buddy</h1>
+          {onSwitchToNormalMode ? (
+            <button
+              className="mt-4 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/20"
+              onClick={onSwitchToNormalMode}
+            >
+              Normalmodus starten
+            </button>
+          ) : null}
           <p className="mt-3 max-w-2xl text-sm text-slate-300">
             Der Desktop startet in einem stabilen Beta-Modus, damit die App
             zuverlässig oeffnet, auch wenn die volle Web-Shell auf manchen
@@ -161,7 +173,7 @@ function DesktopLoginPage() {
   );
 }
 
-function DesktopDashboardPage() {
+function DesktopDashboardPage({ onSwitchToNormalMode }: DesktopBootstrapAppProps) {
   const navigate = useNavigate();
   const [user, setUser] = useState<DesktopUser | null>(() => readStoredUser());
   const [selectedFile, setSelectedFile] = useState("");
@@ -248,6 +260,14 @@ function DesktopDashboardPage() {
             </p>
           </div>
           <div className="flex gap-3">
+            {onSwitchToNormalMode ? (
+              <button
+                className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 hover:bg-emerald-500/20"
+                onClick={onSwitchToNormalMode}
+              >
+                Normalmodus
+              </button>
+            ) : null}
             <button
               className="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-2 text-sm hover:bg-slate-900"
               onClick={handleOpenRelease}
@@ -336,13 +356,23 @@ function DesktopRouteGate() {
   );
 }
 
-export default function DesktopBootstrapApp() {
+export default function DesktopBootstrapApp({
+  onSwitchToNormalMode,
+}: DesktopBootstrapAppProps) {
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<DesktopRouteGate />} />
-        <Route path="/login" element={<DesktopLoginPage />} />
-        <Route path="/dashboard" element={<DesktopDashboardPage />} />
+        <Route
+          path="/login"
+          element={<DesktopLoginPage onSwitchToNormalMode={onSwitchToNormalMode} />}
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <DesktopDashboardPage onSwitchToNormalMode={onSwitchToNormalMode} />
+          }
+        />
         <Route
           path="*"
           element={

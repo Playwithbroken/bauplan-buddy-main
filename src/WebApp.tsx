@@ -40,6 +40,7 @@ import OfflineSyncService from "@/services/offlineSyncService";
 import { PresetService } from "@/services/presetService";
 import { aiSupport } from "@/services/aiSupportService";
 import { updateService } from "@/services/updateService";
+import { WEB_APP_READY_EVENT } from "@/desktop/bootMode";
 import {
   getPerformanceOptimizationService,
   isPerformanceMonitoringEnabled,
@@ -179,6 +180,14 @@ const App = () => {
     servicesInitialized.current = true;
     window.__bauplanServicesInitialized = true;
   }, []);
+
+  useEffect(() => {
+    if (!isDesktopFileRuntime) {
+      return;
+    }
+
+    window.dispatchEvent(new Event(WEB_APP_READY_EVENT));
+  }, [isDesktopFileRuntime]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,22 +1,48 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const isProduction = import.meta.env.PROD;
+type DesktopWindow = Window & {
+  desktop?: {
+    isDesktop?: boolean;
+  };
+};
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  if (isProduction) {
+const runtimeWindow =
+  typeof window !== 'undefined' ? (window as DesktopWindow) : undefined;
+const isDesktopRuntime =
+  Boolean(runtimeWindow?.desktop?.isDesktop) ||
+  runtimeWindow?.location?.protocol === 'file:' ||
+  Boolean(runtimeWindow?.navigator?.userAgent?.includes('Electron'));
+
+const configuredSupabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const configuredSupabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const isProduction = import.meta.env.PROD;
+const hasRealSupabaseConfig = Boolean(
+  configuredSupabaseUrl && configuredSupabaseAnonKey
+);
+
+const supabaseUrl =
+  configuredSupabaseUrl ||
+  (isDesktopRuntime ? 'https://offline-placeholder.supabase.co' : undefined);
+const supabaseAnonKey =
+  configuredSupabaseAnonKey ||
+  (isDesktopRuntime ? 'offline-placeholder-anon-key' : undefined);
+
+if (!hasRealSupabaseConfig) {
+  if (isProduction && !isDesktopRuntime) {
     throw new Error(
       '[Bauplan Buddy] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set in production. ' +
-      'Add them to your deployment environment variables.'
+        'Add them to your deployment environment variables.'
     );
   }
-  console.warn('⚠️ Supabase credentials not found. Running in offline/dev mode.');
+
+  console.warn(
+    'Supabase credentials not found. Running in offline/desktop-safe mode.'
+  );
 }
 
 export const supabase = createClient(
-  supabaseUrl ?? '',
-  supabaseAnonKey ?? '',
+  supabaseUrl ?? 'https://offline-placeholder.supabase.co',
+  supabaseAnonKey ?? 'offline-placeholder-anon-key',
   {
     auth: {
       persistSession: true,
@@ -35,13 +61,11 @@ export const supabase = createClient(
   }
 );
 
-// Check if Supabase is properly configured
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured = hasRealSupabaseConfig;
 
-// Helper to check connection
 export async function checkSupabaseConnection(): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
-  
+
   try {
     const { error } = await supabase.from('_healthcheck').select('count').limit(1);
     return !error;

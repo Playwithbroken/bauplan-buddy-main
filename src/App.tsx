@@ -5,9 +5,8 @@ import {
   readDesktopBootMode,
   writeDesktopBootMode,
 } from "@/desktop/bootMode";
-import { Suspense, lazy, useEffect, useState } from "react";
-
-const WebApp = lazy(() => import("@/WebApp"));
+import WebApp from "@/WebApp";
+import { useEffect, useState } from "react";
 
 const isDesktopFileRuntime =
   typeof window !== "undefined" && window.location.protocol === "file:";
@@ -58,9 +57,5 @@ export default function App() {
     );
   }
 
-  return (
-    <Suspense fallback={null}>
-      <WebApp />
-    </Suspense>
-  );
+  return <WebApp />;
 }

@@ -236,7 +236,7 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
     setDesktopBootMode("normal");
     toast({
       title: "Normalmodus aktiviert",
-      description: "Die App startet nach Neustart wieder im normalen Modus.",
+      description: "Die App startet nach Neustart im vollen Desktop-Modus.",
     });
   };
 
@@ -277,7 +277,7 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
           <div>
             <p className="font-medium">Desktop Startmodus</p>
             <p className="text-xs text-muted-foreground">
-              Standard ist Normalmodus, Safe-Boot nur als Fallback.
+              Standard ist Safe-Boot. Normalmodus nur fuer gezielte Tests.
             </p>
           </div>
           <Badge variant={desktopBootMode === "safe" ? "secondary" : "default"}>

@@ -263,19 +263,6 @@ async function createWindow() {
   // Hide the default menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
 
-  // Determine URL to load based on environment
-  const startUrl = await getStartUrl();
-  writeStartupLog("window:create:load-url", startUrl);
-  
-  await mainWindow.loadURL(startUrl);
-  writeStartupLog("window:create:load-url-complete", startUrl);
-
-  mainWindow.once('ready-to-show', () => {
-    writeStartupLog("window:ready-to-show");
-    mainWindow.maximize();
-    mainWindow.show();
-  });
-
   mainWindow.webContents.on("did-finish-load", () => {
     writeStartupLog("window:webcontents:did-finish-load", mainWindow.webContents.getURL());
   });
@@ -294,6 +281,19 @@ async function createWindow() {
 
   mainWindow.webContents.on("console-message", (_event, level, message, line, sourceId) => {
     writeStartupLog("window:webcontents:console", { level, message, line, sourceId });
+  });
+
+  // Determine URL to load based on environment
+  const startUrl = await getStartUrl();
+  writeStartupLog("window:create:load-url", startUrl);
+  
+  await mainWindow.loadURL(startUrl);
+  writeStartupLog("window:create:load-url-complete", startUrl);
+
+  mainWindow.once('ready-to-show', () => {
+    writeStartupLog("window:ready-to-show");
+    mainWindow.maximize();
+    mainWindow.show();
   });
 
   mainWindow.on('closed', () => {

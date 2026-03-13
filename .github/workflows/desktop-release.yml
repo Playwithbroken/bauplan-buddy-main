@@ -146,6 +146,6 @@ jobs:
             release-artifacts/*.yml
             release-artifacts/*.blockmap
           draft: false
-          prerelease: ${{ github.ref_type != 'tag' }}
+          prerelease: ${{ github.ref_type != 'tag' || contains(github.ref_name, '-') }}
           generate_release_notes: true
           fail_on_unmatched_files: true

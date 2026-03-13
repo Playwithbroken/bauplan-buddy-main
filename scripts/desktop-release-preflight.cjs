@@ -61,6 +61,7 @@ function main() {
 
   const pkg = JSON.parse(fs.readFileSync(packagePath, "utf8"));
   const version = String(pkg.version || "").trim();
+  const isPrerelease = version.includes("-");
   if (!version) {
     fail("package.json version is empty");
   }
@@ -86,9 +87,9 @@ function main() {
     }
     const missingSigningEnv = findMissingEnv(signingEnv);
     if (missingSigningEnv.length > 0) {
-      if (eventName === "workflow_dispatch") {
+      if (eventName === "workflow_dispatch" || isPrerelease) {
         warn(
-          `Missing signing/notarization env for manual publish; continuing with unsigned artifacts: ${missingSigningEnv.join(", ")}`
+          `Missing signing/notarization env for beta publish; continuing with unsigned artifacts: ${missingSigningEnv.join(", ")}`
         );
       } else {
         fail(`Missing required environment variables: ${missingSigningEnv.join(", ")}`);

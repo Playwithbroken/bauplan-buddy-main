@@ -18,6 +18,7 @@ const desktopApi = {
   checkForUpdates: () => invoke("desktop:updater:check"),
   downloadUpdate: () => invoke("desktop:updater:download"),
   installUpdate: () => invoke("desktop:updater:install"),
+  getDiagnostics: () => invoke("desktop:diagnostics:get"),
   onUpdaterEvent: (handler) => {
     const listener = (_event, payload) => handler(payload);
     ipcRenderer.on("desktop:updater:event", listener);

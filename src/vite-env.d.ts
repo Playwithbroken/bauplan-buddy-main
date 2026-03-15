@@ -64,6 +64,16 @@ interface Window {
     }>;
     downloadUpdate: () => Promise<{ ok: boolean; reason?: string; message?: string }>;
     installUpdate: () => Promise<{ ok: boolean; reason?: string; message?: string }>;
+    getDiagnostics: () => Promise<{
+      ok: boolean;
+      platform: string;
+      appVersion: string;
+      startupLogPath: string;
+      startupLogTail: string;
+      currentUrl: string | null;
+      updateReadyToInstall: boolean;
+      isDev: boolean;
+    }>;
     onUpdaterEvent: (handler: (event: {
       type: string;
       info?: unknown;

@@ -48,7 +48,7 @@ import { initializePreloading } from "@/utils/routePreloader";
 import { getEnvVar } from "@/utils/env";
 import { isDesktopRuntime } from "@/utils/runtime";
 import { supabase } from "@/services/supabaseClient";
-import { Suspense, lazy, useEffect, useRef } from "react";
+import { ErrorInfo, Suspense, lazy, useEffect, useRef } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import DashboardEager from "./pages/Dashboard";
 import LoginPageEager from "./pages/LoginPage";
@@ -151,9 +151,10 @@ const FABWithNavigation = () => {
 
 interface WebAppProps {
   onDesktopReady?: () => void;
+  onDesktopError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
-const App = ({ onDesktopReady }: WebAppProps) => {
+const App = ({ onDesktopReady, onDesktopError }: WebAppProps) => {
   const servicesInitialized = useRef(false);
   const desktopReadyNotified = useRef(false);
   const isDesktopFileRuntime = isDesktopRuntime();
@@ -201,7 +202,7 @@ const App = ({ onDesktopReady }: WebAppProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary>
+      <ErrorBoundary onError={onDesktopError}>
         <RouterComponent
           future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
         >

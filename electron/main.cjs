@@ -43,6 +43,7 @@ const IPC_CHANNELS = {
   CHECK_FOR_UPDATES: "desktop:updater:check",
   DOWNLOAD_UPDATE: "desktop:updater:download",
   INSTALL_UPDATE: "desktop:updater:install",
+  GET_DIAGNOSTICS: "desktop:diagnostics:get",
 };
 
 function getMimeTypeForServer(filePath) {
@@ -221,6 +222,19 @@ function sanitizeTearOffRoute(routePath) {
   }
 
   return "generic";
+}
+
+async function readStartupLogTail(maxLines = 60) {
+  try {
+    const contents = await fs.readFile(STARTUP_LOG_PATH, "utf8");
+    return contents
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .slice(-maxLines)
+      .join("\n");
+  } catch {
+    return "";
+  }
 }
 
 function buildTearOffUrl(routePath) {
@@ -615,6 +629,22 @@ ipcMain.handle(IPC_CHANNELS.INSTALL_UPDATE, async () => {
     autoUpdater.quitAndInstall(false, true);
   });
   return { ok: true };
+});
+
+ipcMain.handle(IPC_CHANNELS.GET_DIAGNOSTICS, async () => {
+  return {
+    ok: true,
+    platform: process.platform,
+    appVersion: app.getVersion(),
+    startupLogPath: STARTUP_LOG_PATH,
+    startupLogTail: await readStartupLogTail(),
+    currentUrl:
+      mainWindow && !mainWindow.isDestroyed()
+        ? mainWindow.webContents.getURL()
+        : null,
+    updateReadyToInstall,
+    isDev: isDev(),
+  };
 });
 
 // Backward-compatible one-way IPC for existing renderer calls.

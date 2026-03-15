@@ -1,12 +1,15 @@
 import DesktopBootstrapApp from "@/desktop/DesktopBootstrapApp";
 import {
   DESKTOP_BOOT_TIMEOUT_MS,
+  recordDesktopBootAttempt,
+  recordDesktopBootFailure,
+  recordDesktopBootSuccess,
   readDesktopBootMode,
   writeDesktopBootMode,
 } from "@/desktop/bootMode";
 import WebApp from "@/WebApp";
 import { isDesktopRuntime } from "@/utils/runtime";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ErrorInfo, useCallback, useEffect, useRef, useState } from "react";
 
 const isDesktopFileRuntime = isDesktopRuntime();
 
@@ -18,12 +21,21 @@ export default function App() {
 
   const handleDesktopReady = useCallback(() => {
     desktopReadyRef.current = true;
+    recordDesktopBootSuccess();
+  }, []);
+
+  const activateDesktopRecovery = useCallback((reason: string) => {
+    desktopReadyRef.current = false;
+    recordDesktopBootFailure(reason);
+    setDesktopBootMode("safe");
   }, []);
 
   useEffect(() => {
     if (!isDesktopFileRuntime || desktopBootMode === "safe") {
       return;
     }
+
+    recordDesktopBootAttempt();
     desktopReadyRef.current = false;
 
     const timeoutId = window.setTimeout(() => {
@@ -31,15 +43,13 @@ export default function App() {
         return;
       }
 
-      // Persist safe mode after a startup timeout so the next launch is stable.
-      writeDesktopBootMode("safe");
-      setDesktopBootMode("safe");
+      activateDesktopRecovery("startup_timeout");
     }, DESKTOP_BOOT_TIMEOUT_MS);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [desktopBootMode]);
+  }, [activateDesktopRecovery, desktopBootMode]);
 
   if (isDesktopFileRuntime && desktopBootMode === "safe") {
     return (
@@ -53,5 +63,18 @@ export default function App() {
     );
   }
 
-  return <WebApp onDesktopReady={isDesktopFileRuntime ? handleDesktopReady : undefined} />;
+  return (
+    <WebApp
+      onDesktopReady={isDesktopFileRuntime ? handleDesktopReady : undefined}
+      onDesktopError={
+        isDesktopFileRuntime
+          ? (error: Error, errorInfo: ErrorInfo) => {
+              activateDesktopRecovery(
+                `react_error:${error.name}:${error.message}:${errorInfo.componentStack?.split("\n")[1]?.trim() ?? "unknown"}`
+              );
+            }
+          : undefined
+      }
+    />
+  );
 }

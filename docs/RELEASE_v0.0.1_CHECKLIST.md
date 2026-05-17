@@ -1,77 +1,84 @@
-# v0.0.1 Release Checklist
+# Desktop Beta Release Checklist
 
-Use this checklist to run a safe desktop release for `v0.0.1`.
+Use this checklist for the local Windows/Electron beta build. Current package
+version: `0.0.2-beta.17`.
 
 ## 1. Pre-release sanity
 
-- Confirm branch is up to date (`main` or release branch).
-- Confirm local workspace has no accidental staged artifacts:
-  - `release/` must remain untracked/ignored.
-- Confirm `package.json` version is `0.0.1` before tagging.
+- Confirm the release branch contains only intended beta-stabilization changes.
+- Confirm `release/`, `dist/`, `playwright-report/`, `test-results/`, and local logs are not staged.
+- Confirm the beta scope is local-first: Dashboard, Projekte, Angebote, Rechnungen, Kalender, Kunden, Dokumente, Einstellungen.
 
 Commands:
 
 ```bash
 git status
-npm run lint
-npx tsc --noEmit
+npm run quality:beta
+npm run quality:desktop-beta
+npm run quality:desktop-beta:installer
 ```
 
-## 2. Desktop preflight checks
+The default Playwright beta smoke runs Chromium only. Use
+`PLAYWRIGHT_FULL_MATRIX=true npm run test:e2e:legacy` for the wider legacy
+browser matrix after installing all Playwright browsers.
 
-Run preflight for both platforms:
+## 2. Windows preflight
+
+Run the desktop release preflight without publishing:
 
 ```bash
-npm run preflight:desktop-release -- --platform=win --publish=false --tag=v0.0.1
-npm run preflight:desktop-release -- --platform=mac --publish=false --tag=v0.0.1
+npm run preflight:desktop-release:win
 ```
 
-If publishing from GitHub Actions (`publish=true`), ensure secrets exist:
+For GitHub Actions publishing, confirm signing and publishing secrets are configured
+before setting `publish=true`.
 
-- `CSC_LINK`
-- `CSC_KEY_PASSWORD`
-- `APPLE_ID`
-- `APPLE_APP_SPECIFIC_PASSWORD`
-- `APPLE_TEAM_ID`
-
-## 3. Dry run in GitHub Actions
-
-- Open workflow: `Desktop Release`
-- Run manually:
-  - `publish=false`
-  - branch: release branch or `main`
-
-Validate:
-
-- Windows artifacts include `.exe`, `latest.yml`, `.blockmap`
-- macOS artifacts include `.dmg`, `.zip`, `latest-mac.yml` (or `*-mac.yml`)
-- Workflow step `Smoke check release artifacts` is green
-
-## 4. Publish run
-
-- Re-run workflow:
-  - `publish=true`
-- Confirm artifacts are attached to GitHub Release
-- Confirm updater metadata is present in release assets
-
-## 5. Tag and push
+## 3. Local installer dry run
 
 ```bash
-git tag v0.0.1
-git push origin v0.0.1
+npm run build:desktop:win
 ```
 
-## 6. Post-release verification
+If this fails while extracting `winCodeSign` with `Cannot create symbolic link`,
+enable Windows Developer Mode or run the build from an elevated shell. The app
+bundle itself is already validated when `npm run build` and the preflight pass.
+For the repeatable local desktop beta gate, run:
 
-- Launch current desktop app build and trigger:
-  - `Settings -> Desktop -> Updater pruefen`
-- Confirm one of:
-  - `update-available` flow works (download/install), or
-  - `update-not-available` if already current
+```bash
+npm run quality:desktop-beta
+```
 
-## 7. Rollback readiness
+This also launches the unpacked Windows app once and checks that the production
+renderer starts.
 
-- Keep previous release assets available.
-- If issue detected:
-  - mark problematic release as draft/prerelease
-  - publish fixed patch as `v0.0.2`
+For a distributable unsigned beta installer, run:
+
+```bash
+npm run quality:desktop-beta:installer
+```
+
+Validate artifacts in `release/`:
+
+- Windows installer `.exe`
+- updater metadata `latest.yml`
+- blockmap file
+
+## 4. Manual beta smoke
+
+- Install and launch the Windows app.
+- Log in with `admin@bauplan.de` / `admin123`.
+- Create one project, quote, invoice, appointment, customer, and document entry.
+- Edit one project title, filter the project list, and confirm the changed title remains after reload.
+- Export one quote and one invoice from the local beta list.
+- Delete one document entry and confirm the delete prompt appears.
+- Close and restart the app.
+- Confirm the entries remain available.
+- Export a backup, reset the beta data, and restore the backup.
+- Download a support report and confirm it does not contain raw customer/project records.
+- Open Einstellungen and reset beta demo data.
+- Confirm the app shows no crash screen and no visible encoding damage.
+
+## 5. Rollback readiness
+
+- Keep the previous beta installer available.
+- If the build is bad, mark the release as draft/prerelease and ship a patched beta.

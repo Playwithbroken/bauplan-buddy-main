@@ -302,4 +302,40 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     await expect(page.getByRole("link", { name: /Projekte/ })).toBeVisible();
   });
+
+  test("keeps core layouts usable on desktop and tablet widths", async ({
+    page,
+  }) => {
+    const viewports = [
+      { width: 1366, height: 768, label: "Desktop klein" },
+      { width: 1920, height: 1080, label: "Desktop groß" },
+      { width: 768, height: 1024, label: "Tablet" },
+    ];
+
+    for (const viewport of viewports) {
+      await page.setViewportSize({
+        width: viewport.width,
+        height: viewport.height,
+      });
+      await page.goto("/#/login", { waitUntil: "domcontentloaded" });
+      await page.getByRole("button", { name: "Anmelden" }).click();
+
+      await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+      await page.goto("/#/projects");
+      await expect(
+        page.getByRole("heading", { level: 1, name: "Projekte" }),
+      ).toBeVisible();
+      await expect(page.getByLabel("Projektname eingeben")).toBeVisible();
+      await expect(page.getByLabel("Projekte filtern")).toBeVisible();
+      await page.goto("/#/settings");
+      await expect(
+        page.getByRole("button", { name: "Daten sichern" }),
+        viewport.label,
+      ).toBeVisible();
+
+      await page.evaluate(() => {
+        localStorage.removeItem("bauplan_beta_user");
+      });
+    }
+  });
 });

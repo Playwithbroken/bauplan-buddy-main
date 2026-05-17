@@ -76,6 +76,7 @@ Validate artifacts in `release/`:
 - Export a backup, reset the beta data, and restore the backup.
 - Download a support report and confirm it does not contain raw customer/project records.
 - Open Einstellungen and reset beta demo data.
+- Check the app at 1366x768, 1920x1080, 768x1024, and 390x844 viewport widths.
 - Confirm the app shows no crash screen and no visible encoding damage.
 
 ## 5. Rollback readiness

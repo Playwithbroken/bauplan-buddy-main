@@ -66,7 +66,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Backup exportieren und wiederherstellen
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
-- Mobile Mindestbreite fuer Login und Projektanlage
+- Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
 
 Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
 noch nicht dauerhaft in der App gespeichert.

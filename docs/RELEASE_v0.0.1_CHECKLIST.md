@@ -82,6 +82,8 @@ GitHub PR CI status:
 
 ## 4. Manual beta smoke
 
+Record the result in `docs/DESKTOP_BETA_MANUAL_QA.md`.
+
 - Install and launch the Windows app. The automated installer smoke already
   covers silent install, launch, and cleanup; this manual step should use the
   normal interactive installer path.

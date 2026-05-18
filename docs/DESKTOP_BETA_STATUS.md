@@ -102,4 +102,4 @@ dass der Produktions-Renderer startet.
 Automatisiert geprueft sind Installer-Installation, Start und Cleanup. Die
 letzte ausstehende Freigabe ist die manuelle Windows-Installer-QA:
 Login, Datenpersistenz nach Neustart, Backup Export/Import und Update-Panel
-ohne Crash.
+ohne Crash. Das Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.

@@ -1,6 +1,5 @@
 
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Eye, EyeOff, Loader2, LogIn, Building2, Sparkles } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useLoginPageState } from '@/components/auth/useLoginPageState';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -21,15 +20,15 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || '/dashboard';
+  const {
+    showPassword,
+    setShowPassword,
+    isLoading,
+    error,
+    demoCredentials,
+    submitLogin,
+    quickLogin,
+  } = useLoginPageState();
 
   const {
     register,
@@ -42,57 +41,16 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('LoginPage: Form submission started with data:', {
-      email: data.email,
-      passwordLength: data.password.length
-    });
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      console.log('LoginPage: Calling login function...');
-      await login(data.email, data.password);
-
-      console.log('LoginPage: Login successful, navigating to:', from);
-      navigate(from, { replace: true });
-    } catch (err) {
-      console.error('LoginPage: Login error:', err);
-      setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
-      setIsLoading(false);
-    }
+    await submitLogin(data.email, data.password);
   };
-
-  const demoCredentials = [
-    { email: 'admin@bauplan.de', password: 'admin123', role: 'Admin' },
-    { email: 'manager@bauplan.de', password: 'manager123', role: 'Manager' },
-    { email: 'user@bauplan.de', password: 'user123', role: 'User' },
-    { email: 'client@bauplan.de', password: 'client123', role: 'Client' }
-  ];
 
   const fillDemoCredentials = (email: string, password: string) => {
-    console.log('LoginPage: Filling demo credentials:', email);
-    setValue('email', email, { shouldValidate: true });
-    setValue('password', password, { shouldValidate: true });
-    console.log('LoginPage: Demo credentials filled successfully');
+    setValue("email", email, { shouldValidate: true });
+    setValue("password", password, { shouldValidate: true });
   };
 
-  const quickLogin = async (email: string, password: string) => {
-    console.log('LoginPage: Quick login started for:', email);
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await login(email, password);
-      console.log('LoginPage: Quick login successful, navigating to dashboard');
-      navigate('/dashboard', { replace: true });
-    } catch (err) {
-      console.error('LoginPage: Quick login error:', err);
-      setError(err instanceof Error ? err.message : 'Quick login failed');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleQuickLogin = async (email: string, password: string) => {
+    await quickLogin(email, password);
   };
 
   return (
@@ -208,7 +166,7 @@ const LoginPage = () => {
                 <Separator />
 
                 <Button
-                  onClick={() => quickLogin('admin@bauplan.de', 'admin123')}
+                  onClick={() => handleQuickLogin("admin@bauplan.de", "admin123")}
                   className="w-full bg-green-600 text-white hover:bg-green-700"
                   disabled={isLoading}
                 >

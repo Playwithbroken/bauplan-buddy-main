@@ -29,6 +29,7 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   const platform = (args.platform || "").toLowerCase();
   const releaseDir = path.resolve(process.cwd(), args.dir || "release");
+  const allowUnpacked = String(args.allowUnpacked || "false").toLowerCase() === "true";
 
   if (!platform || !["win", "mac"].includes(platform)) {
     fail('Provide --platform=win or --platform=mac');
@@ -44,6 +45,13 @@ function main() {
   }
 
   if (platform === "win") {
+    if (allowUnpacked && fs.existsSync(path.join(releaseDir, "win-unpacked", "Bauplan Buddy.exe"))) {
+      process.stdout.write(
+        `[verify-desktop-release] OK (${platform}, unpacked) in ${releaseDir}\nFiles: ${files.length}\n`
+      );
+      return;
+    }
+
     ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
     ensureAnyMatch(
       files,

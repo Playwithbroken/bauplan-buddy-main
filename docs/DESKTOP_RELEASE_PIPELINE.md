@@ -1,5 +1,11 @@
 # Desktop Release Pipeline
 
+For the current local Windows/Electron beta (`0.0.2-beta.17`), use
+`docs/RELEASE_0.0.2-beta.17.md`, `docs/DESKTOP_BETA_STATUS.md`,
+`docs/RELEASE_v0.0.1_CHECKLIST.md`, and `docs/DESKTOP_BETA_MANUAL_QA.md`
+first. This document describes the broader desktop release workflow for
+tag/manual publishing.
+
 This project now has a dedicated GitHub Actions workflow for Electron desktop releases:
 
 - Workflow file: `.github/workflows/desktop-release.yml`
@@ -39,6 +45,17 @@ If signing secrets are not set, unsigned artifacts can still be produced dependi
 
 ## Local smoke check
 
+For the current Windows beta release candidate, prefer the full beta installer
+gate:
+
+```bash
+npm run quality:desktop-beta:installer
+```
+
+That gate runs TypeScript, lint, Jest, Playwright beta smoke, Vite build,
+desktop preflight, unpacked app smoke, unsigned NSIS installer build, release
+artifact verification, and an installed-app smoke test.
+
 After running a local desktop build:
 
 ```bash
@@ -64,4 +81,6 @@ npm run preflight:desktop-release -- --platform=mac --publish=true --tag=vX.Y.Z
    - `git tag vX.Y.Z`
    - `git push origin vX.Y.Z`
 4. Monitor `Desktop Release` workflow.
-5. Verify release files and updater metadata (`latest.yml`, `latest-mac.yml`) in the GitHub Release.
+5. Verify release files and updater metadata. The current beta channel writes
+   `beta.yml` for Windows; stable Windows releases may use `latest.yml`, and
+   macOS releases use `latest-mac.yml`.

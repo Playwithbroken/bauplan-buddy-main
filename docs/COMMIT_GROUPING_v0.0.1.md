@@ -1,4 +1,8 @@
-# Commit Grouping Plan (v0.0.1)
+# Historical Commit Grouping Plan (v0.0.1)
+
+This document is historical. The active local Windows/Electron beta target is
+`0.0.2-beta.17`; use `docs/DESKTOP_BETA_STATUS.md` and
+`docs/RELEASE_v0.0.1_CHECKLIST.md` for the current beta gates.
 
 This plan isolates desktop release work into reviewable commits while avoiding unrelated dirty files.
 

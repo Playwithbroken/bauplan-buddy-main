@@ -57,6 +57,12 @@ For a distributable unsigned beta installer, run:
 npm run quality:desktop-beta:installer
 ```
 
+This final gate also runs `npm run smoke:desktop:win:installer`. The installer
+smoke performs a silent install into a local test directory, launches the
+installed EXE, waits for the production renderer startup signal, and removes the
+test installation again. It refuses to run if an existing local installation is
+detected at the default user install path.
+
 Validate artifacts in `release/`:
 
 - Windows installer `.exe`
@@ -76,7 +82,9 @@ GitHub PR CI status:
 
 ## 4. Manual beta smoke
 
-- Install and launch the Windows app.
+- Install and launch the Windows app. The automated installer smoke already
+  covers silent install, launch, and cleanup; this manual step should use the
+  normal interactive installer path.
 - Log in with `admin@bauplan.de` / `admin123`.
 - Create one project, quote, invoice, appointment, customer, and document entry.
 - Edit one project title, filter the project list, and confirm the changed title remains after reload.

@@ -22,7 +22,7 @@
     "lint": "eslint src/main.tsx src/App.tsx src/WebApp.tsx src/desktop/DesktopBootstrapApp.tsx src/components/ui/button.tsx src/components/ui/card.tsx src/components/ui/input.tsx src/contexts/AppConfigContext.tsx src/lib/utils.ts src/utils/runtime.ts",
     "quality:beta": "npm run typecheck:beta && npm run lint && npm run test && npm run test:e2e && npm run build",
     "quality:desktop-beta": "npm run quality:beta && npm run preflight:desktop-release:win && npm run build:desktop:win:unpacked && npm run verify:desktop-release:win:unpacked && npm run smoke:desktop:win:unpacked",
-    "quality:desktop-beta:installer": "npm run quality:desktop-beta && npm run build:desktop:win:unsigned && npm run verify:desktop-release:win",
+    "quality:desktop-beta:installer": "npm run quality:desktop-beta && npm run build:desktop:win:unsigned && npm run verify:desktop-release:win && npm run smoke:desktop:win:installer",
     "preview": "vite preview",
     "typecheck:beta": "tsc -p tsconfig.app.json --noEmit",
     "test": "jest",
@@ -39,6 +39,7 @@
     "verify:desktop-release:win": "node scripts/verify-desktop-release.cjs --platform=win --dir=release",
     "verify:desktop-release:win:unpacked": "node scripts/verify-desktop-release.cjs --platform=win --dir=release --allowUnpacked=true",
     "smoke:desktop:win:unpacked": "node scripts/smoke-desktop-unpacked.cjs",
+    "smoke:desktop:win:installer": "node scripts/smoke-desktop-installer.cjs",
     "seed": "ts-node --esm backend/prisma/seed.ts",
     "seed:test": "ts-node --esm backend/prisma/seed-test.ts"
   },

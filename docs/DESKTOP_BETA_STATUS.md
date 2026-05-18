@@ -34,11 +34,13 @@ Diese Konten sind nur fuer lokale Desktop-/Demo-Beta gedacht.
 
 GitHub Actions:
 
-- `CI/CD Pipeline` Run `#42` ist gruen fuer Commit `27ec9c2`.
+- `CI/CD Pipeline` Run `#46` ist gruen fuer Commit `bcf3e8a`.
 - Abgedeckt sind `typecheck:beta`, Lint, Jest mit Coverage-Report,
   Vite-Build, Playwright-Beta-Smoke und der Pipeline-Status.
 - Die PR-CI ist bewusst auf die lokale Desktop-Beta begrenzt. Legacy-Backend-,
   Cloud-, Sonar- und Docker-Pfade bleiben ausserhalb dieses Beta-Gates.
+
+Release-Notiz: `docs/RELEASE_0.0.2-beta.17.md`.
 
 Basis-Gate fuer App-Code:
 

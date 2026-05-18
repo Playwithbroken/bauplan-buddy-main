@@ -33,6 +33,7 @@ Stable beta scope:
 Primary beta references:
 
 - Status: `docs/DESKTOP_BETA_STATUS.md`
+- Release notes: `docs/RELEASE_0.0.2-beta.17.md`
 - Release checklist: `docs/RELEASE_v0.0.1_CHECKLIST.md`
 - Manual QA protocol: `docs/DESKTOP_BETA_MANUAL_QA.md`
 
@@ -127,6 +128,7 @@ Primary beta references:
 - Backend roadmap: `docs/backend-implementation-roadmap.md`
 - Desktop release pipeline: `docs/DESKTOP_RELEASE_PIPELINE.md`
 - Desktop beta status: `docs/DESKTOP_BETA_STATUS.md`
+- Desktop beta release notes: `docs/RELEASE_0.0.2-beta.17.md`
 - Desktop beta manual QA: `docs/DESKTOP_BETA_MANUAL_QA.md`
 
 ## UI Follow-Up Items

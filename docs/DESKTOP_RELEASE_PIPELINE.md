@@ -1,9 +1,10 @@
 # Desktop Release Pipeline
 
 For the current local Windows/Electron beta (`0.0.2-beta.17`), use
-`docs/DESKTOP_BETA_STATUS.md`, `docs/RELEASE_v0.0.1_CHECKLIST.md`, and
-`docs/DESKTOP_BETA_MANUAL_QA.md` first. This document describes the broader
-desktop release workflow for tag/manual publishing.
+`docs/RELEASE_0.0.2-beta.17.md`, `docs/DESKTOP_BETA_STATUS.md`,
+`docs/RELEASE_v0.0.1_CHECKLIST.md`, and `docs/DESKTOP_BETA_MANUAL_QA.md`
+first. This document describes the broader desktop release workflow for
+tag/manual publishing.
 
 This project now has a dedicated GitHub Actions workflow for Electron desktop releases:
 

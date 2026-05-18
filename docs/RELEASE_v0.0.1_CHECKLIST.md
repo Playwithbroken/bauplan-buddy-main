@@ -60,8 +60,19 @@ npm run quality:desktop-beta:installer
 Validate artifacts in `release/`:
 
 - Windows installer `.exe`
-- updater metadata `latest.yml`
+- updater metadata `beta.yml`
 - blockmap file
+
+Current local beta artifact:
+
+- `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
+- SHA256 `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+
+GitHub PR CI status:
+
+- `CI/CD Pipeline` Run `#42` passed for commit `27ec9c2`.
+- This CI gate covers TypeScript, lint, Jest coverage reporting, Vite build,
+  and the Playwright beta smoke.
 
 ## 4. Manual beta smoke
 

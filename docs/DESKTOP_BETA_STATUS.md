@@ -32,6 +32,14 @@ Diese Konten sind nur fuer lokale Desktop-/Demo-Beta gedacht.
 
 ## Quality-Gates
 
+GitHub Actions:
+
+- `CI/CD Pipeline` Run `#42` ist gruen fuer Commit `27ec9c2`.
+- Abgedeckt sind `typecheck:beta`, Lint, Jest mit Coverage-Report,
+  Vite-Build, Playwright-Beta-Smoke und der Pipeline-Status.
+- Die PR-CI ist bewusst auf die lokale Desktop-Beta begrenzt. Legacy-Backend-,
+  Cloud-, Sonar- und Docker-Pfade bleiben ausserhalb dieses Beta-Gates.
+
 Basis-Gate fuer App-Code:
 
 ```bash
@@ -80,3 +88,14 @@ link` fehlschlagen. Fuer lokale Beta-Artefakte ist deshalb
 
 Der Desktop-Smoke nutzt die unpacked App aus `release/win-unpacked` und prueft,
 dass der Produktions-Renderer startet.
+
+## Aktuelles lokales Installer-Artefakt
+
+- Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
+- Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
+- Updater-Metadaten: `release/beta.yml`
+- SHA256: `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+
+Die letzte ausstehende Freigabe ist die manuelle Windows-Installer-QA:
+Installation, Start, Login, Datenpersistenz nach Neustart, Backup
+Export/Import und Update-Panel ohne Crash.

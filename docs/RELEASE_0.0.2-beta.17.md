@@ -27,7 +27,8 @@ Realtime-/AI-Demo-Flaechen.
 - Lokal war `npm run quality:desktop-beta:installer` gruen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
-  Release-Artefaktpruefung und Silent-Install-Smoke.
+  Release-Artefaktpruefung, Silent-Install-Smoke, Start der installierten App,
+  Login, Projektpersistenz nach Renderer-Reload, Backup-Export und Cleanup.
 - Das manuelle Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 ## Artefakte
@@ -54,8 +55,8 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
   scheitern. Fuer diese Beta ist `npm run build:desktop:win:unsigned` der
   reproduzierbare lokale Fallback.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA: normaler
-  Installer-Dialog, Login, Daten anlegen, App-Neustart, Persistenz,
-  Backup Export/Import und Update-Panel ohne Crash.
+  Installer-Dialog, echter App-Neustart, Backup-Import und Update-Panel ohne
+  Crash.
 
 ## Relevante Dokumente
 

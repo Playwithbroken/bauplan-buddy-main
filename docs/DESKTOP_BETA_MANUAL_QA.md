@@ -3,7 +3,8 @@
 Use this checklist for the final interactive Windows QA of
 `0.0.2-beta.17`. Automated gates already cover build, typecheck, lint, unit
 tests, Playwright beta smoke, unpacked app launch, silent installer install,
-installed app launch, and cleanup.
+installed app launch, login, project persistence after renderer reload, backup
+export, and cleanup.
 
 ## Test Environment
 

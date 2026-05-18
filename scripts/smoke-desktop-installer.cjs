@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawn } = require("child_process");
+const { chromium } = require("playwright");
 
 const rootDir = process.cwd();
 const releaseDir = path.join(rootDir, "release");
@@ -31,6 +32,12 @@ function readLog() {
   } catch {
     return "";
   }
+}
+
+function extractRendererUrl(logText) {
+  const matches = [...logText.matchAll(/renderer-server:listening\s+(http:\/\/127\.0\.0\.1:\d+)/g)];
+  const lastMatch = matches.at(-1);
+  return lastMatch?.[1] || null;
 }
 
 function wait(ms) {
@@ -139,6 +146,7 @@ async function smokeInstalledApp(exePath) {
   });
 
   let ready = false;
+  let rendererUrl = null;
   for (let attempt = 0; attempt < 30; attempt += 1) {
     await wait(500);
     if (exitCode !== null) {
@@ -146,21 +154,72 @@ async function smokeInstalledApp(exePath) {
     }
 
     const appendedLog = readLog().slice(previousLog.length);
-    if (appendedLog.includes("renderer-server:listening")) {
+    rendererUrl = extractRendererUrl(appendedLog);
+    if (rendererUrl) {
       ready = true;
       break;
     }
   }
 
-  try {
-    child.kill();
-  } catch {
-    // Electron may have already closed.
-  }
-  await killProcessTree(child.pid);
-
   if (!ready) {
+    await killProcessTree(child.pid);
     fail(`Installed desktop app did not report renderer startup. Log: ${startupLogPath}`);
+  }
+
+  return { child, rendererUrl };
+}
+
+async function smokeInstalledRenderer(rendererUrl) {
+  if (!rendererUrl) {
+    fail("Missing installed renderer URL");
+  }
+
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({ acceptDownloads: true });
+  const page = await context.newPage();
+  const runtimeErrors = [];
+
+  page.on("pageerror", (error) => runtimeErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      runtimeErrors.push(message.text());
+    }
+  });
+
+  try {
+    await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => {
+      localStorage.removeItem("bauplan_beta_user");
+      localStorage.removeItem("bauplan_beta_store");
+    });
+    await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
+
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.waitForURL("**/#/dashboard");
+    await page.getByRole("heading", { name: "Dashboard" }).waitFor();
+
+    await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
+    await page.getByPlaceholder("Projektname eingeben").fill("Installer Smoke Projekt");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page.getByText("Installer Smoke Projekt").waitFor();
+
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.getByText("Installer Smoke Projekt").waitFor();
+
+    await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Daten sichern" }).click();
+    const download = await downloadPromise;
+    if (!download.suggestedFilename().includes("bauplan-buddy-beta-backup")) {
+      fail(`Unexpected backup filename: ${download.suggestedFilename()}`);
+    }
+
+    if (runtimeErrors.length > 0) {
+      fail(`Installed renderer reported runtime errors: ${runtimeErrors.join(" | ")}`);
+    }
+  } finally {
+    await context.close();
+    await browser.close();
   }
 }
 
@@ -197,11 +256,17 @@ async function main() {
 
   await runProcess(installerPath, ["/S", `/D=${requestedInstallDir}`]);
   const installedExePath = await waitForInstalledExe();
+  let appProcess = null;
 
   try {
-    await smokeInstalledApp(installedExePath);
-    info(`OK: installed and launched ${installedExePath}`);
+    const smokeResult = await smokeInstalledApp(installedExePath);
+    appProcess = smokeResult.child;
+    await smokeInstalledRenderer(smokeResult.rendererUrl);
+    info(`OK: installed, launched and exercised ${installedExePath}`);
   } finally {
+    if (appProcess) {
+      await killProcessTree(appProcess.pid);
+    }
     await cleanupInstall(installedExePath);
   }
 }

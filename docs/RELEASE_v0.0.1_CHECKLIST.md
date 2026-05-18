@@ -59,7 +59,8 @@ npm run quality:desktop-beta:installer
 
 This final gate also runs `npm run smoke:desktop:win:installer`. The installer
 smoke performs a silent install into a local test directory, launches the
-installed EXE, waits for the production renderer startup signal, and removes the
+installed EXE, waits for the production renderer startup signal, checks login,
+project persistence after renderer reload, and backup export, then removes the
 test installation again. It refuses to run if an existing local installation is
 detected at the default user install path.
 
@@ -85,8 +86,9 @@ GitHub PR CI status:
 Record the result in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 - Install and launch the Windows app. The automated installer smoke already
-  covers silent install, launch, and cleanup; this manual step should use the
-  normal interactive installer path.
+  covers silent install, launch, login, renderer-reload persistence,
+  backup export, and cleanup; this manual step should use the normal
+  interactive installer path.
 - Log in with `admin@bauplan.de` / `admin123`.
 - Create one project, quote, invoice, appointment, customer, and document entry.
 - Edit one project title, filter the project list, and confirm the changed title remains after reload.

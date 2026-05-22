@@ -4,7 +4,7 @@ Use this checklist for the final interactive Windows QA of
 `0.0.2-beta.17`. Automated gates already cover build, typecheck, lint, unit
 tests, Playwright beta smoke, unpacked app launch, silent installer install,
 installed app launch, login, real app restart, project persistence, backup
-export/import, and cleanup.
+export/import, native update-panel check, and cleanup.
 
 ## Test Environment
 
@@ -81,6 +81,8 @@ export/import, and cleanup.
 
 ## Update Panel
 
+- Automated installer QA already triggers the native Electron update check and
+  expects the local beta limitation text instead of a technical endpoint error.
 - [ ] Open Einstellungen.
 - [ ] Open or inspect the update panel.
 - [ ] Trigger update check where available.

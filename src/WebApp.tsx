@@ -66,6 +66,8 @@ interface WebAppProps {
 
 const USER_KEY = "bauplan_beta_user";
 const STORE_KEY = "bauplan_beta_store";
+const DESKTOP_BETA_UPDATE_LIMITATION =
+  "Update-Checks sind in dieser lokalen Beta noch nicht produktiv angebunden.";
 
 const defaultStore: BetaStore = {
   projects: [
@@ -891,6 +893,11 @@ function EntityList({
 function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [message, setMessage] = useState("");
+  const [updateStatus, setUpdateStatus] = useState("Noch nicht geprüft.");
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const canCheckDesktopUpdates = Boolean(
+    window.desktop?.isDesktop && window.desktop.checkForUpdates,
+  );
 
   const saveBackup = () => {
     downloadBetaBackup();
@@ -916,6 +923,33 @@ function SettingsPage() {
   const resetData = () => {
     localStorage.setItem(STORE_KEY, JSON.stringify(defaultStore));
     window.location.reload();
+  };
+
+  const checkDesktopUpdates = async () => {
+    if (!window.desktop?.checkForUpdates) {
+      setUpdateStatus("Update-Checks sind nur in der Desktop-App verfügbar.");
+      return;
+    }
+
+    setIsCheckingUpdate(true);
+    setUpdateStatus("Suche nach Updates...");
+
+    try {
+      const result = await window.desktop.checkForUpdates();
+      if (result.ok) {
+        setUpdateStatus("Update-Check wurde gestartet.");
+      } else if (result.reason === "dev_mode") {
+        setUpdateStatus("Update-Checks sind im Entwicklungsmodus deaktiviert.");
+      } else if (result.reason === "check_failed") {
+        setUpdateStatus(DESKTOP_BETA_UPDATE_LIMITATION);
+      } else {
+        setUpdateStatus(result.message || "Update-Check konnte nicht ausgeführt werden.");
+      }
+    } catch {
+      setUpdateStatus(DESKTOP_BETA_UPDATE_LIMITATION);
+    } finally {
+      setIsCheckingUpdate(false);
+    }
   };
 
   return (
@@ -965,6 +999,31 @@ function SettingsPage() {
               {message}
             </p>
           ) : null}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent className="space-y-4 p-5">
+          <div>
+            <p className="font-medium">Desktop-Updates</p>
+            <p className="text-sm text-muted-foreground">
+              Der lokale Beta-Build prueft den nativen Update-Kanal ohne Cloud-Pflicht.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button
+              variant="outline"
+              onClick={() => void checkDesktopUpdates()}
+              disabled={!canCheckDesktopUpdates || isCheckingUpdate}
+            >
+              {isCheckingUpdate ? "Updater läuft..." : "Updater prüfen"}
+            </Button>
+            <p
+              className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground"
+              aria-live="polite"
+            >
+              {updateStatus}
+            </p>
+          </div>
         </CardContent>
       </Card>
     </Page>

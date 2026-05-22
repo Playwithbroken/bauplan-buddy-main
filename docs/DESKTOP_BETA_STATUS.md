@@ -64,7 +64,8 @@ Das Installer-Gate baut zusaetzlich den unsigned NSIS-Installer und prueft die
 Release-Artefakte in `release/`. Danach installiert der Installer-Smoke die App
 silent in ein lokales Testverzeichnis, startet die installierte EXE, prueft den
 Renderer-Start, Login, Projektpersistenz nach echtem App-Neustart,
-Backup-Export und Backup-Import und entfernt die Testinstallation wieder.
+Backup-Export, Backup-Import und den nativen Update-Panel-Check und entfernt
+die Testinstallation wieder.
 
 ## Automatischer Smoke
 
@@ -81,7 +82,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Recovery bei kaputtem lokalen Beta-Speicher
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
 - Installer-Smoke mit Silent-Install, Start und Neustart der installierten App,
-  Login, Projektpersistenz, Backup-Export, Backup-Import und Cleanup
+  Login, Projektpersistenz, Backup-Export, Backup-Import, nativem
+  Update-Panel-Check und Cleanup
 
 Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
 noch nicht dauerhaft in der App gespeichert.
@@ -108,7 +110,7 @@ bleiben.
 - SHA256: `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
 
 Automatisiert geprueft sind Installer-Installation, Start, Login, echter
-App-Neustart, Projektpersistenz, Backup-Export, Backup-Import und Cleanup. Die
-letzte ausstehende Freigabe ist die manuelle Windows-Installer-QA: normaler
-Installer-Dialog und Update-Panel ohne Crash. Das Abnahmeprotokoll liegt in
-`docs/DESKTOP_BETA_MANUAL_QA.md`.
+App-Neustart, Projektpersistenz, Backup-Export, Backup-Import, nativer
+Update-Panel-Check und Cleanup. Die letzte ausstehende Freigabe ist die
+manuelle Windows-Installer-QA ueber den normalen Installer-Dialog. Das
+Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.

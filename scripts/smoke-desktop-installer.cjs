@@ -4,7 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawn } = require("child_process");
-const { chromium } = require("playwright");
+const { chromium, _electron: electron } = require("playwright");
 
 const rootDir = process.cwd();
 const releaseDir = path.join(rootDir, "release");
@@ -264,6 +264,43 @@ async function verifyRestartAndBackupImport(context, rendererUrl, backupPath) {
   }
 }
 
+async function verifyInstalledUpdaterPanel(exePath) {
+  const electronApp = await electron.launch({
+    executablePath: exePath,
+    cwd: path.dirname(exePath),
+    timeout: 30000,
+  });
+
+  try {
+    const page = await electronApp.firstWindow();
+    const runtimeErrors = trackRuntimeErrors(page);
+
+    await page.goto(`${page.url()}#/login`, { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => {
+      localStorage.removeItem("bauplan_beta_user");
+    });
+    await page.goto(`${page.url()}#/login`, { waitUntil: "domcontentloaded" });
+
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.waitForURL("**/#/dashboard");
+    await page.goto(`${page.url().split("#")[0]}#/settings`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    await page.getByText("Desktop-Updates").waitFor();
+    await page.getByRole("button", { name: "Updater prüfen" }).click();
+    await page
+      .getByText("Update-Checks sind in dieser lokalen Beta noch nicht produktiv angebunden.")
+      .waitFor();
+
+    if (runtimeErrors.length > 0) {
+      fail(`Installed updater panel reported runtime errors: ${runtimeErrors.join(" | ")}`);
+    }
+  } finally {
+    await electronApp.close();
+  }
+}
+
 async function cleanupInstall(installedExePath) {
   const installDir = path.dirname(installedExePath);
   const uninstaller = path.join(installDir, `Uninstall ${productName}.exe`);
@@ -316,6 +353,10 @@ async function main() {
       restartResult.rendererUrl,
       backupPath
     );
+
+    await killProcessTree(appProcess.pid);
+    appProcess = null;
+    await verifyInstalledUpdaterPanel(installedExePath);
 
     info(`OK: installed, restarted and exercised ${installedExePath}`);
   } finally {

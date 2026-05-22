@@ -19,6 +19,9 @@ interface DesktopUpdaterPanelProps {
   className?: string;
 }
 
+const DESKTOP_BETA_UPDATE_LIMITATION =
+  "Update-Checks sind in dieser lokalen Beta noch nicht produktiv angebunden.";
+
 const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) => {
   const { toast } = useToast();
   const [isCheckingDesktopUpdate, setIsCheckingDesktopUpdate] = useState(false);
@@ -152,6 +155,8 @@ const DesktopUpdaterPanel: React.FC<DesktopUpdaterPanelProps> = ({ className }) 
       if (!result.ok) {
         if (result.reason === "dev_mode") {
           setDesktopUpdateStatus("Deaktiviert im Entwicklungsmodus");
+        } else if (result.reason === "check_failed") {
+          setDesktopUpdateStatus(DESKTOP_BETA_UPDATE_LIMITATION);
         } else {
           setDesktopUpdateStatus(
             result.message || "Update-Check konnte nicht ausgefuehrt werden"

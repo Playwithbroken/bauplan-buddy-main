@@ -57,8 +57,10 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 - `npm run build:desktop:win` kann lokal an `winCodeSign`-Symlink-Rechten
   scheitern. Fuer diese Beta ist `npm run build:desktop:win:unsigned` der
   reproduzierbare lokale Fallback.
+- Der Windows-Beta-Installer nutzt explizit NSIS One-Click fuer die lokale
+  per-user Installation.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA ueber den
-  normalen Installer-Dialog.
+  One-Click-Start aus Explorer.
 
 ## Relevante Dokumente
 

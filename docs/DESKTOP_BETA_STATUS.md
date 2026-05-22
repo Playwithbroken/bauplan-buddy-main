@@ -112,5 +112,5 @@ bleiben.
 Automatisiert geprueft sind Installer-Installation, Start, Login, echter
 App-Neustart, Projektpersistenz, Backup-Export, Backup-Import, nativer
 Update-Panel-Check und Cleanup. Die letzte ausstehende Freigabe ist die
-manuelle Windows-Installer-QA ueber den normalen Installer-Dialog. Das
-Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
+manuelle Windows-Installer-QA ueber den interaktiven NSIS-One-Click-Start aus
+Explorer. Das Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.

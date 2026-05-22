@@ -28,10 +28,12 @@ export/import, native update-panel check, and cleanup.
 
 ## Interactive Installer
 
+- The current Windows beta uses the explicit NSIS One-Click path. It does not
+  use the assisted multi-page installer flow.
 - [ ] Start `Bauplan Buddy Setup 0.0.2-beta.17.exe` normally from Explorer.
 - [ ] Windows SmartScreen or trust warnings are understood for the unsigned
       beta build.
-- [ ] Installer completes without crashing.
+- [ ] One-Click install completes without crashing.
 - [ ] Bauplan Buddy launches from the installed shortcut or installed EXE.
 - [ ] App window opens without a crash screen.
 

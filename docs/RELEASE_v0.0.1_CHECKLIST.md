@@ -62,8 +62,9 @@ smoke performs a silent install into a local test directory, launches the
 installed EXE, waits for the production renderer startup signal, checks login,
 restarts the installed app, verifies project persistence, exports and imports a
 backup, exercises the native update panel, then removes the test installation
-again. It refuses to run if an existing local installation is detected at the
-default user install path.
+again. Before that isolated flow, it checks the package-based default per-user
+install path and removes that default test installation too. It refuses to run
+if an existing local installation is detected at the default user install path.
 
 Validate artifacts in `release/`:
 
@@ -74,7 +75,7 @@ Validate artifacts in `release/`:
 Current local beta artifact:
 
 - `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
-- SHA256 `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+- SHA256 `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
 
 GitHub PR CI status:
 

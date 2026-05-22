@@ -15,7 +15,7 @@ export/import, native update-panel check, and cleanup.
 - Installer:
   `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Installer SHA256:
-  `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+  `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
 
 ## Pre-Checks
 
@@ -34,6 +34,8 @@ export/import, native update-panel check, and cleanup.
 - [ ] Windows SmartScreen or trust warnings are understood for the unsigned
       beta build.
 - [ ] One-Click install completes without crashing.
+- [ ] The installed path uses the Bauplan Buddy package identity and no
+      `vite_react_shadcn_ts` template directory is created.
 - [ ] Bauplan Buddy launches from the installed shortcut or installed EXE.
 - [ ] App window opens without a crash screen.
 

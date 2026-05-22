@@ -27,9 +27,9 @@ Realtime-/AI-Demo-Flaechen.
 - Lokal war `npm run quality:desktop-beta:installer` gruen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
-  Release-Artefaktpruefung, Silent-Install-Smoke, Start der installierten App,
-  Login, echter App-Neustart, Projektpersistenz, Backup-Export, Backup-Import,
-  nativer Update-Panel-Check und Cleanup.
+  Release-Artefaktpruefung, Default-Installationspfad, Silent-Install-Smoke,
+  Start der installierten App, Login, echter App-Neustart, Projektpersistenz,
+  Backup-Export, Backup-Import, nativer Update-Panel-Check und Cleanup.
 - Das manuelle Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 ## Artefakte
@@ -37,7 +37,7 @@ Realtime-/AI-Demo-Flaechen.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+- SHA256: `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
 
 ## Beta-Konten
 
@@ -59,6 +59,8 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
   reproduzierbare lokale Fallback.
 - Der Windows-Beta-Installer nutzt explizit NSIS One-Click fuer die lokale
   per-user Installation.
+- Die Desktop-Paketidentitaet ist `bauplan-buddy`; alte Template-Pfade wie
+  `vite_react_shadcn_ts` gehoeren nicht zum Beta-Artefakt.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA ueber den
   One-Click-Start aus Explorer.
 

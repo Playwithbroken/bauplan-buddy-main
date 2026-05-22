@@ -8,11 +8,14 @@ const { chromium, _electron: electron } = require("playwright");
 
 const rootDir = process.cwd();
 const releaseDir = path.join(rootDir, "release");
+const packageName = JSON.parse(
+  fs.readFileSync(path.join(rootDir, "package.json"), "utf8")
+).name;
 const productName = "Bauplan Buddy";
 const defaultInstallDir = path.join(
   process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local"),
   "Programs",
-  productName
+  packageName
 );
 const requestedInstallDir = path.join(os.tmpdir(), "bauplan-buddy-installer-smoke");
 const browserProfileDir = path.join(os.tmpdir(), "bauplan-buddy-installer-browser-smoke");
@@ -130,6 +133,23 @@ async function waitForInstalledExe() {
   }
 
   fail(`Installed executable not found. Checked: ${candidates.join(", ")}`);
+}
+
+async function verifyDefaultInstallPath(installerPath) {
+  info(`Checking default NSIS install path ${defaultInstallDir}`);
+  await runProcess(installerPath, ["/S"]);
+
+  const installedExePath = path.join(defaultInstallDir, `${productName}.exe`);
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    if (fs.existsSync(installedExePath)) {
+      await cleanupInstall(installedExePath);
+      return;
+    }
+
+    await wait(500);
+  }
+
+  fail(`Default installed executable not found at ${installedExePath}`);
 }
 
 async function smokeInstalledApp(exePath) {
@@ -332,6 +352,7 @@ async function main() {
   const installerPath = findInstaller();
   info(`Installing ${path.relative(rootDir, installerPath)}`);
 
+  await verifyDefaultInstallPath(installerPath);
   await runProcess(installerPath, ["/S", `/D=${requestedInstallDir}`]);
   const installedExePath = await waitForInstalledExe();
   let rendererContext = null;

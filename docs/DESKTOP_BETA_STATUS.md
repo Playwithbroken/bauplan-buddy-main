@@ -61,11 +61,12 @@ npm run quality:desktop-beta:installer
 ```
 
 Das Installer-Gate baut zusaetzlich den unsigned NSIS-Installer und prueft die
-Release-Artefakte in `release/`. Danach installiert der Installer-Smoke die App
-silent in ein lokales Testverzeichnis, startet die installierte EXE, prueft den
-Renderer-Start, Login, Projektpersistenz nach echtem App-Neustart,
-Backup-Export, Backup-Import und den nativen Update-Panel-Check und entfernt
-die Testinstallation wieder.
+Release-Artefakte in `release/`. Danach prueft der Installer-Smoke zuerst den
+paketbasierten Default-Pfad der per-user Installation und installiert die App
+anschliessend silent in ein lokales Testverzeichnis. Dort startet er die
+installierte EXE, prueft Renderer-Start, Login, Projektpersistenz nach echtem
+App-Neustart, Backup-Export, Backup-Import und den nativen Update-Panel-Check
+und entfernt die Testinstallationen wieder.
 
 ## Automatischer Smoke
 
@@ -81,9 +82,9 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
-- Installer-Smoke mit Silent-Install, Start und Neustart der installierten App,
-  Login, Projektpersistenz, Backup-Export, Backup-Import, nativem
-  Update-Panel-Check und Cleanup
+- Installer-Smoke mit Default-Installationspfad, Silent-Install, Start und
+  Neustart der installierten App, Login, Projektpersistenz, Backup-Export,
+  Backup-Import, nativem Update-Panel-Check und Cleanup
 
 Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
 noch nicht dauerhaft in der App gespeichert.
@@ -107,7 +108,7 @@ bleiben.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
+- SHA256: `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
 
 Automatisiert geprueft sind Installer-Installation, Start, Login, echter
 App-Neustart, Projektpersistenz, Backup-Export, Backup-Import, nativer

@@ -23,7 +23,7 @@ Realtime-/AI-Demo-Flaechen.
 
 ## Abnahme-Status
 
-- GitHub Actions `CI/CD Pipeline` Run `#46` ist gruen fuer Commit `bcf3e8a`.
+- GitHub Actions `CI/CD Pipeline` Run `#53` ist gruen fuer Commit `ecdcd14`.
 - Lokal war `npm run quality:desktop-beta:installer` gruen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
@@ -62,7 +62,8 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 - Die Desktop-Paketidentitaet ist `bauplan-buddy`; alte Template-Pfade wie
   `vite_react_shadcn_ts` gehoeren nicht zum Beta-Artefakt.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA ueber den
-  One-Click-Start aus Explorer.
+  One-Click-Start aus Explorer, insbesondere fuer sichtbare
+  SmartScreen-/Trust-Hinweise der unsigned Beta.
 
 ## Relevante Dokumente
 

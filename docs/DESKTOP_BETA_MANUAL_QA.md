@@ -106,7 +106,7 @@ export/import, native update-panel check, and cleanup.
 
 - [ ] Uninstall Bauplan Buddy from Windows Apps or the generated uninstaller.
 - [ ] Confirm no test installation remains in
-      `%LOCALAPPDATA%\Programs\Bauplan Buddy`.
+      `%LOCALAPPDATA%\Programs\bauplan-buddy`.
 - [ ] Archive exported backup, quote, invoice, and support report if they are
       needed for release evidence.
 

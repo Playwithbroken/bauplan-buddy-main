@@ -34,7 +34,7 @@ Diese Konten sind nur fuer lokale Desktop-/Demo-Beta gedacht.
 
 GitHub Actions:
 
-- `CI/CD Pipeline` Run `#46` ist gruen fuer Commit `bcf3e8a`.
+- `CI/CD Pipeline` Run `#53` ist gruen fuer Commit `ecdcd14`.
 - Abgedeckt sind `typecheck:beta`, Lint, Jest mit Coverage-Report,
   Vite-Build, Playwright-Beta-Smoke und der Pipeline-Status.
 - Die PR-CI ist bewusst auf die lokale Desktop-Beta begrenzt. Legacy-Backend-,
@@ -110,8 +110,10 @@ bleiben.
 - Updater-Metadaten: `release/beta.yml`
 - SHA256: `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
 
-Automatisiert geprueft sind Installer-Installation, Start, Login, echter
-App-Neustart, Projektpersistenz, Backup-Export, Backup-Import, nativer
-Update-Panel-Check und Cleanup. Die letzte ausstehende Freigabe ist die
-manuelle Windows-Installer-QA ueber den interaktiven NSIS-One-Click-Start aus
-Explorer. Das Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
+Automatisiert geprueft sind Default-Installationspfad, Installer-Installation,
+Start, Login, echter App-Neustart, Projektpersistenz, Backup-Export,
+Backup-Import, nativer Update-Panel-Check und Cleanup. Die letzte ausstehende
+Freigabe ist die manuelle Windows-Installer-QA ueber den interaktiven
+NSIS-One-Click-Start aus Explorer, insbesondere fuer sichtbare
+SmartScreen-/Trust-Hinweise der unsigned Beta. Das Abnahmeprotokoll liegt in
+`docs/DESKTOP_BETA_MANUAL_QA.md`.

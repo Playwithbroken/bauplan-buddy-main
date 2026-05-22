@@ -79,7 +79,7 @@ Current local beta artifact:
 
 GitHub PR CI status:
 
-- `CI/CD Pipeline` Run `#42` passed for commit `27ec9c2`.
+- `CI/CD Pipeline` Run `#53` passed for commit `ecdcd14`.
 - This CI gate covers TypeScript, lint, Jest coverage reporting, Vite build,
   and the Playwright beta smoke.
 

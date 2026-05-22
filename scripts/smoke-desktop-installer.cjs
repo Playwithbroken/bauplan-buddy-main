@@ -15,6 +15,7 @@ const defaultInstallDir = path.join(
   productName
 );
 const requestedInstallDir = path.join(os.tmpdir(), "bauplan-buddy-installer-smoke");
+const browserProfileDir = path.join(os.tmpdir(), "bauplan-buddy-installer-browser-smoke");
 const startupLogPath = path.join(os.tmpdir(), "bauplan-buddy-desktop.log");
 
 function fail(message) {
@@ -169,14 +170,15 @@ async function smokeInstalledApp(exePath) {
   return { child, rendererUrl };
 }
 
-async function smokeInstalledRenderer(rendererUrl) {
-  if (!rendererUrl) {
-    fail("Missing installed renderer URL");
-  }
+async function createRendererContext() {
+  await removeDirectoryIfSafe(browserProfileDir);
+  return chromium.launchPersistentContext(browserProfileDir, {
+    acceptDownloads: true,
+    headless: true,
+  });
+}
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ acceptDownloads: true });
-  const page = await context.newPage();
+function trackRuntimeErrors(page) {
   const runtimeErrors = [];
 
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
@@ -186,40 +188,79 @@ async function smokeInstalledRenderer(rendererUrl) {
     }
   });
 
-  try {
-    await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
-    await page.evaluate(() => {
-      localStorage.removeItem("bauplan_beta_user");
-      localStorage.removeItem("bauplan_beta_store");
-    });
-    await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
+  return runtimeErrors;
+}
 
-    await page.getByRole("button", { name: "Anmelden" }).click();
-    await page.waitForURL("**/#/dashboard");
-    await page.getByRole("heading", { name: "Dashboard" }).waitFor();
+async function prepareInstalledRenderer(context, rendererUrl) {
+  if (!rendererUrl) {
+    fail("Missing installed renderer URL");
+  }
 
-    await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
-    await page.getByPlaceholder("Projektname eingeben").fill("Installer Smoke Projekt");
-    await page.getByRole("button", { name: "Neu anlegen" }).click();
-    await page.getByText("Installer Smoke Projekt").waitFor();
+  const page = context.pages()[0] || await context.newPage();
+  const runtimeErrors = trackRuntimeErrors(page);
 
-    await page.reload({ waitUntil: "domcontentloaded" });
-    await page.getByText("Installer Smoke Projekt").waitFor();
+  await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => {
+    localStorage.removeItem("bauplan_beta_user");
+    localStorage.removeItem("bauplan_beta_store");
+  });
+  await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
 
-    await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
-    const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Daten sichern" }).click();
-    const download = await downloadPromise;
-    if (!download.suggestedFilename().includes("bauplan-buddy-beta-backup")) {
-      fail(`Unexpected backup filename: ${download.suggestedFilename()}`);
-    }
+  await page.getByRole("button", { name: "Anmelden" }).click();
+  await page.waitForURL("**/#/dashboard");
+  await page.getByRole("heading", { name: "Dashboard" }).waitFor();
 
-    if (runtimeErrors.length > 0) {
-      fail(`Installed renderer reported runtime errors: ${runtimeErrors.join(" | ")}`);
-    }
-  } finally {
-    await context.close();
-    await browser.close();
+  await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
+  await page.getByPlaceholder("Projektname eingeben").fill("Installer Smoke Projekt");
+  await page.getByRole("button", { name: "Neu anlegen" }).click();
+  await page.getByText("Installer Smoke Projekt").waitFor();
+
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.getByText("Installer Smoke Projekt").waitFor();
+
+  await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Daten sichern" }).click();
+  const download = await downloadPromise;
+  const backupPath = await download.path();
+  if (!download.suggestedFilename().includes("bauplan-buddy-beta-backup")) {
+    fail(`Unexpected backup filename: ${download.suggestedFilename()}`);
+  }
+  if (!backupPath) {
+    fail("Backup export did not produce a readable download path");
+  }
+
+  if (runtimeErrors.length > 0) {
+    fail(`Installed renderer reported runtime errors: ${runtimeErrors.join(" | ")}`);
+  }
+
+  return backupPath;
+}
+
+async function verifyRestartAndBackupImport(context, rendererUrl, backupPath) {
+  if (!rendererUrl) {
+    fail("Missing restarted renderer URL");
+  }
+
+  const page = context.pages()[0] || await context.newPage();
+  const runtimeErrors = trackRuntimeErrors(page);
+
+  await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
+  await page.getByText("Installer Smoke Projekt").waitFor();
+
+  await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("button", { name: "Beta-Demodaten zurücksetzen" }).click();
+  await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
+  await page.getByText("Installer Smoke Projekt").waitFor({ state: "hidden" });
+
+  await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+  await page.getByLabel("Beta-Datensicherung auswählen").setInputFiles(backupPath);
+  await page.waitForURL("**/#/settings");
+  await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
+  await page.getByText("Installer Smoke Projekt").waitFor();
+
+  if (runtimeErrors.length > 0) {
+    fail(`Restarted renderer reported runtime errors: ${runtimeErrors.join(" | ")}`);
   }
 }
 
@@ -256,17 +297,35 @@ async function main() {
 
   await runProcess(installerPath, ["/S", `/D=${requestedInstallDir}`]);
   const installedExePath = await waitForInstalledExe();
+  let rendererContext = null;
   let appProcess = null;
 
   try {
     const smokeResult = await smokeInstalledApp(installedExePath);
     appProcess = smokeResult.child;
-    await smokeInstalledRenderer(smokeResult.rendererUrl);
-    info(`OK: installed, launched and exercised ${installedExePath}`);
+    rendererContext = await createRendererContext();
+    const backupPath = await prepareInstalledRenderer(rendererContext, smokeResult.rendererUrl);
+
+    await killProcessTree(appProcess.pid);
+    appProcess = null;
+
+    const restartResult = await smokeInstalledApp(installedExePath);
+    appProcess = restartResult.child;
+    await verifyRestartAndBackupImport(
+      rendererContext,
+      restartResult.rendererUrl,
+      backupPath
+    );
+
+    info(`OK: installed, restarted and exercised ${installedExePath}`);
   } finally {
+    if (rendererContext) {
+      await rendererContext.close();
+    }
     if (appProcess) {
       await killProcessTree(appProcess.pid);
     }
+    await removeDirectoryIfSafe(browserProfileDir);
     await cleanupInstall(installedExePath);
   }
 }

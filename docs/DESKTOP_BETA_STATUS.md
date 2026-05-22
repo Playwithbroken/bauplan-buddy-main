@@ -63,8 +63,8 @@ npm run quality:desktop-beta:installer
 Das Installer-Gate baut zusaetzlich den unsigned NSIS-Installer und prueft die
 Release-Artefakte in `release/`. Danach installiert der Installer-Smoke die App
 silent in ein lokales Testverzeichnis, startet die installierte EXE, prueft den
-Renderer-Start, Login, Projektpersistenz nach Reload und Backup-Export und
-entfernt die Testinstallation wieder.
+Renderer-Start, Login, Projektpersistenz nach echtem App-Neustart,
+Backup-Export und Backup-Import und entfernt die Testinstallation wieder.
 
 ## Automatischer Smoke
 
@@ -80,8 +80,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
-- Installer-Smoke mit Silent-Install, Start der installierten App,
-  Login, Projektpersistenz, Backup-Export und Cleanup
+- Installer-Smoke mit Silent-Install, Start und Neustart der installierten App,
+  Login, Projektpersistenz, Backup-Export, Backup-Import und Cleanup
 
 Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
 noch nicht dauerhaft in der App gespeichert.
@@ -96,6 +96,10 @@ link` fehlschlagen. Fuer lokale Beta-Artefakte ist deshalb
 Der Desktop-Smoke nutzt die unpacked App aus `release/win-unpacked` und prueft,
 dass der Produktions-Renderer startet.
 
+Der gepackte Desktop-Renderer nutzt einen stabilen lokalen Origin auf
+`127.0.0.1`, damit `localStorage`-Beta-Daten ueber App-Neustarts erreichbar
+bleiben.
+
 ## Aktuelles lokales Installer-Artefakt
 
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
@@ -103,8 +107,8 @@ dass der Produktions-Renderer startet.
 - Updater-Metadaten: `release/beta.yml`
 - SHA256: `AB921838B09F237B77429F49033D29A0E3E2CE9531538E53360CD6B508142EE0`
 
-Automatisiert geprueft sind Installer-Installation, Start, Login,
-Projektpersistenz nach Renderer-Reload, Backup-Export und Cleanup. Die letzte
-ausstehende Freigabe ist die manuelle Windows-Installer-QA: normaler
-Installer-Dialog, echter App-Neustart, Backup-Import und Update-Panel ohne
-Crash. Das Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
+Automatisiert geprueft sind Installer-Installation, Start, Login, echter
+App-Neustart, Projektpersistenz, Backup-Export, Backup-Import und Cleanup. Die
+letzte ausstehende Freigabe ist die manuelle Windows-Installer-QA: normaler
+Installer-Dialog und Update-Panel ohne Crash. Das Abnahmeprotokoll liegt in
+`docs/DESKTOP_BETA_MANUAL_QA.md`.

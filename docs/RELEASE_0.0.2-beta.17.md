@@ -28,7 +28,8 @@ Realtime-/AI-Demo-Flaechen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
   Release-Artefaktpruefung, Silent-Install-Smoke, Start der installierten App,
-  Login, Projektpersistenz nach Renderer-Reload, Backup-Export und Cleanup.
+  Login, echter App-Neustart, Projektpersistenz, Backup-Export, Backup-Import
+  und Cleanup.
 - Das manuelle Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 ## Artefakte
@@ -51,12 +52,13 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 - Dokumente sind lokale Dokumenteintraege; Datei-Inhalte werden noch nicht
   dauerhaft in der App gespeichert.
 - Der Update-Endpoint ist fuer lokale Beta-Tests nicht produktiv angebunden.
+- Der gepackte Desktop-Renderer verwendet einen stabilen lokalen Origin, damit
+  die local-first Beta-Daten App-Neustarts ueberstehen.
 - `npm run build:desktop:win` kann lokal an `winCodeSign`-Symlink-Rechten
   scheitern. Fuer diese Beta ist `npm run build:desktop:win:unsigned` der
   reproduzierbare lokale Fallback.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA: normaler
-  Installer-Dialog, echter App-Neustart, Backup-Import und Update-Panel ohne
-  Crash.
+  Installer-Dialog und Update-Panel ohne Crash.
 
 ## Relevante Dokumente
 

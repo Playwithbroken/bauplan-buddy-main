@@ -57,14 +57,15 @@ For a distributable unsigned beta installer, run:
 npm run quality:desktop-beta:installer
 ```
 
-This final gate also runs `npm run smoke:desktop:win:installer`. The installer
-smoke performs a silent install into a local test directory, launches the
-installed EXE, waits for the production renderer startup signal, checks login,
-restarts the installed app, verifies project persistence, exports and imports a
-backup, exercises the native update panel, then removes the test installation
-again. Before that isolated flow, it checks the package-based default per-user
-install path and removes that default test installation too. It refuses to run
-if an existing local installation is detected at the default user install path.
+This final gate also verifies the unsigned Windows beta Authenticode status and
+runs `npm run smoke:desktop:win:installer`. The installer smoke performs a
+silent install into a local test directory, launches the installed EXE, waits
+for the production renderer startup signal, checks login, restarts the
+installed app, verifies project persistence, exports and imports a backup,
+exercises the native update panel, then removes the test installation again.
+Before that isolated flow, it checks the package-based default per-user install
+path and removes that default test installation too. It refuses to run if an
+existing local installation is detected at the default user install path.
 
 Validate artifacts in `release/`:
 
@@ -75,7 +76,7 @@ Validate artifacts in `release/`:
 Current local beta artifact:
 
 - `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
-- SHA256 `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
+- SHA256 `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
 
 GitHub PR CI status:
 

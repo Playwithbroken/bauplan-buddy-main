@@ -27,9 +27,10 @@ Realtime-/AI-Demo-Flaechen.
 - Lokal war `npm run quality:desktop-beta:installer` gruen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
-  Release-Artefaktpruefung, Default-Installationspfad, Silent-Install-Smoke,
-  Start der installierten App, Login, echter App-Neustart, Projektpersistenz,
-  Backup-Export, Backup-Import, nativer Update-Panel-Check und Cleanup.
+  Release-Artefaktpruefung, Authenticode-`NotSigned`-Status,
+  Default-Installationspfad, Silent-Install-Smoke, Start der installierten App,
+  Login, echter App-Neustart, Projektpersistenz, Backup-Export, Backup-Import,
+  nativer Update-Panel-Check und Cleanup.
 - Das manuelle Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 ## Artefakte
@@ -37,7 +38,7 @@ Realtime-/AI-Demo-Flaechen.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
+- SHA256: `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
 
 ## Beta-Konten
 

@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 function parseArgs(argv) {
   const parsed = {};
@@ -23,6 +24,43 @@ function ensureAnyMatch(files, patterns, label) {
   if (matched.length === 0) {
     fail(`Missing ${label}. Expected one of: ${patterns.map((p) => p.toString()).join(", ")}`);
   }
+
+  return matched;
+}
+
+function verifyUnsignedWindowsInstaller(releaseDir, installerName) {
+  if (process.platform !== "win32") {
+    process.stdout.write(
+      "[verify-desktop-release] WARN: skipping Authenticode check outside Windows.\n"
+    );
+    return;
+  }
+
+  const installerPath = path.join(releaseDir, installerName);
+  const powershellPath = installerPath.replace(/'/g, "''");
+  const powershellCommand = [
+    `$signature = Get-AuthenticodeSignature -LiteralPath '${powershellPath}'`,
+    "Write-Output $signature.Status",
+  ].join("; ");
+
+  let status;
+  try {
+    status = execFileSync(
+      "powershell.exe",
+      ["-NoProfile", "-NonInteractive", "-Command", powershellCommand],
+      { encoding: "utf8" }
+    ).trim();
+  } catch (error) {
+    fail(`Unable to inspect Authenticode signature for ${installerName}: ${error.message}`);
+  }
+
+  if (status !== "NotSigned") {
+    fail(`Expected unsigned Windows beta installer, got Authenticode status "${status}".`);
+  }
+
+  process.stdout.write(
+    `[verify-desktop-release] Authenticode OK: ${installerName} is unsigned.\n`
+  );
 }
 
 function main() {
@@ -30,6 +68,7 @@ function main() {
   const platform = (args.platform || "").toLowerCase();
   const releaseDir = path.resolve(process.cwd(), args.dir || "release");
   const allowUnpacked = String(args.allowUnpacked || "false").toLowerCase() === "true";
+  const expectUnsigned = String(args.expectUnsigned || "false").toLowerCase() === "true";
 
   if (!platform || !["win", "mac"].includes(platform)) {
     fail('Provide --platform=win or --platform=mac');
@@ -52,13 +91,17 @@ function main() {
       return;
     }
 
-    ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
+    const installers = ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
     ensureAnyMatch(
       files,
       [/latest\.yml$/i, /beta\.yml$/i],
       "Windows update metadata (latest.yml or beta.yml)"
     );
     ensureAnyMatch(files, [/\.blockmap$/i], "Windows blockmap");
+
+    if (expectUnsigned) {
+      verifyUnsignedWindowsInstaller(releaseDir, installers[0]);
+    }
   }
 
   if (platform === "mac") {

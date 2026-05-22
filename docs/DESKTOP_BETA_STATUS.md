@@ -60,13 +60,14 @@ Komplettes lokales Installer-Gate fuer eine unsigned Windows-Beta:
 npm run quality:desktop-beta:installer
 ```
 
-Das Installer-Gate baut zusaetzlich den unsigned NSIS-Installer und prueft die
-Release-Artefakte in `release/`. Danach prueft der Installer-Smoke zuerst den
-paketbasierten Default-Pfad der per-user Installation und installiert die App
-anschliessend silent in ein lokales Testverzeichnis. Dort startet er die
-installierte EXE, prueft Renderer-Start, Login, Projektpersistenz nach echtem
-App-Neustart, Backup-Export, Backup-Import und den nativen Update-Panel-Check
-und entfernt die Testinstallationen wieder.
+Das Installer-Gate baut zusaetzlich den unsigned NSIS-Installer, prueft die
+Release-Artefakte in `release/` und bestaetigt unter Windows den erwarteten
+`NotSigned`-Status des Beta-Installers. Danach prueft der Installer-Smoke
+zuerst den paketbasierten Default-Pfad der per-user Installation und
+installiert die App anschliessend silent in ein lokales Testverzeichnis. Dort
+startet er die installierte EXE, prueft Renderer-Start, Login,
+Projektpersistenz nach echtem App-Neustart, Backup-Export, Backup-Import und
+den nativen Update-Panel-Check und entfernt die Testinstallationen wieder.
 
 ## Automatischer Smoke
 
@@ -108,7 +109,7 @@ bleiben.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `1B38AF60EF302A6A46E5B76E34FAD76C762778D30BA8417AA244F4F54FB7BCC9`
+- SHA256: `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
 
 Automatisiert geprueft sind Default-Installationspfad, Installer-Installation,
 Start, Login, echter App-Neustart, Projektpersistenz, Backup-Export,

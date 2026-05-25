@@ -973,6 +973,77 @@ function CustomerModuleSummary({
   );
 }
 
+function QuoteModuleSummary({
+  quotes,
+  projects,
+  customers,
+}: {
+  quotes: BetaEntity[];
+  projects: BetaEntity[];
+  customers: BetaEntity[];
+}) {
+  const draft = quotes.filter((item) => item.status === "Entwurf").length;
+  const sent = quotes.filter((item) => item.status === "Gesendet").length;
+  const accepted = quotes.filter((item) => item.status === "Angenommen").length;
+  const quoteVolume = quotes.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Angebotspipeline</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokale Angebotsstände für die Beta. Mailversand, Freigaben und
+            Cloud-Batchfunktionen bleiben ausgeblendet.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Entwurf", draft],
+            ["Gesendet", sent],
+            ["Angenommen", accepted],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Ausgabe & Kontext</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Angebote können lokal als Beta-JSON exportiert werden.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="rounded-md border bg-background p-3">
+            <p className="text-sm text-muted-foreground">Lokales Angebotsvolumen</p>
+            <p className="mt-1 text-2xl font-semibold">
+              {formatAmount(quoteVolume) ?? "0 €"}
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-md bg-muted p-3 text-sm">
+              <p className="font-medium">Verfügbare Basisdaten</p>
+              <p className="text-muted-foreground">
+                {customers.length} Kunden, {projects.length} Projekte lokal
+                gespeichert.
+              </p>
+            </div>
+            <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+              Produktive PDF-Layouts und E-Mail-Versand folgen nach dem lokalen
+              Beta-Smoke.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 function EntityList({
   title,
   entityKey,
@@ -1329,6 +1400,13 @@ function BetaRoutes() {
                       statusOptions={["Entwurf", "Gesendet", "Angenommen"]}
                       emptyText="Noch keine Angebote vorhanden."
                       exportable
+                      moduleSummary={
+                        <QuoteModuleSummary
+                          quotes={store.quotes}
+                          projects={store.projects}
+                          customers={store.customers}
+                        />
+                      }
                     />
                   }
                 />

@@ -907,6 +907,72 @@ function ProjectModuleSummary({ projects }: { projects: BetaEntity[] }) {
   );
 }
 
+function CustomerModuleSummary({
+  customers,
+  projects,
+  quotes,
+}: {
+  customers: BetaEntity[];
+  projects: BetaEntity[];
+  quotes: BetaEntity[];
+}) {
+  const active = customers.filter((item) => item.status === "Aktiv").length;
+  const prospects = customers.filter((item) => item.status === "Interessent").length;
+  const archived = customers.filter((item) => item.status === "Archiviert").length;
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Kundenstatus</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokale Kundenbasis für Projekte und Angebote, ohne CRM- oder
+            Cloud-Synchronisierung.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Aktiv", active],
+            ["Interessent", prospects],
+            ["Archiviert", archived],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Beziehungen</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Die lokale Verknüpfung zu Projekten und Angeboten wird als nächster
+            Schritt ausgebaut.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Lokale Projekte</p>
+              <p className="mt-1 text-2xl font-semibold">{projects.length}</p>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Lokale Angebote</p>
+              <p className="mt-1 text-2xl font-semibold">{quotes.length}</p>
+            </div>
+          </div>
+          <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            Kundendaten bleiben in dieser Beta lokal gespeichert und sind nach
+            Reload oder Desktop-Neustart weiter verfügbar.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 function EntityList({
   title,
   entityKey,
@@ -1330,6 +1396,13 @@ function BetaRoutes() {
                       placeholder="Kundenname eingeben"
                       statusOptions={["Aktiv", "Interessent", "Archiviert"]}
                       emptyText="Noch keine Kunden vorhanden."
+                      moduleSummary={
+                        <CustomerModuleSummary
+                          customers={store.customers}
+                          projects={store.projects}
+                          quotes={store.quotes}
+                        />
+                      }
                     />
                   }
                 />

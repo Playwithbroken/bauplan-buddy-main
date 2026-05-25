@@ -57,6 +57,7 @@ test.describe("Desktop beta smoke", () => {
       localStorage.removeItem("bauplan_offline_user");
       localStorage.removeItem("bauplan_beta_user");
       localStorage.removeItem("bauplan_beta_store");
+      localStorage.removeItem("bauplan_beta_print_settings");
     });
     await page.goto("/#/login", { waitUntil: "domcontentloaded" });
   });
@@ -209,6 +210,48 @@ test.describe("Desktop beta smoke", () => {
       .click();
     const invoiceDownload = await invoiceDownloadPromise;
     expect(invoiceDownload.suggestedFilename()).toContain("rechnung");
+  });
+
+  test("persists print layout settings and opens a print preview", async ({ page }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.goto("/#/settings");
+
+    await page
+      .getByLabel("Briefkopf für Drucklayout")
+      .fill("Bauplan Buddy GmbH\nBeta-Allee 7\n10115 Berlin");
+    await page
+      .getByLabel("Brieffuß für Drucklayout")
+      .fill("Steuernummer folgt\nDanke für Ihr Vertrauen.");
+    const printPreview = page.getByRole("region", {
+      name: "Drucklayout Vorschau",
+    });
+    await expect(printPreview.getByText("Bauplan Buddy GmbH")).toBeVisible();
+    await expect(printPreview.getByText("Steuernummer folgt")).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByLabel("Briefkopf für Drucklayout")).toHaveValue(
+      "Bauplan Buddy GmbH\nBeta-Allee 7\n10115 Berlin",
+    );
+    await expect(page.getByLabel("Brieffuß für Drucklayout")).toHaveValue(
+      "Steuernummer folgt\nDanke für Ihr Vertrauen.",
+    );
+
+    await page.goto("/#/quotes");
+    await page
+      .getByPlaceholder("Angebotstitel eingeben")
+      .fill("E2E Druck Angebot");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    const previewPromise = page.waitForEvent("popup");
+    await page
+      .getByRole("button", {
+        name: "Eintrag E2E Druck Angebot Druckansicht öffnen",
+      })
+      .click();
+    const preview = await previewPromise;
+    await expect(preview.getByText("Bauplan Buddy GmbH")).toBeVisible();
+    await expect(preview.getByText("E2E Druck Angebot")).toBeVisible();
+    await expect(preview.getByRole("button", { name: "Drucken" })).toBeVisible();
+    await preview.close();
   });
 
   test("exports and restores local beta data from settings", async ({ page }) => {

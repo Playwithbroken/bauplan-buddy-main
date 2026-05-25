@@ -23,6 +23,7 @@ import {
   FileText,
   FolderOpen,
   LogOut,
+  Printer,
   Receipt,
   Search,
   Settings,
@@ -32,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import {
   Sidebar,
@@ -84,10 +86,24 @@ interface WebAppProps {
   onDesktopError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
+type PrintSettings = {
+  letterhead: string;
+  footer: string;
+  paperSize: "A4";
+};
+
 const USER_KEY = "bauplan_beta_user";
 const STORE_KEY = "bauplan_beta_store";
+const PRINT_SETTINGS_KEY = "bauplan_beta_print_settings";
 const DESKTOP_BETA_UPDATE_LIMITATION =
   "Update-Checks sind in dieser lokalen Beta noch nicht produktiv angebunden.";
+
+const defaultPrintSettings: PrintSettings = {
+  letterhead: "Bauplan Buddy\nMusterstraße 12\n12345 Musterstadt",
+  footer:
+    "Vielen Dank für Ihr Vertrauen.\nBankverbindung und rechtliche Pflichtangaben bitte vor produktiver Nutzung ergänzen.",
+  paperSize: "A4",
+};
 
 const defaultStore: BetaStore = {
   projects: [
@@ -226,6 +242,36 @@ function readBetaStore(): BetaStore {
   }
 }
 
+function normalizePrintSettings(value: unknown): PrintSettings {
+  const source =
+    value && typeof value === "object" ? (value as Partial<PrintSettings>) : {};
+
+  return {
+    letterhead:
+      typeof source.letterhead === "string"
+        ? source.letterhead
+        : defaultPrintSettings.letterhead,
+    footer:
+      typeof source.footer === "string"
+        ? source.footer
+        : defaultPrintSettings.footer,
+    paperSize: "A4",
+  };
+}
+
+function readPrintSettings(): PrintSettings {
+  try {
+    const raw = localStorage.getItem(PRINT_SETTINGS_KEY);
+    return normalizePrintSettings(raw ? JSON.parse(raw) : defaultPrintSettings);
+  } catch {
+    return defaultPrintSettings;
+  }
+}
+
+function savePrintSettings(settings: PrintSettings) {
+  localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify(settings));
+}
+
 function nextEntityId(items: BetaEntity[], prefix: string) {
   const highest = items.reduce((max, item) => {
     const match = item.id.match(new RegExp(`^${prefix}-(\\d+)$`));
@@ -251,6 +297,7 @@ function buildBetaBackup() {
     version: "0.0.2-beta.17",
     exportedAt: new Date().toISOString(),
     store: readBetaStore(),
+    printSettings: readPrintSettings(),
   };
 }
 
@@ -320,8 +367,165 @@ function downloadBetaEntityExport(entityKey: keyof BetaStore, item: BetaEntity) 
     exportedAt: new Date().toISOString(),
     betaNotice:
       "Lokaler Beta-Export zur Prüfung. Nicht als produktives Rechnungs- oder Angebotsdokument verwenden.",
+    printSettings: readPrintSettings(),
     record: item,
   });
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatPrintBlock(value: string) {
+  return escapeHtml(value).replace(/\n/g, "<br />");
+}
+
+function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
+  const printSettings = readPrintSettings();
+  const documentLabels: Record<keyof BetaStore, string> = {
+    projects: "Projekt",
+    quotes: "Angebot",
+    invoices: "Rechnung",
+    customers: "Kunde",
+    appointments: "Termin",
+    documents: "Dokument",
+  };
+  const amount = formatAmount(item.amount);
+  const preview = window.open("", "_blank", "width=980,height=760");
+
+  if (!preview) {
+    window.alert("Die Druckansicht konnte nicht geöffnet werden.");
+    return;
+  }
+
+  preview.document.write(`<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>${documentLabels[entityKey]} ${escapeHtml(item.id)}</title>
+  <style>
+    @page { size: ${printSettings.paperSize}; margin: 18mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #111827;
+      background: #f3f4f6;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      padding: 12px 18px;
+      background: #111827;
+    }
+    .toolbar button {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 14px;
+      color: #111827;
+      background: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 18px auto;
+      padding: 18mm;
+      background: #ffffff;
+      box-shadow: 0 14px 45px rgba(15, 23, 42, 0.18);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 18px;
+      white-space: pre-line;
+    }
+    .doc-type {
+      text-align: right;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    h1 { margin: 34px 0 8px; font-size: 28px; }
+    .meta {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px 18px;
+      margin: 28px 0;
+    }
+    .meta dt { color: #6b7280; }
+    .meta dd { margin: 0; font-weight: 600; }
+    .notice {
+      margin-top: 24px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      padding: 12px;
+      color: #92400e;
+      font-size: 13px;
+    }
+    footer {
+      margin-top: 70mm;
+      border-top: 1px solid #d1d5db;
+      padding-top: 14px;
+      color: #4b5563;
+      font-size: 12px;
+      white-space: pre-line;
+    }
+    @media print {
+      body { background: #ffffff; }
+      .toolbar { display: none; }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">Drucken</button>
+    <button type="button" onclick="window.close()">Schließen</button>
+  </div>
+  <main class="page">
+    <header>
+      <div>${formatPrintBlock(printSettings.letterhead)}</div>
+      <div class="doc-type">Lokale Beta-Druckansicht<br />${documentLabels[entityKey]}</div>
+    </header>
+    <h1>${escapeHtml(item.title)}</h1>
+    <p>${escapeHtml(item.subtitle)}</p>
+    <dl class="meta">
+      <dt>Nummer</dt><dd>${escapeHtml(item.id)}</dd>
+      <dt>Status</dt><dd>${escapeHtml(item.status)}</dd>
+      <dt>Datum</dt><dd>${escapeHtml(item.date)}</dd>
+      ${amount ? `<dt>Betrag</dt><dd>${escapeHtml(amount)}</dd>` : ""}
+    </dl>
+    <div class="notice">
+      Beta-Druckansicht zur Prüfung von Briefkopf, Brieffuß und Drucklayout.
+      Vor produktiver Nutzung Pflichtangaben und finale PDF-Ausgabe prüfen.
+    </div>
+    <footer>${formatPrintBlock(printSettings.footer)}</footer>
+  </main>
+</body>
+</html>`);
+  preview.document.close();
+  preview.focus();
 }
 
 class BetaErrorBoundary extends Component<
@@ -754,6 +958,7 @@ function EntityPage({
   statusOptions,
   emptyText,
   exportable = false,
+  printable = false,
   moduleSummary,
 }: {
   title: string;
@@ -768,6 +973,7 @@ function EntityPage({
   statusOptions: string[];
   emptyText: string;
   exportable?: boolean;
+  printable?: boolean;
   moduleSummary?: ReactNode;
 }) {
   const [draft, setDraft] = useState("");
@@ -832,6 +1038,7 @@ function EntityPage({
         onTitleChange={onTitleChange}
         onDelete={onDelete}
         onExport={exportable ? downloadBetaEntityExport : undefined}
+        onPrint={printable ? openBetaPrintPreview : undefined}
         emptyText={
           normalizedFilter
             ? "Keine passenden Einträge gefunden."
@@ -1044,6 +1251,35 @@ function QuoteModuleSummary({
   );
 }
 
+function PrintSettingsPreview({ settings }: { settings: PrintSettings }) {
+  return (
+    <div
+      aria-label="Drucklayout Vorschau"
+      className="rounded-md border bg-background p-4 text-sm"
+      role="region"
+    >
+      <div className="flex items-start justify-between gap-4 border-b pb-4">
+        <p className="whitespace-pre-line font-medium">{settings.letterhead}</p>
+        <div className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Lokale Beta-Vorschau
+          <br />
+          A4
+        </div>
+      </div>
+      <div className="py-6">
+        <p className="text-lg font-semibold">Angebot / Rechnung</p>
+        <p className="mt-2 text-muted-foreground">
+          Diese Vorschau zeigt Briefkopf, Brieffuß und Druckabstand. Echte
+          Positionen und PDF-Layout folgen im nächsten Ausbauschritt.
+        </p>
+      </div>
+      <div className="border-t pt-4 text-xs text-muted-foreground">
+        <p className="whitespace-pre-line">{settings.footer}</p>
+      </div>
+    </div>
+  );
+}
+
 function EntityList({
   title,
   entityKey,
@@ -1053,6 +1289,7 @@ function EntityList({
   onTitleChange,
   onDelete,
   onExport,
+  onPrint,
   emptyText = "Noch keine Einträge vorhanden.",
 }: {
   title: string;
@@ -1063,6 +1300,7 @@ function EntityList({
   onTitleChange?: (id: string, title: string) => void;
   onDelete?: (id: string) => void;
   onExport?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
+  onPrint?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
   emptyText?: string;
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -1173,6 +1411,17 @@ function EntityList({
                     Export
                   </Button>
                 ) : null}
+                {entityKey && onPrint ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Eintrag ${item.title} Druckansicht öffnen`}
+                    onClick={() => onPrint(entityKey, item)}
+                  >
+                    <Printer className="h-4 w-4" />
+                    Druckansicht
+                  </Button>
+                ) : null}
                 {entityKey && onDelete ? (
                   <Button
                     variant="outline"
@@ -1202,6 +1451,9 @@ function SettingsPage() {
   const [message, setMessage] = useState("");
   const [updateStatus, setUpdateStatus] = useState("Noch nicht geprüft.");
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [printSettings, setPrintSettings] = useState<PrintSettings>(() =>
+    readPrintSettings(),
+  );
   const canCheckDesktopUpdates = Boolean(
     window.desktop?.isDesktop && window.desktop.checkForUpdates,
   );
@@ -1214,12 +1466,20 @@ function SettingsPage() {
   const importBackup = async (file: File) => {
     try {
       const raw = await file.text();
-      const parsed = JSON.parse(raw) as { store?: BetaStore };
+      const parsed = JSON.parse(raw) as {
+        store?: BetaStore;
+        printSettings?: unknown;
+      };
       if (!parsed.store) {
         throw new Error("missing store");
       }
       const nextStore = normalizeBetaStore(parsed.store);
       localStorage.setItem(STORE_KEY, JSON.stringify(nextStore));
+      if (parsed.printSettings) {
+        const nextPrintSettings = normalizePrintSettings(parsed.printSettings);
+        savePrintSettings(nextPrintSettings);
+        setPrintSettings(nextPrintSettings);
+      }
       setMessage("Datensicherung wurde eingespielt. Die Ansicht wird neu geladen.");
       window.setTimeout(() => window.location.reload(), 200);
     } catch {
@@ -1230,6 +1490,12 @@ function SettingsPage() {
   const resetData = () => {
     localStorage.setItem(STORE_KEY, JSON.stringify(defaultStore));
     window.location.reload();
+  };
+
+  const updatePrintSettings = (next: PrintSettings) => {
+    setPrintSettings(next);
+    savePrintSettings(next);
+    setMessage("Drucklayout wurde lokal gespeichert.");
   };
 
   const checkDesktopUpdates = async () => {
@@ -1306,6 +1572,56 @@ function SettingsPage() {
               {message}
             </p>
           ) : null}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Drucklayout</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Briefkopf und Brieffuß werden lokal gespeichert und in der
+            Druckansicht von Angeboten und Rechnungen verwendet.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="space-y-4">
+            <label className="block space-y-2">
+              <span className="text-sm font-medium">Briefkopf</span>
+              <Textarea
+                aria-label="Briefkopf für Drucklayout"
+                className="min-h-28"
+                value={printSettings.letterhead}
+                onChange={(event) =>
+                  updatePrintSettings({
+                    ...printSettings,
+                    letterhead: event.target.value,
+                  })
+                }
+              />
+            </label>
+            <label className="block space-y-2">
+              <span className="text-sm font-medium">Brieffuß</span>
+              <Textarea
+                aria-label="Brieffuß für Drucklayout"
+                className="min-h-28"
+                value={printSettings.footer}
+                onChange={(event) =>
+                  updatePrintSettings({
+                    ...printSettings,
+                    footer: event.target.value,
+                  })
+                }
+              />
+            </label>
+            <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+              Drucker, Papierfach, Skalierung und Zielgerät werden im nativen
+              Druckdialog des Betriebssystems gewählt. Diese Beta liefert die
+              lokale Dokumentansicht dafür.
+            </p>
+          </div>
+          <div>
+            <p className="mb-2 text-sm font-medium">Vorschau</p>
+            <PrintSettingsPreview settings={printSettings} />
+          </div>
         </CardContent>
       </Card>
       <Card>
@@ -1400,6 +1716,7 @@ function BetaRoutes() {
                       statusOptions={["Entwurf", "Gesendet", "Angenommen"]}
                       emptyText="Noch keine Angebote vorhanden."
                       exportable
+                      printable
                       moduleSummary={
                         <QuoteModuleSummary
                           quotes={store.quotes}
@@ -1430,6 +1747,7 @@ function BetaRoutes() {
                       statusOptions={["Offen", "Bezahlt", "Exportiert"]}
                       emptyText="Noch keine Rechnungen vorhanden."
                       exportable
+                      printable
                     />
                   }
                 />

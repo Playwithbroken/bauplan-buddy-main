@@ -1323,6 +1323,77 @@ function InvoiceModuleSummary({
   );
 }
 
+function CalendarModuleSummary({
+  appointments,
+  projects,
+  customers,
+}: {
+  appointments: BetaEntity[];
+  projects: BetaEntity[];
+  customers: BetaEntity[];
+}) {
+  const planned = appointments.filter((item) => item.status === "Geplant");
+  const completed = appointments.filter((item) => item.status === "Erledigt").length;
+  const canceled = appointments.filter((item) => item.status === "Abgesagt").length;
+  const nextAppointment = planned
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Terminstatus</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokale Terminplanung für die Beta. Externe Kalender-Synchronisierung
+            bleibt ausgeblendet.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Geplant", planned.length],
+            ["Erledigt", completed],
+            ["Abgesagt", canceled],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Nächster Termin</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Projekt- und Kundenbezug wird lokal vorbereitet.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {nextAppointment ? (
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Als nächstes geplant</p>
+              <p className="mt-1 font-semibold">{nextAppointment.title}</p>
+              <p className="text-sm text-muted-foreground">
+                {nextAppointment.date} - {nextAppointment.subtitle}
+              </p>
+            </div>
+          ) : (
+            <p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+              Kein geplanter Termin vorhanden.
+            </p>
+          )}
+          <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            Lokaler Kontext: {projects.length} Projekte und {customers.length}{" "}
+            Kunden stehen für spätere Zuordnung bereit.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 function PrintSettingsPreview({ settings }: { settings: PrintSettings }) {
   return (
     <div
@@ -1849,6 +1920,13 @@ function BetaRoutes() {
                       placeholder="Termin eingeben"
                       statusOptions={["Geplant", "Erledigt", "Abgesagt"]}
                       emptyText="Noch keine Termine vorhanden."
+                      moduleSummary={
+                        <CalendarModuleSummary
+                          appointments={store.appointments}
+                          projects={store.projects}
+                          customers={store.customers}
+                        />
+                      }
                     />
                   }
                 />

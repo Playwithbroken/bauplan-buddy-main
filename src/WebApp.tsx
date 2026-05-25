@@ -560,11 +560,52 @@ function Shell({ children }: { children: ReactNode }) {
 }
 
 function DashboardPage({ store }: { store: BetaStore }) {
-  const metrics = [
-    ["Projekte", store.projects.length],
-    ["Angebote", store.quotes.length],
-    ["Rechnungen", store.invoices.length],
-    ["Termine", store.appointments.length],
+  const openInvoices = store.invoices.filter((item) => item.status !== "Bezahlt");
+  const activeProjects = store.projects.filter((item) => item.status === "Aktiv");
+  const draftQuotes = store.quotes.filter((item) => item.status === "Entwurf");
+  const plannedAppointments = store.appointments.filter(
+    (item) => item.status === "Geplant",
+  );
+  const openInvoiceTotal = openInvoices.reduce(
+    (sum, item) => sum + (item.amount ?? 0),
+    0,
+  );
+  const metrics: {
+    label: string;
+    value: string;
+    detail: string;
+    href: string;
+  }[] = [
+    {
+      label: "Aktive Projekte",
+      value: String(activeProjects.length),
+      detail: `${store.projects.length} Projekte lokal gespeichert`,
+      href: "/projects",
+    },
+    {
+      label: "Offene Angebote",
+      value: String(draftQuotes.length),
+      detail: `${store.quotes.length} Angebote insgesamt`,
+      href: "/quotes",
+    },
+    {
+      label: "Offene Rechnungen",
+      value: formatAmount(openInvoiceTotal) ?? "0 €",
+      detail: `${openInvoices.length} Rechnungen nicht bezahlt`,
+      href: "/invoices",
+    },
+    {
+      label: "Geplante Termine",
+      value: String(plannedAppointments.length),
+      detail: `${store.appointments.length} Termine im lokalen Kalender`,
+      href: "/calendar",
+    },
+  ];
+  const quickActions = [
+    { label: "Projekt anlegen", href: "/projects", icon: FolderOpen },
+    { label: "Kunde erfassen", href: "/customers", icon: Users },
+    { label: "Angebot schreiben", href: "/quotes", icon: FileText },
+    { label: "Rechnung vorbereiten", href: "/invoices", icon: Receipt },
   ];
   const recent = [
     ...store.projects.slice(0, 1),
@@ -572,19 +613,107 @@ function DashboardPage({ store }: { store: BetaStore }) {
     ...store.invoices.slice(0, 1),
     ...store.appointments.slice(0, 1),
   ];
+  const focusItems = [
+    ...openInvoices.slice(0, 2),
+    ...draftQuotes.slice(0, 2),
+    ...plannedAppointments.slice(0, 2),
+  ].slice(0, 4);
 
   return (
-    <Page title="Dashboard" description="Überblick über lokale Beta-Daten.">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map(([label, value]) => (
-          <Card key={label}>
-            <CardContent className="p-5">
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <p className="mt-2 text-3xl font-semibold">{value}</p>
+    <Page
+      title="Dashboard"
+      description="Lokaler Überblick über Projekte, Zahlungen und nächste Schritte."
+    >
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((metric) => (
+          <Card key={metric.label}>
+            <CardContent className="space-y-3 p-5">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {metric.label}
+                </p>
+                <p className="mt-2 text-3xl font-semibold tracking-tight">
+                  {metric.value}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {metric.detail}
+                </p>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link to={metric.href}>Öffnen</Link>
+              </Button>
             </CardContent>
           </Card>
         ))}
-      </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Heute wichtig</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Offene Rechnungen, Angebotsentwürfe und geplante Termine.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {focusItems.length ? (
+              focusItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="grid gap-3 rounded-md border bg-background p-3 sm:grid-cols-[1fr_auto] sm:items-center"
+                >
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium">{item.title}</p>
+                      <span className="rounded-full bg-muted px-2 py-0.5 text-xs">
+                        {item.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {item.id} - {item.subtitle}
+                    </p>
+                  </div>
+                  {formatAmount(item.amount) ? (
+                    <p className="font-semibold">{formatAmount(item.amount)}</p>
+                  ) : null}
+                </div>
+              ))
+            ) : (
+              <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+                Keine offenen Aufgaben vorhanden.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Schnellstart</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Direkt in die wichtigsten lokalen Arbeitsbereiche springen.
+            </p>
+          </CardHeader>
+          <CardContent className="grid gap-2">
+            {quickActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <Button
+                  key={action.href}
+                  variant="outline"
+                  className="justify-start gap-2"
+                  asChild
+                >
+                  <Link to={action.href}>
+                    <Icon className="h-4 w-4" />
+                    {action.label}
+                  </Link>
+                </Button>
+              );
+            })}
+          </CardContent>
+        </Card>
+      </section>
+
       <EntityList title="Aktuelle Aktivitäten" items={recent} />
     </Page>
   );

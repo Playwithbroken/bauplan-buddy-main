@@ -754,6 +754,7 @@ function EntityPage({
   statusOptions,
   emptyText,
   exportable = false,
+  moduleSummary,
 }: {
   title: string;
   description: string;
@@ -767,6 +768,7 @@ function EntityPage({
   statusOptions: string[];
   emptyText: string;
   exportable?: boolean;
+  moduleSummary?: ReactNode;
 }) {
   const [draft, setDraft] = useState("");
   const [filter, setFilter] = useState("");
@@ -820,6 +822,7 @@ function EntityPage({
           </div>
         </CardContent>
       </Card>
+      {moduleSummary}
       <EntityList
         title={title}
         entityKey={entityKey}
@@ -836,6 +839,71 @@ function EntityPage({
         }
       />
     </Page>
+  );
+}
+
+function ProjectModuleSummary({ projects }: { projects: BetaEntity[] }) {
+  const active = projects.filter((item) => item.status === "Aktiv").length;
+  const paused = projects.filter((item) => item.status === "Pausiert").length;
+  const completed = projects.filter(
+    (item) => item.status === "Abgeschlossen",
+  ).length;
+  const projectVolume = projects.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+  const newestProject = projects[0];
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Projektstatus</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokaler Überblick für die Beta. Team- und Cloud-Synchronisierung ist
+            hier bewusst ausgeblendet.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Aktiv", active],
+            ["Pausiert", paused],
+            ["Abgeschlossen", completed],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Projektkontext</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Kundenzuordnung und Details folgen im nächsten Ausbauschritt.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="rounded-md border bg-background p-3">
+            <p className="text-sm text-muted-foreground">Lokales Projektvolumen</p>
+            <p className="mt-1 text-2xl font-semibold">
+              {formatAmount(projectVolume) ?? "0 €"}
+            </p>
+          </div>
+          {newestProject ? (
+            <div className="rounded-md bg-muted p-3 text-sm">
+              <p className="font-medium">Zuletzt oben in der Liste</p>
+              <p className="text-muted-foreground">
+                {newestProject.id} - Status {newestProject.status}
+              </p>
+            </div>
+          ) : (
+            <p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+              Noch kein Projekt vorhanden.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 
@@ -1171,6 +1239,7 @@ function BetaRoutes() {
                       placeholder="Projektname eingeben"
                       statusOptions={["Aktiv", "Pausiert", "Abgeschlossen"]}
                       emptyText="Noch keine Projekte vorhanden."
+                      moduleSummary={<ProjectModuleSummary projects={store.projects} />}
                     />
                   }
                 />

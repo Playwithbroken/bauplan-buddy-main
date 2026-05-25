@@ -32,7 +32,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import ProductLoginPage from "@/pages/LoginPage";
+import { getAppCapabilities } from "@/utils/appCapabilities";
 import { isDesktopRuntime } from "@/utils/runtime";
 
 type BetaEntity = {
@@ -132,10 +152,10 @@ const defaultStore: BetaStore = {
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/projects", label: "Projekte", icon: FolderOpen },
+  { href: "/customers", label: "Kunden", icon: Users },
   { href: "/quotes", label: "Angebote", icon: FileText },
   { href: "/invoices", label: "Rechnungen", icon: Receipt },
   { href: "/calendar", label: "Kalender", icon: Calendar },
-  { href: "/customers", label: "Kunden", icon: Users },
   { href: "/documents", label: "Dokumente", icon: Upload },
   { href: "/settings", label: "Einstellungen", icon: Settings },
 ];
@@ -427,162 +447,115 @@ function useBetaStore() {
   return { store, addEntity, updateEntityStatus, updateEntityTitle, deleteEntity };
 }
 
-function LoginPage() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@bauplan.de");
-  const [password, setPassword] = useState("admin123");
-  const [error, setError] = useState("");
-
-  const login = () => {
-    const valid =
-      (email === "admin@bauplan.de" && password === "admin123") ||
-      (email === "manager@bauplan.de" && password === "manager123") ||
-      (email === "user@bauplan.de" && password === "user123");
-
-    if (!valid) {
-      setError("Bitte verwenden Sie ein freigegebenes Beta-Testkonto.");
-      return;
-    }
-
-    const user: BetaUser = {
-      email,
-      name: email === "admin@bauplan.de" ? "Admin Beta" : "Beta Nutzer",
-      role: email === "admin@bauplan.de" ? "Admin" : "Projektleitung",
-    };
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    navigate("/dashboard", { replace: true });
-  };
-
-  return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto flex min-h-screen max-w-6xl items-center px-5 py-8">
-        <section className="grid w-full gap-8 lg:grid-cols-[420px_1fr] lg:items-center">
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl">Bauplan Buddy Beta</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Lokale Desktop-Beta für Windows. Daten werden auf diesem
-                Gerät gespeichert.
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <label className="block space-y-2">
-                <span className="text-sm font-medium">E-Mail</span>
-                <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-sm font-medium">Passwort</span>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") login();
-                  }}
-                />
-              </label>
-              {error ? <p className="text-sm text-destructive">{error}</p> : null}
-              <Button className="w-full" onClick={login}>
-                Anmelden
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Testkonto: admin@bauplan.de / admin123
-              </p>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-5">
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">
-              Stabilität zuerst
-            </p>
-            <h1 className="max-w-2xl text-4xl font-semibold tracking-tight">
-              Kernprozesse für Projekte, Angebote, Rechnungen und Termine.
-            </h1>
-            <p className="max-w-xl text-muted-foreground">
-              Diese Beta konzentriert sich auf die lokalen Kernflows. Cloud,
-              Team-Sync und experimentelle Integrationen bleiben bewusst
-              ausgeblendet.
-            </p>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-function RequireAuth({ children }: { children: ReactNode }) {
-  const user = readJson<BetaUser | null>(USER_KEY, null);
-  if (!user) return <Navigate to="/login" replace />;
-  return <>{children}</>;
-}
-
 function Shell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const user = readJson<BetaUser | null>(USER_KEY, null);
+  const capabilities = getAppCapabilities("desktop-beta");
 
   return (
-    <div className="min-h-screen bg-muted/30 text-foreground lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="border-b bg-card lg:min-h-screen lg:border-b-0 lg:border-r">
-        <div className="flex h-16 items-center justify-between px-4 lg:h-auto lg:block lg:p-5">
-          <div>
-            <p className="font-semibold">Bauplan Buddy</p>
-            <p className="text-xs text-muted-foreground">Lokale Beta</p>
+    <SidebarProvider>
+      <Sidebar variant="inset">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" asChild>
+                <Link to="/dashboard">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                    <BarChart3 className="size-4" />
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Bauplan Buddy</span>
+                    <span className="truncate text-xs text-sidebar-foreground/70">
+                      Lokale Desktop-Beta
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <div className="px-4 py-2 text-xs text-sidebar-foreground/70">
+            {capabilities.isLocalFirst
+              ? "Local-first ohne Cloud-Pflicht"
+              : "Cloud-Modus aktiv"}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label="Abmelden"
-            onClick={() => {
-              localStorage.removeItem(USER_KEY);
-              navigate("/login", { replace: true });
-            }}
-            className="lg:hidden"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:block lg:space-y-1 lg:px-3">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = location.pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                to={item.href}
-                aria-label={item.label}
-                className={cn(
-                  "flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-md text-sm transition-colors sm:w-auto sm:justify-start sm:px-3 lg:h-auto lg:py-2",
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Arbeitsbereich</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = location.pathname === item.href;
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        tooltip={item.label}
+                      >
+                        <Link to={item.href}>
+                          <Icon />
+                          <span>{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {
+                  localStorage.removeItem("bauplan_offline_user");
+                  localStorage.removeItem(USER_KEY);
+                  navigate("/login", { replace: true });
+                }}
               >
-                <Icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="hidden border-t p-4 lg:block">
-          <p className="text-sm font-medium">{user?.name}</p>
-          <p className="text-xs text-muted-foreground">{user?.email}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-3 w-full"
-            onClick={() => {
-              localStorage.removeItem(USER_KEY);
-              navigate("/login", { replace: true });
-            }}
+                <LogOut />
+                <span>Abmelden</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex min-h-14 shrink-0 flex-col gap-2 border-b bg-background px-4 py-3 md:flex-row md:items-center md:gap-3 md:py-0">
+          <SidebarTrigger />
+          <div>
+            <p className="text-sm font-semibold">Bauplan Buddy Desktop</p>
+            <p className="text-xs text-muted-foreground">
+              Einsatzfähige lokale Beta
+            </p>
+          </div>
+          <nav
+            aria-label="Mobile Beta-Navigation"
+            className="flex gap-2 overflow-x-auto pb-1 md:hidden"
           >
-            <LogOut className="h-4 w-4" />
-            Abmelden
-          </Button>
-        </div>
-      </aside>
-      <main className="p-4 sm:p-6">{children}</main>
-    </div>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-md border bg-card px-3 py-2 text-sm"
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </header>
+        <main className="px-4 py-4 sm:px-6 sm:py-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 
@@ -1006,7 +979,7 @@ function SettingsPage() {
           <div>
             <p className="font-medium">Desktop-Updates</p>
             <p className="text-sm text-muted-foreground">
-              Der lokale Beta-Build prueft den nativen Update-Kanal ohne Cloud-Pflicht.
+              Der lokale Beta-Build prüft den nativen Update-Kanal ohne Cloud-Pflicht.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -1041,11 +1014,11 @@ function BetaRoutes() {
 
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<ProductLoginPage />} />
       <Route
         path="/*"
         element={
-          <RequireAuth>
+          <ProtectedRoute>
             <Shell>
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -1188,7 +1161,7 @@ function BetaRoutes() {
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Shell>
-          </RequireAuth>
+          </ProtectedRoute>
         }
       />
     </Routes>
@@ -1204,10 +1177,14 @@ export default function WebApp({ onDesktopReady, onDesktopError }: WebAppProps) 
   }, [onDesktopReady]);
 
   return (
-    <Router>
-      <BetaErrorBoundary onError={onDesktopError}>
-        <BetaRoutes />
-      </BetaErrorBoundary>
-    </Router>
+    <LanguageProvider defaultLanguage="de">
+      <AuthProvider>
+        <Router>
+          <BetaErrorBoundary onError={onDesktopError}>
+            <BetaRoutes />
+          </BetaErrorBoundary>
+        </Router>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

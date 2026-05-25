@@ -221,6 +221,7 @@ async function prepareInstalledRenderer(context, rendererUrl) {
 
   await page.goto(`${rendererUrl}/#/login`, { waitUntil: "domcontentloaded" });
   await page.evaluate(() => {
+    localStorage.removeItem("bauplan_offline_user");
     localStorage.removeItem("bauplan_beta_user");
     localStorage.removeItem("bauplan_beta_store");
   });
@@ -297,6 +298,7 @@ async function verifyInstalledUpdaterPanel(exePath) {
 
     await page.goto(`${page.url()}#/login`, { waitUntil: "domcontentloaded" });
     await page.evaluate(() => {
+      localStorage.removeItem("bauplan_offline_user");
       localStorage.removeItem("bauplan_beta_user");
     });
     await page.goto(`${page.url()}#/login`, { waitUntil: "domcontentloaded" });

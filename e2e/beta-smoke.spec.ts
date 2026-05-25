@@ -54,6 +54,7 @@ test.describe("Desktop beta smoke", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/#/login", { waitUntil: "domcontentloaded" });
     await page.evaluate(() => {
+      localStorage.removeItem("bauplan_offline_user");
       localStorage.removeItem("bauplan_beta_user");
       localStorage.removeItem("bauplan_beta_store");
     });
@@ -267,11 +268,22 @@ test.describe("Desktop beta smoke", () => {
   });
 
   test("recovers from malformed local beta storage", async ({ page }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
     await page.evaluate(() => {
       localStorage.setItem("bauplan_beta_user", JSON.stringify({
         email: "admin@bauplan.de",
         name: "Admin Beta",
         role: "Admin",
+      }));
+      localStorage.setItem("bauplan_offline_user", JSON.stringify({
+        id: "offline-admin@bauplan.de",
+        email: "admin@bauplan.de",
+        firstName: "Admin",
+        lastName: "",
+        name: "Admin",
+        role: "ADMIN",
+        status: "ACTIVE",
+        permissions: [],
       }));
       localStorage.setItem("bauplan_beta_store", JSON.stringify({
         projects: "kaputt",
@@ -334,6 +346,7 @@ test.describe("Desktop beta smoke", () => {
       ).toBeVisible();
 
       await page.evaluate(() => {
+        localStorage.removeItem("bauplan_offline_user");
         localStorage.removeItem("bauplan_beta_user");
       });
     }

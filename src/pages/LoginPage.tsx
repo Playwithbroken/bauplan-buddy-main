@@ -1,5 +1,3 @@
-
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,12 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Loader2, LogIn, Building2, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Loader2, LogIn, Building2, BriefcaseBusiness } from 'lucide-react';
 import { useLoginPageState } from '@/components/auth/useLoginPageState';
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
+  password: z.string().min(6, 'Das Passwort muss mindestens 6 Zeichen haben.')
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -37,7 +35,11 @@ const LoginPage = () => {
     formState: { errors, isValid }
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      email: "admin@bauplan.de",
+      password: "admin123",
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -62,15 +64,15 @@ const LoginPage = () => {
               <div className="flex items-center justify-center">
                 <Building2 className="h-12 w-12 text-blue-600" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">BauPlan Buddy</h1>
-              <p className="text-gray-600 dark:text-gray-400">Sign in to your account</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Bauplan Buddy</h1>
+              <p className="text-gray-600 dark:text-gray-400">Lokale Desktop-Beta anmelden</p>
             </div>
 
             <Card>
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
                 <CardHeader className="space-y-1 text-center">
-                  <CardTitle className="text-2xl">Login</CardTitle>
-                  <CardDescription>Enter your credentials to continue</CardDescription>
+                  <CardTitle className="text-2xl">Anmeldung</CardTitle>
+                  <CardDescription>Mit freigegebenem Beta-Konto fortfahren</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {error && (
@@ -80,11 +82,11 @@ const LoginPage = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">E-Mail</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="E-Mail-Adresse eingeben"
                       disabled={isLoading}
                       {...register('email')}
                     />
@@ -94,12 +96,12 @@ const LoginPage = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Passwort</Label>
                     <div className="relative">
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
+                        placeholder="Passwort eingeben"
                         disabled={isLoading}
                         {...register('password')}
                       />
@@ -117,34 +119,26 @@ const LoginPage = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-end">
-                    <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 underline">
-                      Forgot password?
-                    </Link>
-                  </div>
                 </CardContent>
 
                 <CardFooter className="flex flex-col space-y-4">
                   <Button type="submit" className="w-full" disabled={isLoading || !isValid}>
                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                    {isLoading ? 'Anmeldung läuft...' : 'Anmelden'}
                   </Button>
 
-                  <div className="text-center text-sm text-gray-600">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-blue-600 hover:text-blue-800 underline">
-                      Sign up
-                    </Link>
-                  </div>
+                  <p className="text-center text-sm text-gray-600">
+                    Lokale Testkonten bleiben von produktiven Web-Konten getrennt.
+                  </p>
                 </CardFooter>
               </form>
             </Card>
 
             <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
               <CardHeader>
-                <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Demo Accounts</CardTitle>
+                <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Beta-Testkonten</CardTitle>
                 <CardDescription className="text-blue-600 dark:text-blue-300">
-                  Tap a role to auto-fill credentials
+                  Rolle wählen und lokale Zugangsdaten übernehmen
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -171,7 +165,7 @@ const LoginPage = () => {
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}
-                  {isLoading ? 'Logging in...' : 'Quick Login to Dashboard (Admin)'}
+                  {isLoading ? 'Anmeldung läuft...' : 'Als Admin zum Dashboard'}
                 </Button>
               </CardContent>
             </Card>
@@ -195,11 +189,12 @@ const LoginPage = () => {
           <div className="relative z-10 flex h-full w-full flex-col justify-between p-12 text-white">
             <div className="space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-sm font-medium text-white/90">
-                <Sparkles className="h-4 w-4" /> BauPlan Buddy Insights
+                <BriefcaseBusiness className="h-4 w-4" /> Arbeitsstand lokale Beta
               </span>
-              <h2 className="text-4xl font-semibold leading-tight">Digitale Bauleitung auf einen Blick.</h2>
+              <h2 className="text-4xl font-semibold leading-tight">Baualltag lokal im Griff.</h2>
               <p className="max-w-sm text-base text-white/80">
-                Koordinieren Sie Projekte, Teams und Budgets in Echtzeit. Unsere Plattform bringt alle Beteiligten an einen Tisch.
+                Projekte, Angebote, Rechnungen, Termine und Dokumente laufen in
+                dieser Beta stabil auf dem Desktop.
               </p>
             </div>
             <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur">
@@ -207,11 +202,11 @@ const LoginPage = () => {
               <ul className="mt-4 space-y-3 text-sm">
                 <li className="flex items-center gap-3">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white">08:30</span>
-                  Baustellen-Check-in Projekt Suedtor
+                  Baustellen-Check-in Projekt Südtor
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white">11:00</span>
-                  Lieferantengespraech Stahlkonstruktion
+                  Lieferantengespräch Stahlkonstruktion
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white">15:15</span>

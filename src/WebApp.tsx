@@ -1251,6 +1251,78 @@ function QuoteModuleSummary({
   );
 }
 
+function InvoiceModuleSummary({
+  invoices,
+  quotes,
+  projects,
+}: {
+  invoices: BetaEntity[];
+  quotes: BetaEntity[];
+  projects: BetaEntity[];
+}) {
+  const open = invoices.filter((item) => item.status === "Offen");
+  const paid = invoices.filter((item) => item.status === "Bezahlt").length;
+  const exported = invoices.filter((item) => item.status === "Exportiert").length;
+  const openVolume = open.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+  const totalVolume = invoices.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Rechnungsstatus</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokale Ausgangsrechnungen für die Beta. Mahnwesen, Banking und
+            Cloud-Abgleich bleiben ausgeblendet.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Offen", open.length],
+            ["Bezahlt", paid],
+            ["Exportiert", exported],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Druck & Summen</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Rechnungen nutzen das lokale Drucklayout mit Briefkopf und Brieffuß.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Offene Summe</p>
+              <p className="mt-1 text-2xl font-semibold">
+                {formatAmount(openVolume) ?? "0 €"}
+              </p>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Rechnungsvolumen</p>
+              <p className="mt-1 text-2xl font-semibold">
+                {formatAmount(totalVolume) ?? "0 €"}
+              </p>
+            </div>
+          </div>
+          <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            Grundlage lokal verfügbar: {quotes.length} Angebote und{" "}
+            {projects.length} Projekte. Produktive PDF-Nummernkreise und
+            GoBD-Prüfung folgen später.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 function PrintSettingsPreview({ settings }: { settings: PrintSettings }) {
   return (
     <div
@@ -1748,6 +1820,13 @@ function BetaRoutes() {
                       emptyText="Noch keine Rechnungen vorhanden."
                       exportable
                       printable
+                      moduleSummary={
+                        <InvoiceModuleSummary
+                          invoices={store.invoices}
+                          quotes={store.quotes}
+                          projects={store.projects}
+                        />
+                      }
                     />
                   }
                 />

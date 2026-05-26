@@ -56,9 +56,12 @@ update-panel check, and cleanup.
 
 - [ ] Create one customer.
 - [ ] Create one project and connect or reference the customer where available.
+- [ ] Confirm the project shows the selected customer after reload.
 - [ ] Edit the project title.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Create one quote and change its status.
+- [ ] Connect the quote to a customer and project and confirm both remain after
+      reload.
 - [ ] Export the quote beta JSON file.
 - [ ] Open the quote print preview and confirm Briefkopf/Brieffuss are visible.
 - [ ] Create one invoice and change its status.

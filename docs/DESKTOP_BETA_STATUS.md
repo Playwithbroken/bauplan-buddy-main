@@ -80,6 +80,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - reduzierte Beta-Navigation
 - Projektpersistenz nach Reload
 - Erstellen, Bearbeiten, Statuswechsel, Filtern und Reload fuer Kernmodule
+- Lokale Beziehungen zwischen Kunde, Projekt und Angebot inklusive Reload
 - Dokument loeschen mit Bestaetigung
 - Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
   behalten
@@ -104,11 +105,13 @@ werden als Warnung im Backup protokolliert.
 ## Aktueller Modulstand
 
 - Dashboard: lokale KPI-Uebersicht, offene Aufgaben und Schnellstart.
-- Projekte: Statusuebersicht, lokales Projektvolumen und Beta-Kontext.
-- Kunden: Kundenstatus und lokale Beziehungsbasis fuer Projekte/Angebote.
-- Angebote: Pipeline, lokales Angebotsvolumen, JSON-Export und Druckansicht.
-- Rechnungen: Rechnungsstatus, offene Summe, JSON-Export und Druckansicht.
-- Kalender: Terminstatus, naechster Termin und lokaler Kontext.
+- Projekte: Statusuebersicht, lokales Projektvolumen und Kundenzuordnung.
+- Kunden: Kundenstatus und lokale Beziehungen zu Projekten/Angeboten.
+- Angebote: Pipeline, lokales Angebotsvolumen, Kunde/Projekt-Kontext,
+  JSON-Export und Druckansicht.
+- Rechnungen: Rechnungsstatus, offene Summe, Kunde/Projekt-Kontext,
+  JSON-Export und Druckansicht.
+- Kalender: Terminstatus, naechster Termin und Kunde/Projekt-Kontext.
 - Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen und
   Missing-File-Hinweis fuer lokale Dateien.
 - Einstellungen: lokale Datenverwaltung, Backup/Restore, Supportbericht,

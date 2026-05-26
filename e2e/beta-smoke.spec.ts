@@ -152,6 +152,51 @@ test.describe("Desktop beta smoke", () => {
     }
   });
 
+  test("persists local customer and project relationships", async ({ page }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
+
+    await page.goto("/#/customers");
+    await page.getByPlaceholder("Kundenname eingeben").fill("E2E Beziehung Kunde");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await expect(page.getByText("E2E Beziehung Kunde")).toBeVisible();
+
+    await page.goto("/#/projects");
+    await page
+      .getByPlaceholder("Projektname eingeben")
+      .fill("E2E Beziehung Projekt");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Beziehung Projekt")
+      .selectOption({ label: "E2E Beziehung Kunde" });
+    await expect(page.getByText("Kontext: E2E Beziehung Kunde")).toBeVisible();
+
+    await page.goto("/#/quotes");
+    await page
+      .getByPlaceholder("Angebotstitel eingeben")
+      .fill("E2E Beziehung Angebot");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Beziehung Angebot")
+      .selectOption({ label: "E2E Beziehung Kunde" });
+    await page
+      .getByLabel("Projekt für E2E Beziehung Angebot")
+      .selectOption({ label: "E2E Beziehung Projekt" });
+    await expect(
+      page.getByText("Kontext: E2E Beziehung Kunde / E2E Beziehung Projekt"),
+    ).toBeVisible();
+
+    await page.reload();
+    await expect(
+      page.getByText("Kontext: E2E Beziehung Kunde / E2E Beziehung Projekt"),
+    ).toBeVisible();
+    await expect(page.getByLabel("Kunde für E2E Beziehung Angebot")).toHaveValue(
+      "KND-002",
+    );
+    await expect(page.getByLabel("Projekt für E2E Beziehung Angebot")).toHaveValue(
+      "PRJ-002",
+    );
+  });
+
   test("deletes a local document entry", async ({ page }) => {
     await page.getByRole("button", { name: "Anmelden" }).click();
     await page.goto("/#/documents");

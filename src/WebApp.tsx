@@ -64,6 +64,8 @@ type BetaEntity = {
   status: string;
   amount?: number;
   date: string;
+  customerId?: string;
+  projectId?: string;
   documentSource?: "manual" | "imported" | "linked";
   documentPath?: string;
   originalPath?: string;
@@ -141,6 +143,7 @@ const defaultStore: BetaStore = {
       status: "Aktiv",
       amount: 450000,
       date: "2026-05-16",
+      customerId: "KND-001",
     },
   ],
   quotes: [
@@ -151,6 +154,8 @@ const defaultStore: BetaStore = {
       status: "Entwurf",
       amount: 18500,
       date: "2026-05-16",
+      customerId: "KND-001",
+      projectId: "PRJ-001",
     },
   ],
   invoices: [
@@ -161,6 +166,8 @@ const defaultStore: BetaStore = {
       status: "Offen",
       amount: 32000,
       date: "2026-05-16",
+      customerId: "KND-001",
+      projectId: "PRJ-001",
     },
   ],
   customers: [
@@ -179,6 +186,8 @@ const defaultStore: BetaStore = {
       subtitle: "Wohnhaus Südtor, 08:30 Uhr",
       status: "Geplant",
       date: "2026-05-16",
+      customerId: "KND-001",
+      projectId: "PRJ-001",
     },
   ],
   documents: [
@@ -188,6 +197,7 @@ const defaultStore: BetaStore = {
       subtitle: "Demo-Eintrag ohne Datei",
       status: "Verfügbar",
       date: "2026-05-16",
+      projectId: "PRJ-001",
       documentSource: "manual",
     },
   ],
@@ -231,6 +241,10 @@ function normalizeBetaEntity(value: unknown, fallback: BetaEntity): BetaEntity {
     amount: typeof source.amount === "number" ? source.amount : fallback.amount,
     date:
       typeof source.date === "string" && source.date ? source.date : fallback.date,
+    customerId:
+      typeof source.customerId === "string" ? source.customerId : fallback.customerId,
+    projectId:
+      typeof source.projectId === "string" ? source.projectId : fallback.projectId,
     documentSource:
       source.documentSource === "imported" ||
       source.documentSource === "linked" ||
@@ -353,6 +367,24 @@ function getDocumentPath(item: BetaEntity) {
   return item.documentSource === "imported"
     ? item.documentPath
     : item.originalPath || item.documentPath;
+}
+
+function findEntityTitle(items: BetaEntity[], id?: string) {
+  if (!id) return null;
+  return items.find((item) => item.id === id)?.title ?? null;
+}
+
+function getEntityContextLabel(
+  item: BetaEntity,
+  projects: BetaEntity[] = [],
+  customers: BetaEntity[] = [],
+) {
+  const labels = [
+    findEntityTitle(customers, item.customerId),
+    findEntityTitle(projects, item.projectId),
+  ].filter(Boolean);
+
+  return labels.length ? labels.join(" / ") : null;
 }
 
 async function collectDocumentFilesForBackup(store: BetaStore) {
@@ -805,6 +837,21 @@ function useBetaStore() {
     });
   };
 
+  const updateEntityRelation = (
+    key: keyof BetaStore,
+    id: string,
+    relation: "customerId" | "projectId",
+    value: string,
+  ) => {
+    const nextValue = value || undefined;
+    saveStore({
+      ...store,
+      [key]: store[key].map((item) =>
+        item.id === id ? { ...item, [relation]: nextValue } : item,
+      ),
+    });
+  };
+
   const deleteEntity = (key: keyof BetaStore, id: string) => {
     saveStore({
       ...store,
@@ -1020,6 +1067,7 @@ function useBetaStore() {
     addEntity,
     updateEntityStatus,
     updateEntityTitle,
+    updateEntityRelation,
     deleteEntity,
     addImportedDocument,
     addLinkedDocument,
@@ -1330,6 +1378,7 @@ function EntityPage({
   onAdd,
   onStatusChange,
   onTitleChange,
+  onRelationChange,
   onDelete,
   onImportDocument,
   onLinkDocument,
@@ -1341,6 +1390,8 @@ function EntityPage({
   exportable = false,
   printable = false,
   moduleSummary,
+  projects = [],
+  customers = [],
 }: {
   title: string;
   description: string;
@@ -1349,6 +1400,11 @@ function EntityPage({
   onAdd: (title: string) => void;
   onStatusChange: (id: string, status: string) => void;
   onTitleChange: (id: string, title: string) => void;
+  onRelationChange?: (
+    id: string,
+    relation: "customerId" | "projectId",
+    value: string,
+  ) => void;
   onDelete: (id: string) => void;
   onImportDocument?: () => void;
   onLinkDocument?: () => void;
@@ -1360,6 +1416,8 @@ function EntityPage({
   exportable?: boolean;
   printable?: boolean;
   moduleSummary?: ReactNode;
+  projects?: BetaEntity[];
+  customers?: BetaEntity[];
 }) {
   const [draft, setDraft] = useState("");
   const [filter, setFilter] = useState("");
@@ -1440,11 +1498,14 @@ function EntityPage({
         statusOptions={statusOptions}
         onStatusChange={onStatusChange}
         onTitleChange={onTitleChange}
+        onRelationChange={onRelationChange}
         onDelete={onDelete}
         onExport={exportable ? downloadBetaEntityExport : undefined}
         onPrint={printable ? openBetaPrintPreview : undefined}
         onOpenDocument={onOpenDocument}
         onRelinkDocument={onRelinkDocument}
+        projects={projects}
+        customers={customers}
         emptyText={
           normalizedFilter
             ? "Keine passenden Einträge gefunden."
@@ -1455,7 +1516,13 @@ function EntityPage({
   );
 }
 
-function ProjectModuleSummary({ projects }: { projects: BetaEntity[] }) {
+function ProjectModuleSummary({
+  projects,
+  customers,
+}: {
+  projects: BetaEntity[];
+  customers: BetaEntity[];
+}) {
   const active = projects.filter((item) => item.status === "Aktiv").length;
   const paused = projects.filter((item) => item.status === "Pausiert").length;
   const completed = projects.filter(
@@ -1463,6 +1530,7 @@ function ProjectModuleSummary({ projects }: { projects: BetaEntity[] }) {
   ).length;
   const projectVolume = projects.reduce((sum, item) => sum + (item.amount ?? 0), 0);
   const newestProject = projects[0];
+  const linkedProjects = projects.filter((item) => item.customerId).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1502,6 +1570,13 @@ function ProjectModuleSummary({ projects }: { projects: BetaEntity[] }) {
               {formatAmount(projectVolume) ?? "0 €"}
             </p>
           </div>
+          <div className="rounded-md border bg-background p-3">
+            <p className="text-sm text-muted-foreground">Mit Kunde verknüpft</p>
+            <p className="mt-1 text-2xl font-semibold">{linkedProjects}</p>
+            <p className="text-xs text-muted-foreground">
+              {customers.length} Kunden lokal verfügbar
+            </p>
+          </div>
           {newestProject ? (
             <div className="rounded-md bg-muted p-3 text-sm">
               <p className="font-medium">Zuletzt oben in der Liste</p>
@@ -1532,6 +1607,8 @@ function CustomerModuleSummary({
   const active = customers.filter((item) => item.status === "Aktiv").length;
   const prospects = customers.filter((item) => item.status === "Interessent").length;
   const archived = customers.filter((item) => item.status === "Archiviert").length;
+  const linkedProjects = projects.filter((item) => item.customerId).length;
+  const linkedQuotes = quotes.filter((item) => item.customerId).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1569,11 +1646,11 @@ function CustomerModuleSummary({
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="rounded-md border bg-background p-3">
               <p className="text-sm text-muted-foreground">Lokale Projekte</p>
-              <p className="mt-1 text-2xl font-semibold">{projects.length}</p>
+              <p className="mt-1 text-2xl font-semibold">{linkedProjects}</p>
             </div>
             <div className="rounded-md border bg-background p-3">
               <p className="text-sm text-muted-foreground">Lokale Angebote</p>
-              <p className="mt-1 text-2xl font-semibold">{quotes.length}</p>
+              <p className="mt-1 text-2xl font-semibold">{linkedQuotes}</p>
             </div>
           </div>
           <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
@@ -1599,6 +1676,7 @@ function QuoteModuleSummary({
   const sent = quotes.filter((item) => item.status === "Gesendet").length;
   const accepted = quotes.filter((item) => item.status === "Angenommen").length;
   const quoteVolume = quotes.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+  const linkedQuotes = quotes.filter((item) => item.customerId || item.projectId).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1640,10 +1718,10 @@ function QuoteModuleSummary({
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="rounded-md bg-muted p-3 text-sm">
-              <p className="font-medium">Verfügbare Basisdaten</p>
+              <p className="font-medium">Verknüpfte Angebote</p>
               <p className="text-muted-foreground">
-                {customers.length} Kunden, {projects.length} Projekte lokal
-                gespeichert.
+                {linkedQuotes} mit Kunde oder Projekt. Basis: {customers.length}{" "}
+                Kunden, {projects.length} Projekte.
               </p>
             </div>
             <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
@@ -1661,16 +1739,21 @@ function InvoiceModuleSummary({
   invoices,
   quotes,
   projects,
+  customers,
 }: {
   invoices: BetaEntity[];
   quotes: BetaEntity[];
   projects: BetaEntity[];
+  customers: BetaEntity[];
 }) {
   const open = invoices.filter((item) => item.status === "Offen");
   const paid = invoices.filter((item) => item.status === "Bezahlt").length;
   const exported = invoices.filter((item) => item.status === "Exportiert").length;
   const openVolume = open.reduce((sum, item) => sum + (item.amount ?? 0), 0);
   const totalVolume = invoices.reduce((sum, item) => sum + (item.amount ?? 0), 0);
+  const linkedInvoices = invoices.filter(
+    (item) => item.customerId || item.projectId,
+  ).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1719,7 +1802,8 @@ function InvoiceModuleSummary({
             </div>
           </div>
           <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-            Grundlage lokal verfügbar: {quotes.length} Angebote und{" "}
+            Verknüpft: {linkedInvoices} Rechnungen. Grundlage lokal verfügbar:{" "}
+            {customers.length} Kunden, {quotes.length} Angebote und{" "}
             {projects.length} Projekte. Produktive PDF-Nummernkreise und
             GoBD-Prüfung folgen später.
           </p>
@@ -1741,6 +1825,9 @@ function CalendarModuleSummary({
   const planned = appointments.filter((item) => item.status === "Geplant");
   const completed = appointments.filter((item) => item.status === "Erledigt").length;
   const canceled = appointments.filter((item) => item.status === "Abgesagt").length;
+  const linkedAppointments = appointments.filter(
+    (item) => item.customerId || item.projectId,
+  ).length;
   const nextAppointment = planned
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date))[0];
@@ -1791,8 +1878,8 @@ function CalendarModuleSummary({
             </p>
           )}
           <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-            Lokaler Kontext: {projects.length} Projekte und {customers.length}{" "}
-            Kunden stehen für spätere Zuordnung bereit.
+            Verknüpft: {linkedAppointments} Termine. Basis: {projects.length}{" "}
+            Projekte und {customers.length} Kunden.
           </p>
         </CardContent>
       </Card>
@@ -1815,6 +1902,7 @@ function DocumentModuleSummary({
   const imported = documents.filter((item) => item.documentSource === "imported").length;
   const linked = documents.filter((item) => item.documentSource === "linked").length;
   const missing = documents.filter((item) => item.missing).length;
+  const assigned = documents.filter((item) => item.projectId || item.customerId).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1860,9 +1948,8 @@ function DocumentModuleSummary({
             </div>
           </div>
           <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-            Datei fehlt: {missing}. Zuordnungsbasis lokal verfügbar:{" "}
-            {projects.length + customers.length} Projekte und Kunden. Backups
-            sichern aktuell Metadaten und Dateipfade; ein Dateiarchiv folgt später.
+            Datei fehlt: {missing}. Zugeordnet: {assigned}. Backups sichern
+            verfügbare lokale Datei-Inhalte mit.
           </p>
         </CardContent>
       </Card>
@@ -1906,11 +1993,14 @@ function EntityList({
   statusOptions,
   onStatusChange,
   onTitleChange,
+  onRelationChange,
   onDelete,
   onExport,
   onPrint,
   onOpenDocument,
   onRelinkDocument,
+  projects = [],
+  customers = [],
   emptyText = "Noch keine Einträge vorhanden.",
 }: {
   title: string;
@@ -1919,11 +2009,18 @@ function EntityList({
   statusOptions?: string[];
   onStatusChange?: (id: string, status: string) => void;
   onTitleChange?: (id: string, title: string) => void;
+  onRelationChange?: (
+    id: string,
+    relation: "customerId" | "projectId",
+    value: string,
+  ) => void;
   onDelete?: (id: string) => void;
   onExport?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
   onPrint?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
   onOpenDocument?: (id: string) => void;
   onRelinkDocument?: (id: string) => void;
+  projects?: BetaEntity[];
+  customers?: BetaEntity[];
   emptyText?: string;
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -1992,6 +2089,11 @@ function EntityList({
                 <p className="text-sm text-muted-foreground">
                   {item.id} - {item.subtitle} - {item.date}
                 </p>
+                {getEntityContextLabel(item, projects, customers) ? (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Kontext: {getEntityContextLabel(item, projects, customers)}
+                  </p>
+                ) : null}
                 {entityKey === "documents" ? (
                   <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
                     <span className="rounded-full bg-muted px-2 py-0.5">
@@ -2028,6 +2130,48 @@ function EntityList({
                     {statusOptions.map((status) => (
                       <option key={status} value={status}>
                         {status}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+                {entityKey &&
+                onRelationChange &&
+                customers.length > 0 &&
+                entityKey !== "customers" &&
+                entityKey !== "documents" ? (
+                  <select
+                    aria-label={`Kunde für ${item.title}`}
+                    className="h-9 rounded-md border bg-background px-2 text-sm"
+                    value={item.customerId ?? ""}
+                    onChange={(event) =>
+                      onRelationChange(item.id, "customerId", event.target.value)
+                    }
+                  >
+                    <option value="">Kein Kunde</option>
+                    {customers.map((customer) => (
+                      <option key={customer.id} value={customer.id}>
+                        {customer.title}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+                {entityKey &&
+                onRelationChange &&
+                projects.length > 0 &&
+                entityKey !== "projects" &&
+                entityKey !== "customers" ? (
+                  <select
+                    aria-label={`Projekt für ${item.title}`}
+                    className="h-9 rounded-md border bg-background px-2 text-sm"
+                    value={item.projectId ?? ""}
+                    onChange={(event) =>
+                      onRelationChange(item.id, "projectId", event.target.value)
+                    }
+                  >
+                    <option value="">Kein Projekt</option>
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.title}
                       </option>
                     ))}
                   </select>
@@ -2357,6 +2501,7 @@ function BetaRoutes() {
     addEntity,
     updateEntityStatus,
     updateEntityTitle,
+    updateEntityRelation,
     deleteEntity,
     addImportedDocument,
     addLinkedDocument,
@@ -2390,11 +2535,20 @@ function BetaRoutes() {
                       onTitleChange={(id, title) =>
                         updateEntityTitle("projects", id, title)
                       }
+                      onRelationChange={(id, relation, value) =>
+                        updateEntityRelation("projects", id, relation, value)
+                      }
                       onDelete={(id) => deleteEntity("projects", id)}
+                      customers={store.customers}
                       placeholder="Projektname eingeben"
                       statusOptions={["Aktiv", "Pausiert", "Abgeschlossen"]}
                       emptyText="Noch keine Projekte vorhanden."
-                      moduleSummary={<ProjectModuleSummary projects={store.projects} />}
+                      moduleSummary={
+                        <ProjectModuleSummary
+                          projects={store.projects}
+                          customers={store.customers}
+                        />
+                      }
                     />
                   }
                 />
@@ -2413,7 +2567,12 @@ function BetaRoutes() {
                       onTitleChange={(id, title) =>
                         updateEntityTitle("quotes", id, title)
                       }
+                      onRelationChange={(id, relation, value) =>
+                        updateEntityRelation("quotes", id, relation, value)
+                      }
                       onDelete={(id) => deleteEntity("quotes", id)}
+                      projects={store.projects}
+                      customers={store.customers}
                       placeholder="Angebotstitel eingeben"
                       statusOptions={["Entwurf", "Gesendet", "Angenommen"]}
                       emptyText="Noch keine Angebote vorhanden."
@@ -2444,7 +2603,12 @@ function BetaRoutes() {
                       onTitleChange={(id, title) =>
                         updateEntityTitle("invoices", id, title)
                       }
+                      onRelationChange={(id, relation, value) =>
+                        updateEntityRelation("invoices", id, relation, value)
+                      }
                       onDelete={(id) => deleteEntity("invoices", id)}
+                      projects={store.projects}
+                      customers={store.customers}
                       placeholder="Rechnungstitel eingeben"
                       statusOptions={["Offen", "Bezahlt", "Exportiert"]}
                       emptyText="Noch keine Rechnungen vorhanden."
@@ -2455,6 +2619,7 @@ function BetaRoutes() {
                           invoices={store.invoices}
                           quotes={store.quotes}
                           projects={store.projects}
+                          customers={store.customers}
                         />
                       }
                     />
@@ -2475,7 +2640,12 @@ function BetaRoutes() {
                       onTitleChange={(id, title) =>
                         updateEntityTitle("appointments", id, title)
                       }
+                      onRelationChange={(id, relation, value) =>
+                        updateEntityRelation("appointments", id, relation, value)
+                      }
                       onDelete={(id) => deleteEntity("appointments", id)}
+                      projects={store.projects}
+                      customers={store.customers}
                       placeholder="Termin eingeben"
                       statusOptions={["Geplant", "Erledigt", "Abgesagt"]}
                       emptyText="Noch keine Termine vorhanden."
@@ -2533,7 +2703,12 @@ function BetaRoutes() {
                       onTitleChange={(id, title) =>
                         updateEntityTitle("documents", id, title)
                       }
+                      onRelationChange={(id, relation, value) =>
+                        updateEntityRelation("documents", id, relation, value)
+                      }
                       onDelete={(id) => deleteEntity("documents", id)}
+                      projects={store.projects}
+                      customers={store.customers}
                       onImportDocument={() => void addImportedDocument()}
                       onLinkDocument={() => void addLinkedDocument()}
                       onOpenDocument={(id) => void openDocument(id)}

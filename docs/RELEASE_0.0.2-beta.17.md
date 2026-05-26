@@ -27,6 +27,7 @@ Realtime-/AI-Demo-Flaechen.
   `2233e93` gruen gelaufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
+  lokale Kunde/Projekt/Angebot-Beziehungen,
   Angebots-/Rechnungs-Druckansicht, lokaler Dokumentimport, Backup-Export,
   Backup-Import und Supportbericht.
 - Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked

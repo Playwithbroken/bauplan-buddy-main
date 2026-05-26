@@ -23,14 +23,20 @@ Realtime-/AI-Demo-Flaechen.
 
 ## Abnahme-Status
 
-- GitHub Actions `CI/CD Pipeline` Run `#53` ist gruen fuer Commit `ecdcd14`.
-- Lokal war `npm run quality:desktop-beta:installer` gruen.
+- Lokale App-Gates wurden nach den aktuellen Beta-UI-Erweiterungen erneut
+  geprueft: TypeScript, Lint, Jest, Playwright-Beta-Smoke und Vite-Build sind
+  gruen.
+- Vor finalem Artefakt-Freeze muss `npm run quality:desktop-beta:installer`
+  erneut fuer den Release Candidate laufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
-  Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
-  Release-Artefaktpruefung, Authenticode-`NotSigned`-Status,
-  Default-Installationspfad, Silent-Install-Smoke, Start der installierten App,
-  Login, echter App-Neustart, Projektpersistenz, Backup-Export, Backup-Import,
-  nativer Update-Panel-Check und Cleanup.
+  Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
+  Angebots-/Rechnungs-Druckansicht, Backup-Export, Backup-Import und
+  Supportbericht.
+- Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked
+  App-Smoke, unsigned Installer-Build, Release-Artefaktpruefung,
+  Authenticode-`NotSigned`-Status, Default-Installationspfad,
+  Silent-Install-Smoke, Start der installierten App, Login, echten
+  App-Neustart, Projektpersistenz, nativen Update-Panel-Check und Cleanup.
 - Das manuelle Abnahmeprotokoll liegt in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 
 ## Artefakte
@@ -52,6 +58,9 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 
 - Dokumente sind lokale Dokumenteintraege; Datei-Inhalte werden noch nicht
   dauerhaft in der App gespeichert.
+- Briefkopf und Brieffuss sind lokale Beta-Drucklayout-Einstellungen.
+  Angebote und Rechnungen koennen eine A4-Druckansicht oeffnen; produktive
+  PDF-Nummernkreise, finale Pflichtangaben und GoBD-Pruefung folgen spaeter.
 - Der Update-Endpoint ist fuer lokale Beta-Tests nicht produktiv angebunden.
 - Der gepackte Desktop-Renderer verwendet einen stabilen lokalen Origin, damit
   die local-first Beta-Daten App-Neustarts ueberstehen.
@@ -64,7 +73,8 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
   `vite_react_shadcn_ts` gehoeren nicht zum Beta-Artefakt.
 - Finale Freigabe benoetigt weiterhin die interaktive Windows-QA ueber den
   One-Click-Start aus Explorer, insbesondere fuer sichtbare
-  SmartScreen-/Trust-Hinweise der unsigned Beta.
+  SmartScreen-/Trust-Hinweise der unsigned Beta und die native
+  Druckdialog-Pruefung.
 
 ## Relevante Dokumente
 

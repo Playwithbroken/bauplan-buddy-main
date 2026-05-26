@@ -2,9 +2,10 @@
 
 Use this checklist for the final interactive Windows QA of
 `0.0.2-beta.17`. Automated gates already cover build, typecheck, lint, unit
-tests, Playwright beta smoke, unpacked app launch, silent installer install,
-installed app launch, login, real app restart, project persistence, backup
-export/import, native update-panel check, and cleanup.
+tests, Playwright beta smoke, print-layout persistence, print-preview launch,
+unpacked app launch, silent installer install, installed app launch, login,
+real app restart, project persistence, backup export/import, native
+update-panel check, and cleanup.
 
 ## Test Environment
 
@@ -47,6 +48,8 @@ export/import, native update-panel check, and cleanup.
       Rechnungen, Kalender, Kunden, Dokumente, Einstellungen.
 - [ ] No visible encoding damage appears in login, dashboard, navigation,
       lists, settings, or error messages.
+- [ ] Dashboard, Projekte, Kunden, Angebote, Rechnungen, Kalender, Dokumente
+      and Einstellungen each show a usable local beta overview.
 
 ## Core Data Flow
 
@@ -56,8 +59,11 @@ export/import, native update-panel check, and cleanup.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Create one quote and change its status.
 - [ ] Export the quote beta JSON file.
+- [ ] Open the quote print preview and confirm Briefkopf/Brieffuss are visible.
 - [ ] Create one invoice and change its status.
 - [ ] Export the invoice beta JSON file.
+- [ ] Open the invoice print preview and confirm it is printable through the
+      native Windows print dialog.
 - [ ] Create one calendar appointment.
 - [ ] Edit the appointment.
 - [ ] Delete the appointment.
@@ -75,10 +81,13 @@ export/import, native update-panel check, and cleanup.
 
 ## Backup And Support
 
+- [ ] Edit Briefkopf and Brieffuss under Einstellungen > Drucklayout.
+- [ ] Reload the app and confirm the Drucklayout values remain present.
 - [ ] Export a beta backup from Einstellungen.
 - [ ] Reset beta data.
 - [ ] Import the backup.
 - [ ] Confirm restored records are available again.
+- [ ] Confirm restored Briefkopf and Brieffuss are available again.
 - [ ] Export a support report.
 - [ ] Confirm the support report does not contain raw customer, project,
       quote, invoice, appointment, or document records.
@@ -96,10 +105,14 @@ export/import, native update-panel check, and cleanup.
 
 ## Responsive Visual QA
 
-- [ ] 1366x768 desktop width: login, dashboard, sidebar, lists, dialogs.
-- [ ] 1920x1080 desktop width: login, dashboard, sidebar, lists, dialogs.
-- [ ] 768px tablet width: sidebar/navigation, dashboard, lists, dialogs.
-- [ ] 390px mobile width: login, primary flow, navigation, dialogs.
+- [ ] 1366x768 desktop width: login, dashboard, sidebar, module overviews,
+      lists, settings, dialogs.
+- [ ] 1920x1080 desktop width: login, dashboard, sidebar, module overviews,
+      lists, settings, dialogs.
+- [ ] 768px tablet width: sidebar/navigation, dashboard, module overviews,
+      lists, settings, dialogs.
+- [ ] 390px mobile width: login, primary flow, navigation, module overviews,
+      settings, dialogs.
 - [ ] No primary text or buttons overlap at the checked widths.
 
 ## Cleanup

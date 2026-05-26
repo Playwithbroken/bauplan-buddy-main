@@ -98,6 +98,27 @@ type PrintSettings = {
   paperSize: "A4";
 };
 
+type BetaBackupFile = {
+  documentId: string;
+  filename: string;
+  source: "imported" | "linked";
+  mimeType?: string;
+  size?: number;
+  dataBase64: string;
+};
+
+type BetaBackupPayload = {
+  app: "Bauplan Buddy";
+  type: "desktop-beta-backup";
+  version: string;
+  exportedAt: string;
+  store: BetaStore;
+  printSettings: PrintSettings;
+  documentStorage: string;
+  documentFiles: BetaBackupFile[];
+  documentFileWarnings: string[];
+};
+
 const USER_KEY = "bauplan_beta_user";
 const STORE_KEY = "bauplan_beta_store";
 const PRINT_SETTINGS_KEY = "bauplan_beta_print_settings";
@@ -334,21 +355,75 @@ function getDocumentPath(item: BetaEntity) {
     : item.originalPath || item.documentPath;
 }
 
-function buildBetaBackup() {
+async function collectDocumentFilesForBackup(store: BetaStore) {
+  const documentFiles: BetaBackupFile[] = [];
+  const documentFileWarnings: string[] = [];
+
+  if (!window.desktop?.readFile) {
+    const hasFileDocuments = store.documents.some(
+      (item) => item.documentSource === "imported" || item.documentSource === "linked",
+    );
+    if (hasFileDocuments) {
+      documentFileWarnings.push(
+        "Dateiinhalte konnten in dieser Umgebung nicht gelesen werden.",
+      );
+    }
+    return { documentFiles, documentFileWarnings };
+  }
+
+  for (const item of store.documents) {
+    if (item.documentSource !== "imported" && item.documentSource !== "linked") {
+      continue;
+    }
+
+    const targetPath = getDocumentPath(item);
+    if (!targetPath) {
+      documentFileWarnings.push(`${item.id}: kein Dateipfad vorhanden.`);
+      continue;
+    }
+
+    const result = await window.desktop.readFile(targetPath);
+    if (!result.ok || !result.dataBase64) {
+      documentFileWarnings.push(
+        `${item.id}: Datei konnte nicht in die Sicherung aufgenommen werden.`,
+      );
+      continue;
+    }
+
+    documentFiles.push({
+      documentId: item.id,
+      filename: result.name || item.title || getFileNameFromPath(targetPath),
+      source: item.documentSource,
+      mimeType: result.mimeType || item.mimeType,
+      size: result.size ?? item.fileSize,
+      dataBase64: result.dataBase64,
+    });
+  }
+
+  return { documentFiles, documentFileWarnings };
+}
+
+async function buildBetaBackup(): Promise<BetaBackupPayload> {
+  const store = readBetaStore();
+  const { documentFiles, documentFileWarnings } =
+    await collectDocumentFilesForBackup(store);
+
   return {
     app: "Bauplan Buddy",
     type: "desktop-beta-backup",
     version: "0.0.2-beta.17",
     exportedAt: new Date().toISOString(),
-    store: readBetaStore(),
+    store,
     printSettings: readPrintSettings(),
     documentStorage:
-      "Metadaten und Dateipfade werden gesichert. Importierte Datei-Inhalte sind noch nicht im JSON-Backup enthalten.",
+      "Metadaten, Dateipfade und verfügbare lokale Dokumentdateien werden gesichert.",
+    documentFiles,
+    documentFileWarnings,
   };
 }
 
-function downloadBetaBackup() {
-  downloadJsonFile("bauplan-buddy-beta-backup", buildBetaBackup());
+async function downloadBetaBackup() {
+  downloadJsonFile("bauplan-buddy-beta-backup", await buildBetaBackup());
 }
 
 function downloadJsonFile(filenamePrefix: string, payload: unknown) {
@@ -416,6 +491,49 @@ function downloadBetaEntityExport(entityKey: keyof BetaStore, item: BetaEntity) 
     printSettings: readPrintSettings(),
     record: item,
   });
+}
+
+async function restoreDocumentFilesFromBackup(
+  store: BetaStore,
+  documentFiles: BetaBackupFile[],
+) {
+  if (!documentFiles.length || !window.desktop?.writeFile) return store;
+
+  const restoredById = new Map<string, BetaBackupFile & { path: string }>();
+
+  for (const file of documentFiles) {
+    const safeName = `${Date.now()}-${file.documentId}-${file.filename}`;
+    const result = await window.desktop.writeFile(safeName, file.dataBase64);
+    if (result.ok && result.path) {
+      restoredById.set(file.documentId, {
+        ...file,
+        path: result.path,
+        mimeType: file.mimeType || result.mimeType,
+      });
+    }
+  }
+
+  if (!restoredById.size) return store;
+
+  return {
+    ...store,
+    documents: store.documents.map((item) => {
+      const restored = restoredById.get(item.id);
+      if (!restored) return item;
+
+      return {
+        ...item,
+        title: item.title || restored.filename,
+        subtitle: "Aus Datensicherung wiederhergestellt",
+        documentSource: "imported" as const,
+        documentPath: restored.path,
+        originalPath: item.originalPath,
+        fileSize: restored.size,
+        mimeType: restored.mimeType,
+        missing: false,
+      };
+    }),
+  };
 }
 
 function escapeHtml(value: string) {
@@ -608,7 +726,7 @@ class BetaErrorBoundary extends Component<
           </CardHeader>
           <CardContent className="flex flex-col gap-3 sm:flex-row">
             <Button onClick={() => window.location.reload()}>Neu laden</Button>
-            <Button variant="outline" onClick={downloadBetaBackup}>
+            <Button variant="outline" onClick={() => void downloadBetaBackup()}>
               Daten sichern
             </Button>
             <Button variant="outline" onClick={downloadBetaSupportReport}>
@@ -2002,9 +2120,18 @@ function SettingsPage() {
     window.desktop?.isDesktop && window.desktop.checkForUpdates,
   );
 
-  const saveBackup = () => {
-    downloadBetaBackup();
-    setMessage("Datensicherung wurde erstellt.");
+  const saveBackup = async () => {
+    try {
+      const backup = await buildBetaBackup();
+      downloadJsonFile("bauplan-buddy-beta-backup", backup);
+      setMessage(
+        backup.documentFileWarnings.length
+          ? `Datensicherung wurde mit ${backup.documentFileWarnings.length} Dateihinweisen erstellt.`
+          : "Datensicherung wurde inklusive verfügbarer Dokumentdateien erstellt.",
+      );
+    } catch {
+      setMessage("Datensicherung konnte nicht erstellt werden.");
+    }
   };
 
   const importBackup = async (file: File) => {
@@ -2013,11 +2140,15 @@ function SettingsPage() {
       const parsed = JSON.parse(raw) as {
         store?: BetaStore;
         printSettings?: unknown;
+        documentFiles?: BetaBackupFile[];
       };
       if (!parsed.store) {
         throw new Error("missing store");
       }
-      const nextStore = normalizeBetaStore(parsed.store);
+      const nextStore = await restoreDocumentFilesFromBackup(
+        normalizeBetaStore(parsed.store),
+        Array.isArray(parsed.documentFiles) ? parsed.documentFiles : [],
+      );
       localStorage.setItem(STORE_KEY, JSON.stringify(nextStore));
       if (parsed.printSettings) {
         const nextPrintSettings = normalizePrintSettings(parsed.printSettings);
@@ -2101,12 +2232,12 @@ function SettingsPage() {
               <p className="text-sm font-medium">Dateien</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Importierte und verlinkte Dokumente sind lokal nutzbar. Backups
-                enthalten in dieser Beta Metadaten und Dateipfade, noch kein ZIP-Dateiarchiv.
+                nehmen verfügbare Datei-Inhalte als lokale Beta-Archivdaten mit.
               </p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <Button variant="outline" onClick={saveBackup}>
+            <Button variant="outline" onClick={() => void saveBackup()}>
               Daten sichern
             </Button>
             <Button

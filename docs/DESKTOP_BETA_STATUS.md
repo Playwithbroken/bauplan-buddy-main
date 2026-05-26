@@ -94,12 +94,12 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   Neustart der installierten App, Login, Projektpersistenz, Backup-Export,
   Backup-Import, nativem Update-Panel-Check und Cleanup
 
-Dokumente unterstuetzen jetzt zwei lokale Dateiarten: `imported` kopiert die
-Datei in den app-kontrollierten Bauplan-Buddy-Ordner, `linked` merkt sich den
+Dokumente unterstuetzen zwei lokale Dateiarten: `imported` kopiert die Datei in
+den app-kontrollierten Bauplan-Buddy-Ordner, `linked` merkt sich den
 Originalpfad. Die Dokumentseite zeigt Importiert, Verlinkt und Datei-fehlt
-sichtbar an. JSON-Backups sichern weiterhin Metadaten und Dateipfade; ein
-Backup-Archiv mit eingebetteten Datei-Inhalten bleibt der naechste
-Ausbauschritt.
+sichtbar an. JSON-Backups sichern Metadaten, Dateipfade und verfuegbare lokale
+Dateiinhalte als Beta-Archivdaten. Dateien, die beim Export nicht lesbar sind,
+werden als Warnung im Backup protokolliert.
 
 ## Aktueller Modulstand
 

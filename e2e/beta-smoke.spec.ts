@@ -306,18 +306,73 @@ test.describe("Desktop beta smoke", () => {
     await page.getByRole("button", { name: "Neu anlegen" }).click();
     await expect(page.getByText("E2E Backup Projekt")).toBeVisible();
 
+    await page.goto("/#/documents");
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Backup Plan.pdf"],
+          }),
+          readFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Desktop\\Backup Plan.pdf",
+            name: "Backup Plan.pdf",
+            mimeType: "application/pdf",
+            size: 4096,
+            dataBase64: "ZG9rdW1lbnQ=",
+          }),
+          writeFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Documents\\Bauplan Buddy\\Backup Plan.pdf",
+            name: "Backup Plan.pdf",
+            mimeType: "application/pdf",
+          }),
+        },
+      });
+    });
+    await page.getByRole("button", { name: "Datei importieren" }).click();
+    await expect(page.getByText("Backup Plan.pdf")).toBeVisible();
+
     await page.goto("/#/settings");
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: "Daten sichern" }).click();
     const download = await downloadPromise;
     const backupPath = await download.path();
     expect(backupPath).toBeTruthy();
+    const backupStream = await download.createReadStream();
+    const backupChunks: Buffer[] = [];
+    await new Promise<void>((resolve, reject) => {
+      backupStream.on("data", (chunk) => backupChunks.push(Buffer.from(chunk)));
+      backupStream.on("end", resolve);
+      backupStream.on("error", reject);
+    });
+    const backupJson = JSON.parse(Buffer.concat(backupChunks).toString("utf8"));
+    expect(backupJson.documentFiles).toHaveLength(1);
+    expect(backupJson.documentFiles[0].filename).toBe("Backup Plan.pdf");
+    expect(backupJson.documentFiles[0].dataBase64).toBe("ZG9rdW1lbnQ=");
 
     await page.getByRole("button", { name: "Beta-Demodaten zurücksetzen" }).click();
     await page.goto("/#/projects");
     await expect(page.getByText("E2E Backup Projekt")).toBeHidden();
 
     await page.goto("/#/settings");
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          writeFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Documents\\Bauplan Buddy\\Restored Backup Plan.pdf",
+            name: "Restored Backup Plan.pdf",
+            mimeType: "application/pdf",
+          }),
+        },
+      });
+    });
     await page
       .getByLabel("Beta-Datensicherung auswählen")
       .setInputFiles(backupPath!);
@@ -325,6 +380,9 @@ test.describe("Desktop beta smoke", () => {
 
     await page.goto("/#/projects");
     await expect(page.getByText("E2E Backup Projekt")).toBeVisible();
+    await page.goto("/#/documents");
+    await expect(page.getByText("Backup Plan.pdf")).toBeVisible();
+    await expect(page.getByText("Aus Datensicherung wiederhergestellt")).toBeVisible();
   });
 
   test("exports a support report without raw beta records", async ({ page }) => {

@@ -60,6 +60,16 @@ test.describe("Desktop beta smoke", () => {
       localStorage.removeItem("bauplan_beta_print_settings");
     });
     await page.goto("/#/login", { waitUntil: "domcontentloaded" });
+    try {
+      await expect(
+        page.getByRole("button", { name: "Anmelden" }),
+      ).toBeVisible({ timeout: 15000 });
+    } catch {
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await expect(
+        page.getByRole("button", { name: "Anmelden" }),
+      ).toBeVisible({ timeout: 15000 });
+    }
   });
 
   test("logs in and opens the dashboard without runtime errors", async ({

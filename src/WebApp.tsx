@@ -1394,6 +1394,74 @@ function CalendarModuleSummary({
   );
 }
 
+function DocumentModuleSummary({
+  documents,
+  projects,
+  customers,
+}: {
+  documents: BetaEntity[];
+  projects: BetaEntity[];
+  customers: BetaEntity[];
+}) {
+  const available = documents.filter((item) => item.status === "Verfügbar").length;
+  const checked = documents.filter((item) => item.status === "Geprüft").length;
+  const archived = documents.filter((item) => item.status === "Archiviert").length;
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Dokumentenstatus</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Lokale Dokumenteinträge für die Beta. Datei-Inhalte werden noch nicht
+            im app-kontrollierten Speicher abgelegt.
+          </p>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Verfügbar", available],
+            ["Geprüft", checked],
+            ["Archiviert", archived],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Lokale Dateien</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Importierte und verlinkte echte Dateien werden im nächsten
+            Desktop-Dateisystem-Schritt ergänzt.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Dokumenteinträge</p>
+              <p className="mt-1 text-2xl font-semibold">{documents.length}</p>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm text-muted-foreground">Zuordnungsbasis</p>
+              <p className="mt-1 text-2xl font-semibold">
+                {projects.length + customers.length}
+              </p>
+            </div>
+          </div>
+          <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            Aktuell werden Name, Status und Metadaten lokal gesichert. Backup
+            enthält diese Einträge; Datei-Inhalte folgen mit Import/Link.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 function PrintSettingsPreview({ settings }: { settings: PrintSettings }) {
   return (
     <div
@@ -1978,6 +2046,13 @@ function BetaRoutes() {
                       placeholder="Dokumentname eingeben"
                       statusOptions={["Verfügbar", "Geprüft", "Archiviert"]}
                       emptyText="Noch keine Dokumenteinträge vorhanden."
+                      moduleSummary={
+                        <DocumentModuleSummary
+                          documents={store.documents}
+                          projects={store.projects}
+                          customers={store.customers}
+                        />
+                      }
                     />
                   }
                 />

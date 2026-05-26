@@ -32,13 +32,16 @@ Diese Konten sind nur fuer lokale Desktop-/Demo-Beta gedacht.
 
 ## Quality-Gates
 
-GitHub Actions:
+Lokaler Gate-Stand:
 
-- `CI/CD Pipeline` Run `#53` ist gruen fuer Commit `ecdcd14`.
-- Abgedeckt sind `typecheck:beta`, Lint, Jest mit Coverage-Report,
-  Vite-Build, Playwright-Beta-Smoke und der Pipeline-Status.
-- Die PR-CI ist bewusst auf die lokale Desktop-Beta begrenzt. Legacy-Backend-,
-  Cloud-, Sonar- und Docker-Pfade bleiben ausserhalb dieses Beta-Gates.
+- `npm run quality:desktop-beta:installer` ist am 26.05.2026 fuer Commit
+  `5547f19` gruen gelaufen.
+- Abgedeckt sind `typecheck:beta`, Lint, Jest, Playwright-Beta-Smoke,
+  Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
+  Release-Artefaktpruefung, Authenticode-`NotSigned`-Status und
+  Installer-Smoke.
+- Legacy-Backend-, Cloud-, Sonar- und Docker-Pfade bleiben ausserhalb dieses
+  lokalen Desktop-Beta-Gates.
 
 Release-Notiz: `docs/RELEASE_0.0.2-beta.17.md`.
 
@@ -133,12 +136,13 @@ bleiben.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
+- SHA256: `53FE500399B49C04A24E03B9480267D897186027182B15F60A8E2A558975274A`
 
 Automatisiert geprueft sind Default-Installationspfad, Installer-Installation,
 Start, Login, echter App-Neustart, Projektpersistenz, Backup-Export,
 Backup-Import, nativer Update-Panel-Check und Cleanup. Die letzte ausstehende
 Freigabe ist die manuelle Windows-Installer-QA ueber den interaktiven
 NSIS-One-Click-Start aus Explorer, insbesondere fuer sichtbare
-SmartScreen-/Trust-Hinweise der unsigned Beta. Das Abnahmeprotokoll liegt in
+SmartScreen-/Trust-Hinweise der unsigned Beta und die native
+Druckdialog-Pruefung. Das Abnahmeprotokoll liegt in
 `docs/DESKTOP_BETA_MANUAL_QA.md`.

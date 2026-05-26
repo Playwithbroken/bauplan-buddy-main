@@ -16,14 +16,14 @@ update-panel check, and cleanup.
 - Installer:
   `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Installer SHA256:
-  `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
+  `53FE500399B49C04A24E03B9480267D897186027182B15F60A8E2A558975274A`
 
 ## Pre-Checks
 
 - [ ] No existing Bauplan Buddy user installation is present, or it has been
       intentionally backed up before testing.
 - [ ] `npm run quality:desktop-beta:installer` has passed on the release
-      candidate.
+      candidate. Last local pass: 26.05.2026, commit `5547f19`.
 - [ ] GitHub Actions `CI/CD Pipeline` is green for the release candidate branch.
 - [ ] The installer, `.blockmap`, and `beta.yml` exist in `release/`.
 

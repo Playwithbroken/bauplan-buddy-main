@@ -23,11 +23,8 @@ Realtime-/AI-Demo-Flaechen.
 
 ## Abnahme-Status
 
-- Lokale App-Gates wurden nach den aktuellen Beta-UI-Erweiterungen erneut
-  geprueft: TypeScript, Lint, Jest, Playwright-Beta-Smoke und Vite-Build sind
-  gruen.
-- Vor finalem Artefakt-Freeze muss `npm run quality:desktop-beta:installer`
-  erneut fuer den Release Candidate laufen.
+- `npm run quality:desktop-beta:installer` ist am 26.05.2026 fuer Commit
+  `5547f19` gruen gelaufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
   Angebots-/Rechnungs-Druckansicht, Backup-Export, Backup-Import und
@@ -44,7 +41,7 @@ Realtime-/AI-Demo-Flaechen.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `1A55A058B8413CC82C72AAE57A6F2B75607BDB2E5987826308F812E23F6CFFFA`
+- SHA256: `53FE500399B49C04A24E03B9480267D897186027182B15F60A8E2A558975274A`
 
 ## Beta-Konten
 

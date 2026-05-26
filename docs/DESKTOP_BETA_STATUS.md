@@ -81,6 +81,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Projektpersistenz nach Reload
 - Erstellen, Bearbeiten, Statuswechsel, Filtern und Reload fuer Kernmodule
 - Dokument loeschen mit Bestaetigung
+- Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
+  behalten
 - Angebot und Rechnung als lokale Beta-JSON-Datei exportieren
 - Briefkopf/Brieffuss lokal bearbeiten, nach Reload behalten und in einer
   Druckansicht fuer Angebote/Rechnungen verwenden
@@ -92,10 +94,12 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   Neustart der installierten App, Login, Projektpersistenz, Backup-Export,
   Backup-Import, nativem Update-Panel-Check und Cleanup
 
-Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
-noch nicht dauerhaft in der App gespeichert. Die Dokumentseite markiert diesen
-Status bewusst: Dokument-Metadaten werden gesichert, echte importierte oder
-verlinkte Dateien folgen als separater Desktop-Dateisystem-Schritt.
+Dokumente unterstuetzen jetzt zwei lokale Dateiarten: `imported` kopiert die
+Datei in den app-kontrollierten Bauplan-Buddy-Ordner, `linked` merkt sich den
+Originalpfad. Die Dokumentseite zeigt Importiert, Verlinkt und Datei-fehlt
+sichtbar an. JSON-Backups sichern weiterhin Metadaten und Dateipfade; ein
+Backup-Archiv mit eingebetteten Datei-Inhalten bleibt der naechste
+Ausbauschritt.
 
 ## Aktueller Modulstand
 
@@ -105,7 +109,8 @@ verlinkte Dateien folgen als separater Desktop-Dateisystem-Schritt.
 - Angebote: Pipeline, lokales Angebotsvolumen, JSON-Export und Druckansicht.
 - Rechnungen: Rechnungsstatus, offene Summe, JSON-Export und Druckansicht.
 - Kalender: Terminstatus, naechster Termin und lokaler Kontext.
-- Dokumente: Statusuebersicht und klare Metadaten-/Datei-Abgrenzung.
+- Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen und
+  Missing-File-Hinweis fuer lokale Dateien.
 - Einstellungen: lokale Datenverwaltung, Backup/Restore, Supportbericht,
   Drucklayout mit Briefkopf/Brieffuss und Update-Panel.
 

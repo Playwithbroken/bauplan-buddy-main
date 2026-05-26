@@ -27,6 +27,7 @@ interface Window {
     ) => Promise<{ windowId: number; url: string }>;
     notify: (title: string, body?: string) => Promise<{ ok: boolean; reason?: string }>;
     openExternal: (url: string) => Promise<{ ok: boolean; reason?: string }>;
+    openPath: (targetPath: string) => Promise<{ ok: boolean; reason?: string; message?: string }>;
     openFileDialog: (
       filters?: Array<{ name: string; extensions: string[] }>,
       properties?: Array<"openFile" | "openDirectory" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent">,

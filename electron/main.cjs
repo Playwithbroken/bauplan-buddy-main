@@ -38,6 +38,7 @@ const IPC_CHANNELS = {
   OPEN_TEAR_OFF: "desktop:open-tear-off",
   NOTIFY: "desktop:notify",
   OPEN_EXTERNAL: "desktop:open-external",
+  OPEN_PATH: "desktop:file:open-path",
   OPEN_FILE_DIALOG: "desktop:file:open-dialog",
   READ_FILE: "desktop:file:read",
   WRITE_FILE: "desktop:file:write",
@@ -492,6 +493,25 @@ ipcMain.handle(IPC_CHANNELS.OPEN_EXTERNAL, (_event, targetUrl) => {
 
   void shell.openExternal(targetUrl);
   return { ok: true };
+});
+
+ipcMain.handle(IPC_CHANNELS.OPEN_PATH, async (_event, targetPath) => {
+  if (!isValidAbsoluteFilePath(targetPath)) {
+    return { ok: false, reason: "invalid_path" };
+  }
+
+  try {
+    const result = await shell.openPath(targetPath);
+    return result
+      ? { ok: false, reason: "open_failed", message: result }
+      : { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: "open_failed",
+      message: error?.message || "Could not open file",
+    };
+  }
 });
 
 ipcMain.handle(IPC_CHANNELS.OPEN_FILE_DIALOG, async (_event, payload) => {

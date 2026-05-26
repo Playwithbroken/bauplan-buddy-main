@@ -184,6 +184,48 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByText("DOK-002")).toBeVisible();
   });
 
+  test("imports a local desktop document and keeps its metadata", async ({ page }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.goto("/#/documents");
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Beta Import.pdf"],
+          }),
+          readFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Desktop\\Beta Import.pdf",
+            name: "Beta Import.pdf",
+            mimeType: "application/pdf",
+            size: 2048,
+            dataBase64: "YmV0YQ==",
+          }),
+          writeFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Documents\\Bauplan Buddy\\Beta Import.pdf",
+            name: "Beta Import.pdf",
+            mimeType: "application/pdf",
+          }),
+          fileExists: async () => ({ ok: true, exists: true }),
+          openPath: async () => ({ ok: true }),
+        },
+      });
+    });
+
+    await page.getByRole("button", { name: "Datei importieren" }).click();
+    await expect(page.getByText("Beta Import.pdf")).toBeVisible();
+    await expect(page.getByText("Importiert").first()).toBeVisible();
+    await expect(page.getByText("2 KB")).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByText("Beta Import.pdf")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Datei Beta Import.pdf öffnen" })).toBeVisible();
+  });
+
   test("exports local quote and invoice beta records", async ({ page }) => {
     await page.getByRole("button", { name: "Anmelden" }).click();
 

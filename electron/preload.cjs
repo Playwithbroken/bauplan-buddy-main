@@ -9,6 +9,7 @@ const desktopApi = {
     invoke("desktop:open-tear-off", { path, title, width, height }),
   notify: (title, body) => invoke("desktop:notify", { title, body }),
   openExternal: (url) => invoke("desktop:open-external", url),
+  openPath: (targetPath) => invoke("desktop:file:open-path", targetPath),
   openFileDialog: (filters, properties, title) =>
     invoke("desktop:file:open-dialog", { filters, properties, title }),
   readFile: (targetPath) => invoke("desktop:file:read", targetPath),

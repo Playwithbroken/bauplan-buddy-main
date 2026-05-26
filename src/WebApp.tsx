@@ -64,6 +64,12 @@ type BetaEntity = {
   status: string;
   amount?: number;
   date: string;
+  documentSource?: "manual" | "imported" | "linked";
+  documentPath?: string;
+  originalPath?: string;
+  fileSize?: number;
+  mimeType?: string;
+  missing?: boolean;
 };
 
 type BetaUser = {
@@ -158,9 +164,10 @@ const defaultStore: BetaStore = {
     {
       id: "DOK-001",
       title: "Bauzeitenplan.pdf",
-      subtitle: "Lokal abgelegt",
+      subtitle: "Demo-Eintrag ohne Datei",
       status: "Verfügbar",
       date: "2026-05-16",
+      documentSource: "manual",
     },
   ],
 };
@@ -203,6 +210,26 @@ function normalizeBetaEntity(value: unknown, fallback: BetaEntity): BetaEntity {
     amount: typeof source.amount === "number" ? source.amount : fallback.amount,
     date:
       typeof source.date === "string" && source.date ? source.date : fallback.date,
+    documentSource:
+      source.documentSource === "imported" ||
+      source.documentSource === "linked" ||
+      source.documentSource === "manual"
+        ? source.documentSource
+        : fallback.documentSource,
+    documentPath:
+      typeof source.documentPath === "string"
+        ? source.documentPath
+        : fallback.documentPath,
+    originalPath:
+      typeof source.originalPath === "string"
+        ? source.originalPath
+        : fallback.originalPath,
+    fileSize:
+      typeof source.fileSize === "number" ? source.fileSize : fallback.fileSize,
+    mimeType:
+      typeof source.mimeType === "string" ? source.mimeType : fallback.mimeType,
+    missing:
+      typeof source.missing === "boolean" ? source.missing : fallback.missing,
   };
 }
 
@@ -290,6 +317,23 @@ function formatAmount(value?: number) {
   }).format(value);
 }
 
+function formatFileSize(value?: number) {
+  if (typeof value !== "number" || value < 0) return null;
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${Math.round(value / 1024)} KB`;
+  return `${(value / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function getFileNameFromPath(filePath: string) {
+  return filePath.split(/[\\/]/).filter(Boolean).pop() || "Dokument";
+}
+
+function getDocumentPath(item: BetaEntity) {
+  return item.documentSource === "imported"
+    ? item.documentPath
+    : item.originalPath || item.documentPath;
+}
+
 function buildBetaBackup() {
   return {
     app: "Bauplan Buddy",
@@ -298,6 +342,8 @@ function buildBetaBackup() {
     exportedAt: new Date().toISOString(),
     store: readBetaStore(),
     printSettings: readPrintSettings(),
+    documentStorage:
+      "Metadaten und Dateipfade werden gesichert. Importierte Datei-Inhalte sind noch nicht im JSON-Backup enthalten.",
   };
 }
 
@@ -648,7 +694,220 @@ function useBetaStore() {
     });
   };
 
-  return { store, addEntity, updateEntityStatus, updateEntityTitle, deleteEntity };
+  const addImportedDocument = async () => {
+    if (
+      !window.desktop?.openFileDialog ||
+      !window.desktop.readFile ||
+      !window.desktop.writeFile
+    ) {
+      window.alert("Datei-Import ist nur in der Desktop-App verfügbar.");
+      return;
+    }
+
+    const selection = await window.desktop.openFileDialog(
+      [
+        {
+          name: "Dokumente",
+          extensions: ["pdf", "png", "jpg", "jpeg", "docx", "xlsx", "txt"],
+        },
+      ],
+      ["openFile"],
+      "Dokument importieren",
+    );
+    const sourcePath = selection.filePaths[0];
+    if (selection.canceled || !sourcePath) return;
+
+    const readResult = await window.desktop.readFile(sourcePath);
+    if (!readResult.ok || !readResult.dataBase64) {
+      window.alert(readResult.message || "Die Datei konnte nicht gelesen werden.");
+      return;
+    }
+
+    const safeName = `${Date.now()}-${
+      readResult.name || getFileNameFromPath(sourcePath)
+    }`;
+    const writeResult = await window.desktop.writeFile(
+      safeName,
+      readResult.dataBase64,
+    );
+    if (!writeResult.ok || !writeResult.path) {
+      window.alert(writeResult.message || "Die Datei konnte nicht importiert werden.");
+      return;
+    }
+
+    const nextDocument: BetaEntity = {
+      id: nextEntityId(store.documents, "DOK"),
+      title: readResult.name || getFileNameFromPath(sourcePath),
+      subtitle: "Importiert in Bauplan Buddy",
+      status: "Verfügbar",
+      date: new Date().toISOString().slice(0, 10),
+      documentSource: "imported",
+      documentPath: writeResult.path,
+      originalPath: sourcePath,
+      fileSize: readResult.size,
+      mimeType: readResult.mimeType || writeResult.mimeType,
+      missing: false,
+    };
+    saveStore({ ...store, documents: [nextDocument, ...store.documents] });
+  };
+
+  const addLinkedDocument = async () => {
+    if (!window.desktop?.openFileDialog) {
+      window.alert("Datei-Verlinkung ist nur in der Desktop-App verfügbar.");
+      return;
+    }
+
+    const selection = await window.desktop.openFileDialog(
+      [
+        {
+          name: "Dokumente",
+          extensions: ["pdf", "png", "jpg", "jpeg", "docx", "xlsx", "txt"],
+        },
+      ],
+      ["openFile"],
+      "Dokument verlinken",
+    );
+    const sourcePath = selection.filePaths[0];
+    if (selection.canceled || !sourcePath) return;
+
+    const nextDocument: BetaEntity = {
+      id: nextEntityId(store.documents, "DOK"),
+      title: getFileNameFromPath(sourcePath),
+      subtitle: "Verlinkte lokale Datei",
+      status: "Verfügbar",
+      date: new Date().toISOString().slice(0, 10),
+      documentSource: "linked",
+      originalPath: sourcePath,
+      missing: false,
+    };
+    saveStore({ ...store, documents: [nextDocument, ...store.documents] });
+  };
+
+  const updateDocumentMissing = (id: string, missing: boolean) => {
+    saveStore({
+      ...store,
+      documents: store.documents.map((item) =>
+        item.id === id ? { ...item, missing } : item,
+      ),
+    });
+  };
+
+  const openDocument = async (id: string) => {
+    const documentItem = store.documents.find((item) => item.id === id);
+    const targetPath = documentItem ? getDocumentPath(documentItem) : undefined;
+    if (!documentItem || !targetPath) {
+      window.alert("Für diesen Dokumenteintrag ist noch keine Datei hinterlegt.");
+      return;
+    }
+    if (!window.desktop?.fileExists || !window.desktop.openPath) {
+      window.alert("Dateien können nur in der Desktop-App geöffnet werden.");
+      return;
+    }
+
+    const exists = await window.desktop.fileExists(targetPath);
+    if (!exists.ok || !exists.exists) {
+      updateDocumentMissing(id, true);
+      window.alert("Die verknüpfte Datei wurde nicht gefunden. Bitte neu zuordnen.");
+      return;
+    }
+
+    const opened = await window.desktop.openPath(targetPath);
+    if (!opened.ok) {
+      window.alert(opened.message || "Die Datei konnte nicht geöffnet werden.");
+      return;
+    }
+    if (documentItem.missing) updateDocumentMissing(id, false);
+  };
+
+  const relinkDocument = async (id: string) => {
+    if (!window.desktop?.openFileDialog) {
+      window.alert("Neu zuordnen ist nur in der Desktop-App verfügbar.");
+      return;
+    }
+
+    const selection = await window.desktop.openFileDialog(
+      [
+        {
+          name: "Dokumente",
+          extensions: ["pdf", "png", "jpg", "jpeg", "docx", "xlsx", "txt"],
+        },
+      ],
+      ["openFile"],
+      "Dokument neu zuordnen",
+    );
+    const sourcePath = selection.filePaths[0];
+    if (selection.canceled || !sourcePath) return;
+
+    const existingDocument = store.documents.find((item) => item.id === id);
+    let nextDocumentPath = existingDocument?.documentPath;
+    let nextFileSize = existingDocument?.fileSize;
+    let nextMimeType = existingDocument?.mimeType;
+
+    if (existingDocument?.documentSource === "imported") {
+      if (!window.desktop.readFile || !window.desktop.writeFile) {
+        window.alert(
+          "Importierte Dateien können nur in der Desktop-App neu zugeordnet werden.",
+        );
+        return;
+      }
+      const readResult = await window.desktop.readFile(sourcePath);
+      if (!readResult.ok || !readResult.dataBase64) {
+        window.alert(readResult.message || "Die Datei konnte nicht gelesen werden.");
+        return;
+      }
+      const safeName = `${Date.now()}-${
+        readResult.name || getFileNameFromPath(sourcePath)
+      }`;
+      const writeResult = await window.desktop.writeFile(
+        safeName,
+        readResult.dataBase64,
+      );
+      if (!writeResult.ok || !writeResult.path) {
+        window.alert(writeResult.message || "Die Datei konnte nicht importiert werden.");
+        return;
+      }
+      nextDocumentPath = writeResult.path;
+      nextFileSize = readResult.size;
+      nextMimeType = readResult.mimeType || writeResult.mimeType;
+    }
+
+    saveStore({
+      ...store,
+      documents: store.documents.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              title:
+                item.documentSource === "linked"
+                  ? getFileNameFromPath(sourcePath)
+                  : item.title,
+              subtitle:
+                item.documentSource === "imported"
+                  ? "Importierte Datei neu zugeordnet"
+                  : "Verlinkte lokale Datei",
+              documentPath:
+                item.documentSource === "imported" ? nextDocumentPath : undefined,
+              originalPath: sourcePath,
+              fileSize: nextFileSize,
+              mimeType: nextMimeType,
+              missing: false,
+            }
+          : item,
+      ),
+    });
+  };
+
+  return {
+    store,
+    addEntity,
+    updateEntityStatus,
+    updateEntityTitle,
+    deleteEntity,
+    addImportedDocument,
+    addLinkedDocument,
+    openDocument,
+    relinkDocument,
+  };
 }
 
 function Shell({ children }: { children: ReactNode }) {
@@ -954,6 +1213,10 @@ function EntityPage({
   onStatusChange,
   onTitleChange,
   onDelete,
+  onImportDocument,
+  onLinkDocument,
+  onOpenDocument,
+  onRelinkDocument,
   placeholder,
   statusOptions,
   emptyText,
@@ -969,6 +1232,10 @@ function EntityPage({
   onStatusChange: (id: string, status: string) => void;
   onTitleChange: (id: string, title: string) => void;
   onDelete: (id: string) => void;
+  onImportDocument?: () => void;
+  onLinkDocument?: () => void;
+  onOpenDocument?: (id: string) => void;
+  onRelinkDocument?: (id: string) => void;
   placeholder: string;
   statusOptions: string[];
   emptyText: string;
@@ -992,9 +1259,10 @@ function EntityPage({
     <Page title={title} description={description}>
       <Card>
         <CardContent className="grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Input
               aria-label={placeholder}
+              className="min-w-[220px] flex-1"
               value={draft}
               placeholder={placeholder}
               onChange={(e) => setDraft(e.target.value)}
@@ -1015,6 +1283,24 @@ function EntityPage({
             >
               Neu anlegen
             </Button>
+            {entityKey === "documents" && onImportDocument ? (
+              <Button
+                className="shrink-0"
+                variant="outline"
+                onClick={onImportDocument}
+              >
+                Datei importieren
+              </Button>
+            ) : null}
+            {entityKey === "documents" && onLinkDocument ? (
+              <Button
+                className="shrink-0"
+                variant="outline"
+                onClick={onLinkDocument}
+              >
+                Datei verlinken
+              </Button>
+            ) : null}
           </div>
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -1039,6 +1325,8 @@ function EntityPage({
         onDelete={onDelete}
         onExport={exportable ? downloadBetaEntityExport : undefined}
         onPrint={printable ? openBetaPrintPreview : undefined}
+        onOpenDocument={onOpenDocument}
+        onRelinkDocument={onRelinkDocument}
         emptyText={
           normalizedFilter
             ? "Keine passenden Einträge gefunden."
@@ -1406,6 +1694,9 @@ function DocumentModuleSummary({
   const available = documents.filter((item) => item.status === "Verfügbar").length;
   const checked = documents.filter((item) => item.status === "Geprüft").length;
   const archived = documents.filter((item) => item.status === "Archiviert").length;
+  const imported = documents.filter((item) => item.documentSource === "imported").length;
+  const linked = documents.filter((item) => item.documentSource === "linked").length;
+  const missing = documents.filter((item) => item.missing).length;
 
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -1413,8 +1704,8 @@ function DocumentModuleSummary({
         <CardHeader>
           <CardTitle className="text-lg">Dokumentenstatus</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Lokale Dokumenteinträge für die Beta. Datei-Inhalte werden noch nicht
-            im app-kontrollierten Speicher abgelegt.
+            Lokale Dokumenteinträge für die Beta. Dateien können importiert oder
+            mit ihrem bestehenden Speicherort verlinkt werden.
           </p>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-3">
@@ -1435,26 +1726,25 @@ function DocumentModuleSummary({
         <CardHeader>
           <CardTitle className="text-lg">Lokale Dateien</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Importierte und verlinkte echte Dateien werden im nächsten
-            Desktop-Dateisystem-Schritt ergänzt.
+            Importierte Dateien werden in den Bauplan-Buddy-Ordner kopiert;
+            verlinkte Dateien bleiben am Originalspeicherort.
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="rounded-md border bg-background p-3">
-              <p className="text-sm text-muted-foreground">Dokumenteinträge</p>
-              <p className="mt-1 text-2xl font-semibold">{documents.length}</p>
+              <p className="text-sm text-muted-foreground">Importiert</p>
+              <p className="mt-1 text-2xl font-semibold">{imported}</p>
             </div>
             <div className="rounded-md border bg-background p-3">
-              <p className="text-sm text-muted-foreground">Zuordnungsbasis</p>
-              <p className="mt-1 text-2xl font-semibold">
-                {projects.length + customers.length}
-              </p>
+              <p className="text-sm text-muted-foreground">Verlinkt</p>
+              <p className="mt-1 text-2xl font-semibold">{linked}</p>
             </div>
           </div>
           <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-            Aktuell werden Name, Status und Metadaten lokal gesichert. Backup
-            enthält diese Einträge; Datei-Inhalte folgen mit Import/Link.
+            Datei fehlt: {missing}. Zuordnungsbasis lokal verfügbar:{" "}
+            {projects.length + customers.length} Projekte und Kunden. Backups
+            sichern aktuell Metadaten und Dateipfade; ein Dateiarchiv folgt später.
           </p>
         </CardContent>
       </Card>
@@ -1501,6 +1791,8 @@ function EntityList({
   onDelete,
   onExport,
   onPrint,
+  onOpenDocument,
+  onRelinkDocument,
   emptyText = "Noch keine Einträge vorhanden.",
 }: {
   title: string;
@@ -1512,6 +1804,8 @@ function EntityList({
   onDelete?: (id: string) => void;
   onExport?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
   onPrint?: (entityKey: keyof BetaStore, item: BetaEntity) => void;
+  onOpenDocument?: (id: string) => void;
+  onRelinkDocument?: (id: string) => void;
   emptyText?: string;
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -1580,6 +1874,25 @@ function EntityList({
                 <p className="text-sm text-muted-foreground">
                   {item.id} - {item.subtitle} - {item.date}
                 </p>
+                {entityKey === "documents" ? (
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <span className="rounded-full bg-muted px-2 py-0.5">
+                      {item.documentSource === "imported"
+                        ? "Importiert"
+                        : item.documentSource === "linked"
+                          ? "Verlinkt"
+                          : "Ohne Datei"}
+                    </span>
+                    {item.missing ? (
+                      <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-destructive">
+                        Datei fehlt
+                      </span>
+                    ) : null}
+                    {formatFileSize(item.fileSize) ? (
+                      <span>{formatFileSize(item.fileSize)}</span>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                 {formatAmount(item.amount) ? (
@@ -1631,6 +1944,26 @@ function EntityList({
                   >
                     <Printer className="h-4 w-4" />
                     Druckansicht
+                  </Button>
+                ) : null}
+                {entityKey === "documents" && onOpenDocument ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Datei ${item.title} öffnen`}
+                    onClick={() => onOpenDocument(item.id)}
+                  >
+                    Öffnen
+                  </Button>
+                ) : null}
+                {entityKey === "documents" && onRelinkDocument ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Datei ${item.title} neu zuordnen`}
+                    onClick={() => onRelinkDocument(item.id)}
+                  >
+                    Neu zuordnen
                   </Button>
                 ) : null}
                 {entityKey && onDelete ? (
@@ -1767,8 +2100,8 @@ function SettingsPage() {
             <div className="rounded-md border bg-background p-3">
               <p className="text-sm font-medium">Dateien</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Dokumentdateien selbst sind noch nicht Teil des Backups; aktuell
-                werden Dokument-Metadaten gesichert.
+                Importierte und verlinkte Dokumente sind lokal nutzbar. Backups
+                enthalten in dieser Beta Metadaten und Dateipfade, noch kein ZIP-Dateiarchiv.
               </p>
             </div>
           </div>
@@ -1894,6 +2227,10 @@ function BetaRoutes() {
     updateEntityStatus,
     updateEntityTitle,
     deleteEntity,
+    addImportedDocument,
+    addLinkedDocument,
+    openDocument,
+    relinkDocument,
   } = useBetaStore();
 
   return (
@@ -2066,6 +2403,10 @@ function BetaRoutes() {
                         updateEntityTitle("documents", id, title)
                       }
                       onDelete={(id) => deleteEntity("documents", id)}
+                      onImportDocument={() => void addImportedDocument()}
+                      onLinkDocument={() => void addLinkedDocument()}
+                      onOpenDocument={(id) => void openDocument(id)}
+                      onRelinkDocument={(id) => void relinkDocument(id)}
                       placeholder="Dokumentname eingeben"
                       statusOptions={["Verfügbar", "Geprüft", "Archiviert"]}
                       emptyText="Noch keine Dokumenteinträge vorhanden."

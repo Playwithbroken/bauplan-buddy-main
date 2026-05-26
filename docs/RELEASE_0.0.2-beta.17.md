@@ -27,8 +27,8 @@ Realtime-/AI-Demo-Flaechen.
   `5547f19` gruen gelaufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
-  Angebots-/Rechnungs-Druckansicht, Backup-Export, Backup-Import und
-  Supportbericht.
+  Angebots-/Rechnungs-Druckansicht, lokaler Dokumentimport, Backup-Export,
+  Backup-Import und Supportbericht.
 - Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked
   App-Smoke, unsigned Installer-Build, Release-Artefaktpruefung,
   Authenticode-`NotSigned`-Status, Default-Installationspfad,
@@ -53,8 +53,9 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 
 ## Bekannte Einschraenkungen
 
-- Dokumente sind lokale Dokumenteintraege; Datei-Inhalte werden noch nicht
-  dauerhaft in der App gespeichert.
+- Dokumente koennen lokal importiert oder verlinkt werden. JSON-Backups
+  enthalten Metadaten und Dateipfade, aber noch kein eingebettetes
+  Dateiarchiv.
 - Briefkopf und Brieffuss sind lokale Beta-Drucklayout-Einstellungen.
   Angebote und Rechnungen koennen eine A4-Druckansicht oeffnen; produktive
   PDF-Nummernkreise, finale Pflichtangaben und GoBD-Pruefung folgen spaeter.

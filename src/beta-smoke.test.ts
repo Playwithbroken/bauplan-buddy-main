@@ -28,7 +28,7 @@ describe("Desktop beta smoke gate", () => {
     expect(webAppSource).toContain("Wohnhaus Südtor");
     expect(webAppSource).toContain("Familie Müller");
     expect(webAppSource).toContain("Verfügbar");
-    expect(webAppSource).not.toMatch(/[ÃÂ�]/);
+    expect(webAppSource).not.toMatch(/Ã|Â|�/);
     expect(webAppSource).not.toMatch(/Welcome back|Customize|Quick Login/i);
   });
 });

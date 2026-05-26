@@ -3,8 +3,9 @@
 Use this checklist for the final interactive Windows QA of
 `0.0.2-beta.17`. Automated gates already cover build, typecheck, lint, unit
 tests, Playwright beta smoke, print-layout persistence, print-preview launch,
-unpacked app launch, silent installer install, installed app launch, login,
-real app restart, project persistence, backup export/import, native
+local desktop document import metadata, unpacked app launch, silent installer
+install, installed app launch, login, real app restart, project persistence,
+backup export/import, native
 update-panel check, and cleanup.
 
 ## Test Environment
@@ -68,6 +69,11 @@ update-panel check, and cleanup.
 - [ ] Edit the appointment.
 - [ ] Delete the appointment.
 - [ ] Create one local document entry.
+- [ ] Import one local document file and confirm it is marked as `Importiert`.
+- [ ] Link one local document file and confirm it is marked as `Verlinkt`.
+- [ ] Open an imported or linked document from the app.
+- [ ] Move or delete the original linked file and confirm the app shows a
+      friendly missing-file state or lets the file be reassigned.
 - [ ] Delete the document entry and confirm the delete prompt appears.
 
 ## Persistence
@@ -88,6 +94,8 @@ update-panel check, and cleanup.
 - [ ] Import the backup.
 - [ ] Confirm restored records are available again.
 - [ ] Confirm restored Briefkopf and Brieffuss are available again.
+- [ ] Confirm document metadata and file paths restore correctly. JSON backups
+      do not yet embed imported file contents.
 - [ ] Export a support report.
 - [ ] Confirm the support report does not contain raw customer, project,
       quote, invoice, appointment, or document records.

@@ -1749,6 +1749,29 @@ function SettingsPage() {
               Offline/local-first. Keine Cloud-Verbindung erforderlich.
             </p>
           </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm font-medium">Lokale Kerndaten</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Projekte, Kunden, Angebote, Rechnungen, Termine und
+                Dokumenteinträge bleiben im lokalen Beta-Speicher.
+              </p>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm font-medium">Drucklayout</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Briefkopf und Brieffuß werden mit Backups gesichert und beim
+                Restore wiederhergestellt.
+              </p>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <p className="text-sm font-medium">Dateien</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Dokumentdateien selbst sind noch nicht Teil des Backups; aktuell
+                werden Dokument-Metadaten gesichert.
+              </p>
+            </div>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <Button variant="outline" onClick={saveBackup}>
               Daten sichern

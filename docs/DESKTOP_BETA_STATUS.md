@@ -79,6 +79,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Erstellen, Bearbeiten, Statuswechsel, Filtern und Reload fuer Kernmodule
 - Dokument loeschen mit Bestaetigung
 - Angebot und Rechnung als lokale Beta-JSON-Datei exportieren
+- Briefkopf/Brieffuss lokal bearbeiten, nach Reload behalten und in einer
+  Druckansicht fuer Angebote/Rechnungen verwenden
 - Backup exportieren und wiederherstellen
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
@@ -88,7 +90,29 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   Backup-Import, nativem Update-Panel-Check und Cleanup
 
 Dokumente sind in dieser Beta lokale Dokumenteintraege. Datei-Inhalte werden
-noch nicht dauerhaft in der App gespeichert.
+noch nicht dauerhaft in der App gespeichert. Die Dokumentseite markiert diesen
+Status bewusst: Dokument-Metadaten werden gesichert, echte importierte oder
+verlinkte Dateien folgen als separater Desktop-Dateisystem-Schritt.
+
+## Aktueller Modulstand
+
+- Dashboard: lokale KPI-Uebersicht, offene Aufgaben und Schnellstart.
+- Projekte: Statusuebersicht, lokales Projektvolumen und Beta-Kontext.
+- Kunden: Kundenstatus und lokale Beziehungsbasis fuer Projekte/Angebote.
+- Angebote: Pipeline, lokales Angebotsvolumen, JSON-Export und Druckansicht.
+- Rechnungen: Rechnungsstatus, offene Summe, JSON-Export und Druckansicht.
+- Kalender: Terminstatus, naechster Termin und lokaler Kontext.
+- Dokumente: Statusuebersicht und klare Metadaten-/Datei-Abgrenzung.
+- Einstellungen: lokale Datenverwaltung, Backup/Restore, Supportbericht,
+  Drucklayout mit Briefkopf/Brieffuss und Update-Panel.
+
+## Drucklayout
+
+Briefkopf und Brieffuss werden unter `Einstellungen > Drucklayout` lokal
+gespeichert. Angebote und Rechnungen koennen eine A4-Druckansicht oeffnen, die
+den nativen Druckdialog des Betriebssystems nutzt. Drucker, Papierfach,
+Skalierung und Zielgeraet werden dort gewaehlt. Das lokale Backup enthaelt die
+Drucklayout-Einstellungen.
 
 ## Bekannte lokale Build-Einschraenkung
 

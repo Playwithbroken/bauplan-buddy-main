@@ -66,6 +66,8 @@ update-panel check, and cleanup.
       `Filter löschen`.
 - [ ] Filter a list by status and confirm `Filter löschen` resets text and
       status filters together.
+- [ ] Sort a list by name and status and confirm the selected sort mode remains
+      visible.
 - [ ] Create one quote and change its status.
 - [ ] Connect the quote to a customer and project and confirm both remain after
       reload.

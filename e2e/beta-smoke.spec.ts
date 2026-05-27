@@ -141,6 +141,10 @@ test.describe("Desktop beta smoke", () => {
     await page.getByRole("button", { name: "Filter löschen" }).click();
     await expect(page.getByLabel("Projekte filtern")).toHaveValue("");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
+    await page.getByLabel("Projekte sortieren").selectOption("title");
+    await expect(page.getByLabel("Projekte sortieren")).toHaveValue("title");
+    await page.getByLabel("Projekte sortieren").selectOption("status");
+    await expect(page.getByLabel("Projekte sortieren")).toHaveValue("status");
     await page
       .getByLabel("Projekte nach Status filtern")
       .selectOption("Pausiert");

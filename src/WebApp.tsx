@@ -1547,9 +1547,12 @@ function EntityPage({
   const [draft, setDraft] = useState("");
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [sortMode, setSortMode] = useState<"newest" | "title" | "status">(
+    "newest",
+  );
   const normalizedFilter = filter.trim().toLocaleLowerCase("de-DE");
   const filtered = useMemo(() => {
-    return items.filter((item) =>
+    const nextItems = items.filter((item) =>
       (!statusFilter || item.status === statusFilter) &&
       (!normalizedFilter ||
         [
@@ -1562,7 +1565,23 @@ function EntityPage({
           value.toLocaleLowerCase("de-DE").includes(normalizedFilter),
         )),
     );
-  }, [customers, items, normalizedFilter, projects, statusFilter]);
+
+    return [...nextItems].sort((left, right) => {
+      if (sortMode === "title") {
+        return left.title.localeCompare(right.title, "de-DE");
+      }
+      if (sortMode === "status") {
+        return (
+          left.status.localeCompare(right.status, "de-DE") ||
+          left.title.localeCompare(right.title, "de-DE")
+        );
+      }
+      return (
+        right.date.localeCompare(left.date) ||
+        right.id.localeCompare(left.id, "de-DE")
+      );
+    });
+  }, [customers, items, normalizedFilter, projects, sortMode, statusFilter]);
   const hasActiveFilter = Boolean(normalizedFilter || statusFilter);
   const resultLabel = hasActiveFilter
     ? `${filtered.length} von ${items.length} Einträgen sichtbar`
@@ -1639,6 +1658,25 @@ function EntityPage({
                     {status}
                   </option>
                 ))}
+              </select>
+            </div>
+            <div>
+              <select
+                aria-label={`${title} sortieren`}
+                className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                value={sortMode}
+                onChange={(event) =>
+                  setSortMode(
+                    event.target.value === "title" ||
+                      event.target.value === "status"
+                      ? event.target.value
+                      : "newest",
+                  )
+                }
+              >
+                <option value="newest">Neueste zuerst</option>
+                <option value="title">Name A-Z</option>
+                <option value="status">Status A-Z</option>
               </select>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-2">

@@ -1224,7 +1224,7 @@ function Shell({ children }: { children: ReactNode }) {
           </SidebarMenu>
           <div className="px-4 py-2 text-xs text-sidebar-foreground/70">
             {capabilities.isLocalFirst
-              ? "Local-first ohne Cloud-Pflicht"
+              ? "Lokal zuerst, ohne Cloud-Pflicht"
               : "Cloud-Modus aktiv"}
           </div>
         </SidebarHeader>
@@ -1276,7 +1276,10 @@ function Shell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <header className="flex min-h-14 shrink-0 flex-col gap-2 border-b bg-background px-4 py-3 md:flex-row md:items-center md:gap-3 md:py-0">
-          <SidebarTrigger />
+          <SidebarTrigger
+            aria-label="Seitenleiste umschalten"
+            title="Seitenleiste umschalten"
+          />
           <div>
             <p className="text-sm font-semibold">Bauplan Buddy Desktop</p>
             <p className="text-xs text-muted-foreground">
@@ -2531,7 +2534,7 @@ function SettingsPage() {
           <div>
             <p className="font-medium">Datenmodus</p>
             <p className="text-sm text-muted-foreground">
-              Offline/local-first. Keine Cloud-Verbindung erforderlich.
+              Offline und lokal zuerst. Keine Cloud-Verbindung erforderlich.
             </p>
           </div>
           <div className="grid gap-3 md:grid-cols-3">

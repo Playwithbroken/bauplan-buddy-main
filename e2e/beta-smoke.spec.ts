@@ -86,6 +86,10 @@ test.describe("Desktop beta smoke", () => {
 
     await expect(page).toHaveURL(/#\/dashboard/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Seitenleiste umschalten" }),
+    ).toBeVisible();
+    await expect(page.getByText("Lokal zuerst, ohne Cloud-Pflicht")).toBeVisible();
     expect(runtimeErrors).toEqual([]);
   });
 

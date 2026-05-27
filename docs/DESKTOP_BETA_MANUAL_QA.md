@@ -47,6 +47,7 @@ update-panel check, and cleanup.
 - [ ] Dashboard opens after login.
 - [ ] Sidebar shows only beta scope: Dashboard, Projekte, Angebote,
       Rechnungen, Kalender, Kunden, Dokumente, Einstellungen.
+- [ ] Sidebar toggle and local runtime labels are German.
 - [ ] No visible encoding damage appears in login, dashboard, navigation,
       lists, settings, or error messages.
 - [ ] Dashboard, Projekte, Kunden, Angebote, Rechnungen, Kalender, Dokumente

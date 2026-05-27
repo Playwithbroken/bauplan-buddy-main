@@ -372,6 +372,40 @@ function formatFileSize(value?: number) {
   return `${(value / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function getStatusBadgeClass(status: string) {
+  const normalizedStatus = status.toLocaleLowerCase("de-DE");
+
+  if (
+    ["bezahlt", "erledigt", "angenommen", "abgeschlossen", "geprüft"].includes(
+      normalizedStatus,
+    )
+  ) {
+    return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
+  }
+
+  if (
+    ["offen", "entwurf", "geplant", "aktiv", "verfügbar"].includes(
+      normalizedStatus,
+    )
+  ) {
+    return "bg-blue-50 text-blue-700 ring-1 ring-blue-200";
+  }
+
+  if (
+    ["pausiert", "gesendet", "exportiert", "interessent"].includes(
+      normalizedStatus,
+    )
+  ) {
+    return "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
+  }
+
+  if (["abgesagt", "archiviert"].includes(normalizedStatus)) {
+    return "bg-slate-100 text-slate-600 ring-1 ring-slate-200";
+  }
+
+  return "bg-muted text-muted-foreground";
+}
+
 function getFileNameFromPath(filePath: string) {
   return filePath.split(/[\\/]/).filter(Boolean).pop() || "Dokument";
 }
@@ -1380,7 +1414,9 @@ function DashboardPage({ store }: { store: BetaStore }) {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-medium">{item.title}</p>
-                      <span className="rounded-full bg-muted px-2 py-0.5 text-xs">
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs ${getStatusBadgeClass(item.status)}`}
+                      >
                         {item.status}
                       </span>
                     </div>
@@ -2221,7 +2257,9 @@ function EntityList({
                 ) : (
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium">{item.title}</p>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs ${getStatusBadgeClass(item.status)}`}
+                    >
                       {item.status}
                     </span>
                   </div>

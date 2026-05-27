@@ -154,6 +154,9 @@ test.describe("Desktop beta smoke", () => {
       const statusSelect = page.getByLabel(`Status für ${flow.title}`);
       await statusSelect.selectOption(flow.status);
       await expect(statusSelect).toHaveValue(flow.status);
+      await expect(
+        page.locator("span", { hasText: flow.status }).first(),
+      ).toHaveClass(/ring-/);
 
       await page.reload();
       await expect(page.getByText(flow.title)).toBeVisible();

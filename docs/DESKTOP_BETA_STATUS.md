@@ -83,6 +83,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   Reload fuer Kernmodule
 - Filter mit Trefferanzahl, Zuruecksetzen und Suche ueber Kunde/Projekt-Kontext
   in Kernlisten
+- Farbige Status-Badges fuer scanbare Listen in Dashboard und Kernmodulen
 - Lokale Beziehungen zwischen Kunde, Projekt und Angebot inklusive Reload und
   kontrolliertem Entfernen verwaister Zuordnungen beim Loeschen
 - Dokument loeschen mit Bestaetigung

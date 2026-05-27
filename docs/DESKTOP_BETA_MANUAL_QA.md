@@ -51,6 +51,8 @@ update-panel check, and cleanup.
       lists, settings, or error messages.
 - [ ] Dashboard, Projekte, Kunden, Angebote, Rechnungen, Kalender, Dokumente
       and Einstellungen each show a usable local beta overview.
+- [ ] Status badges in dashboard and lists are visually distinguishable for
+      open, done, warning and archived states.
 
 ## Core Data Flow
 

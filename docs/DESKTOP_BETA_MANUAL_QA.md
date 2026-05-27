@@ -57,7 +57,7 @@ update-panel check, and cleanup.
 - [ ] Create one customer.
 - [ ] Create one project and connect or reference the customer where available.
 - [ ] Confirm the project shows the selected customer after reload.
-- [ ] Edit the project title.
+- [ ] Edit the project title and description.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Confirm filtered lists show a visible result count and can be reset with
       `Filter löschen`.

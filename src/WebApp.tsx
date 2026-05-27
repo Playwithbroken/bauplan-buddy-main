@@ -884,14 +884,29 @@ function useBetaStore() {
     });
   };
 
-  const updateEntityTitle = (key: keyof BetaStore, id: string, title: string) => {
+  const updateEntityTitle = (
+    key: keyof BetaStore,
+    id: string,
+    title: string,
+    subtitle?: string,
+  ) => {
     const nextTitle = title.trim();
     if (!nextTitle) return;
+    const nextSubtitle = subtitle?.trim();
 
     saveStore({
       ...store,
       [key]: store[key].map((item) =>
-        item.id === id ? { ...item, title: nextTitle } : item,
+        item.id === id
+          ? {
+              ...item,
+              title: nextTitle,
+              subtitle:
+                subtitle === undefined
+                  ? item.subtitle
+                  : nextSubtitle || "Keine Beschreibung",
+            }
+          : item,
       ),
     });
   };
@@ -1470,7 +1485,7 @@ function EntityPage({
   items: BetaEntity[];
   onAdd: (title: string) => void;
   onStatusChange: (id: string, status: string) => void;
-  onTitleChange: (id: string, title: string) => void;
+  onTitleChange: (id: string, title: string, subtitle?: string) => void;
   onRelationChange?: (
     id: string,
     relation: "customerId" | "projectId",
@@ -2121,7 +2136,7 @@ function EntityList({
   items: BetaEntity[];
   statusOptions?: string[];
   onStatusChange?: (id: string, status: string) => void;
-  onTitleChange?: (id: string, title: string) => void;
+  onTitleChange?: (id: string, title: string, subtitle?: string) => void;
   onRelationChange?: (
     id: string,
     relation: "customerId" | "projectId",
@@ -2138,19 +2153,22 @@ function EntityList({
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const [editingSubtitle, setEditingSubtitle] = useState("");
 
   const startEditing = (item: BetaEntity) => {
     setEditingId(item.id);
     setEditingTitle(item.title);
+    setEditingSubtitle(item.subtitle);
   };
 
   const cancelEditing = () => {
     setEditingId(null);
     setEditingTitle("");
+    setEditingSubtitle("");
   };
 
   const saveEditing = (item: BetaEntity) => {
-    onTitleChange?.(item.id, editingTitle);
+    onTitleChange?.(item.id, editingTitle, editingSubtitle);
     cancelEditing();
   };
 
@@ -2172,11 +2190,20 @@ function EntityList({
             >
               <div>
                 {editingId === item.id ? (
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <div className="grid gap-2 lg:grid-cols-[minmax(180px,1fr)_minmax(220px,1.3fr)_auto] lg:items-center">
                     <Input
                       aria-label={`Titel für ${item.title} bearbeiten`}
                       value={editingTitle}
                       onChange={(event) => setEditingTitle(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") saveEditing(item);
+                        if (event.key === "Escape") cancelEditing();
+                      }}
+                    />
+                    <Input
+                      aria-label={`Beschreibung für ${item.title} bearbeiten`}
+                      value={editingSubtitle}
+                      onChange={(event) => setEditingSubtitle(event.target.value)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter") saveEditing(item);
                         if (event.key === "Escape") cancelEditing();
@@ -2705,8 +2732,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("projects", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("projects", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("projects", id, title, subtitle)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("projects", id, relation, value)
@@ -2737,8 +2764,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("quotes", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("quotes", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("quotes", id, title, subtitle)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("quotes", id, relation, value)
@@ -2773,8 +2800,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("invoices", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("invoices", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("invoices", id, title, subtitle)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("invoices", id, relation, value)
@@ -2810,8 +2837,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("appointments", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("appointments", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("appointments", id, title, subtitle)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("appointments", id, relation, value)
@@ -2844,8 +2871,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("customers", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("customers", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("customers", id, title, subtitle)
                       }
                       onDelete={(id) => deleteEntity("customers", id)}
                       placeholder="Kundenname eingeben"
@@ -2873,8 +2900,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("documents", id, status)
                       }
-                      onTitleChange={(id, title) =>
-                        updateEntityTitle("documents", id, title)
+                      onTitleChange={(id, title, subtitle) =>
+                        updateEntityTitle("documents", id, title, subtitle)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("documents", id, relation, value)

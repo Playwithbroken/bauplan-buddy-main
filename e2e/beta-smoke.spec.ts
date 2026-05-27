@@ -116,11 +116,16 @@ test.describe("Desktop beta smoke", () => {
     await page
       .getByLabel("Titel für E2E Beta Projekt bearbeiten")
       .fill("E2E Beta Projekt Bearbeitet");
+    await page
+      .getByLabel("Beschreibung für E2E Beta Projekt bearbeiten")
+      .fill("Innenausbau und Abnahmeplanung");
     await page.getByRole("button", { name: "Speichern" }).click();
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
+    await expect(page.getByText(/Innenausbau und Abnahmeplanung/)).toBeVisible();
 
     await page.reload();
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
+    await expect(page.getByText(/Innenausbau und Abnahmeplanung/)).toBeVisible();
 
     await page.getByLabel("Projekte filtern").fill("Bearbeitet");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();

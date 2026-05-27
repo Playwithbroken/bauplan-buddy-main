@@ -62,6 +62,10 @@ update-panel check, and cleanup.
 - [ ] Create one quote and change its status.
 - [ ] Connect the quote to a customer and project and confirm both remain after
       reload.
+- [ ] Delete the linked project and confirm the quote no longer shows a broken
+      project assignment.
+- [ ] Delete the linked customer and confirm related project/quote assignments
+      are cleared instead of showing stale context.
 - [ ] Export the quote beta JSON file.
 - [ ] Open the quote print preview and confirm Briefkopf/Brieffuss are visible.
 - [ ] Create one invoice and change its status.

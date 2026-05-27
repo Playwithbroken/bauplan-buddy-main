@@ -893,10 +893,22 @@ function useBetaStore() {
   };
 
   const deleteEntity = (key: keyof BetaStore, id: string) => {
-    saveStore({
+    const nextStore: BetaStore = {
       ...store,
       [key]: store[key].filter((item) => item.id !== id),
-    });
+    };
+    const relation =
+      key === "customers" ? "customerId" : key === "projects" ? "projectId" : null;
+
+    if (relation) {
+      (Object.keys(nextStore) as Array<keyof BetaStore>).forEach((storeKey) => {
+        nextStore[storeKey] = nextStore[storeKey].map((item) =>
+          item[relation] === id ? { ...item, [relation]: undefined } : item,
+        );
+      });
+    }
+
+    saveStore(nextStore);
   };
 
   const addImportedDocument = async () => {

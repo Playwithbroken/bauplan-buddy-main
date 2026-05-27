@@ -28,6 +28,7 @@ Realtime-/AI-Demo-Flaechen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
   lokale Kunde/Projekt/Angebot-Beziehungen,
+  Bereinigung lokaler Kunden-/Projektverweise beim Loeschen,
   Angebots-/Rechnungs-Druckansicht, lokaler Dokumentimport, Backup-Export,
   Backup-Import und Supportbericht.
 - Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked

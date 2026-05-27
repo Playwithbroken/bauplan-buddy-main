@@ -195,6 +195,36 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByLabel("Projekt für E2E Beziehung Angebot")).toHaveValue(
       "PRJ-002",
     );
+
+    await page.goto("/#/projects");
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("E2E Beziehung Projekt");
+      await dialog.accept();
+    });
+    await page
+      .getByRole("button", { name: "Eintrag E2E Beziehung Projekt löschen" })
+      .click();
+
+    await page.goto("/#/quotes");
+    await expect(page.getByLabel("Projekt für E2E Beziehung Angebot")).toHaveValue(
+      "",
+    );
+    await expect(page.getByText("Kontext: E2E Beziehung Kunde")).toBeVisible();
+
+    await page.goto("/#/customers");
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("E2E Beziehung Kunde");
+      await dialog.accept();
+    });
+    await page
+      .getByRole("button", { name: "Eintrag E2E Beziehung Kunde löschen" })
+      .click();
+
+    await page.goto("/#/quotes");
+    await expect(page.getByLabel("Kunde für E2E Beziehung Angebot")).toHaveValue(
+      "",
+    );
+    await expect(page.getByText("Kontext: E2E Beziehung")).toHaveCount(0);
   });
 
   test("deletes a local document entry", async ({ page }) => {

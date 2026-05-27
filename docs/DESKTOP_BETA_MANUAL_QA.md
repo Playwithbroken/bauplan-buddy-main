@@ -59,9 +59,13 @@ update-panel check, and cleanup.
 - [ ] Confirm the project shows the selected customer after reload.
 - [ ] Edit the project title.
 - [ ] Filter the project list and confirm the edited project remains findable.
+- [ ] Confirm filtered lists show a visible result count and can be reset with
+      `Filter löschen`.
 - [ ] Create one quote and change its status.
 - [ ] Connect the quote to a customer and project and confirm both remain after
       reload.
+- [ ] Filter the quote list by the linked project name and confirm the quote is
+      found through its context.
 - [ ] Delete the linked project and confirm the quote no longer shows a broken
       project assignment.
 - [ ] Delete the linked customer and confirm related project/quote assignments

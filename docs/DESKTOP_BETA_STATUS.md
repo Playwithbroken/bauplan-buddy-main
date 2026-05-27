@@ -80,6 +80,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - reduzierte Beta-Navigation
 - Projektpersistenz nach Reload
 - Erstellen, Bearbeiten, Statuswechsel, Filtern und Reload fuer Kernmodule
+- Filter mit Trefferanzahl, Zuruecksetzen und Suche ueber Kunde/Projekt-Kontext
+  in Kernlisten
 - Lokale Beziehungen zwischen Kunde, Projekt und Angebot inklusive Reload und
   kontrolliertem Entfernen verwaister Zuordnungen beim Loeschen
 - Dokument loeschen mit Bestaetigung

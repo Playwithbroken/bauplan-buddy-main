@@ -1496,11 +1496,20 @@ function EntityPage({
   const filtered = useMemo(() => {
     if (!normalizedFilter) return items;
     return items.filter((item) =>
-      [item.id, item.title, item.subtitle, item.status].some((value) =>
+      [
+        item.id,
+        item.title,
+        item.subtitle,
+        item.status,
+        getEntityContextLabel(item, projects, customers) ?? "",
+      ].some((value) =>
         value.toLocaleLowerCase("de-DE").includes(normalizedFilter),
       ),
     );
-  }, [items, normalizedFilter]);
+  }, [customers, items, normalizedFilter, projects]);
+  const resultLabel = normalizedFilter
+    ? `${filtered.length} von ${items.length} Einträgen sichtbar`
+    : `${items.length} Einträge`;
 
   return (
     <Page title={title} description={description}>
@@ -1549,15 +1558,32 @@ function EntityPage({
               </Button>
             ) : null}
           </div>
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              aria-label={`${title} filtern`}
-              className="pl-9"
-              value={filter}
-              placeholder={`${title} filtern`}
-              onChange={(event) => setFilter(event.target.value)}
-            />
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label={`${title} filtern`}
+                className="pl-9"
+                value={filter}
+                placeholder={`${title} filtern`}
+                onChange={(event) => setFilter(event.target.value)}
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-muted-foreground" role="status">
+                {resultLabel}
+              </p>
+              {normalizedFilter ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFilter("")}
+                >
+                  Filter löschen
+                </Button>
+              ) : null}
+            </div>
           </div>
         </CardContent>
       </Card>

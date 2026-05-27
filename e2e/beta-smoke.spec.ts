@@ -124,9 +124,14 @@ test.describe("Desktop beta smoke", () => {
 
     await page.getByLabel("Projekte filtern").fill("Bearbeitet");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
+    await expect(page.getByRole("status")).toContainText("von");
     await page.getByLabel("Projekte filtern").fill("kein treffer");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeHidden();
     await expect(page.getByText("Keine passenden Einträge gefunden.")).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText("0 von 2 Einträgen sichtbar");
+    await page.getByRole("button", { name: "Filter löschen" }).click();
+    await expect(page.getByLabel("Projekte filtern")).toHaveValue("");
+    await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
   });
 
   test("persists local records and status changes for core modules", async ({
@@ -185,6 +190,11 @@ test.describe("Desktop beta smoke", () => {
     await expect(
       page.getByText("Kontext: E2E Beziehung Kunde / E2E Beziehung Projekt"),
     ).toBeVisible();
+    await page.getByLabel("Angebote filtern").fill("Beziehung Projekt");
+    await expect(page.getByText("E2E Beziehung Angebot")).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText(
+      "1 von 2 Einträgen sichtbar",
+    );
 
     await page.reload();
     await expect(

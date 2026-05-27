@@ -96,23 +96,25 @@ async function killProcessTree(pid) {
   });
 }
 
-async function removeDirectoryIfSafe(targetDir) {
+async function removeDirectoryIfSafe(targetDir, options = {}) {
   const resolvedTarget = path.resolve(targetDir);
   const resolvedTemp = path.resolve(os.tmpdir());
+  const attempts = options.attempts || 10;
+  const delayMs = options.delayMs || 500;
   if (!resolvedTarget.startsWith(resolvedTemp + path.sep)) {
     return;
   }
 
-  for (let attempt = 0; attempt < 10; attempt += 1) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
       fs.rmSync(resolvedTarget, { recursive: true, force: true });
       return;
     } catch (error) {
-      if (attempt === 9) {
+      if (attempt === attempts - 1) {
         throw error;
       }
 
-      await wait(500);
+      await wait(delayMs);
     }
   }
 }
@@ -334,7 +336,13 @@ async function cleanupInstall(installedExePath) {
   }
 
   if (path.resolve(installDir) === path.resolve(requestedInstallDir)) {
-    await removeDirectoryIfSafe(installDir);
+    await removeDirectoryIfSafe(installDir, { attempts: 45, delayMs: 1000 }).catch(
+      (error) => {
+        info(
+          `Cleanup warning: temporary install directory is still locked (${error.message})`
+        );
+      }
+    );
   }
 }
 

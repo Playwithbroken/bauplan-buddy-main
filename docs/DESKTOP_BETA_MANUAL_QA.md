@@ -64,6 +64,8 @@ update-panel check, and cleanup.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Confirm filtered lists show a visible result count and can be reset with
       `Filter löschen`.
+- [ ] Filter a list by status and confirm `Filter löschen` resets text and
+      status filters together.
 - [ ] Create one quote and change its status.
 - [ ] Connect the quote to a customer and project and confirm both remain after
       reload.

@@ -141,6 +141,15 @@ test.describe("Desktop beta smoke", () => {
     await page.getByRole("button", { name: "Filter löschen" }).click();
     await expect(page.getByLabel("Projekte filtern")).toHaveValue("");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
+    await page
+      .getByLabel("Projekte nach Status filtern")
+      .selectOption("Pausiert");
+    await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeHidden();
+    await expect(page.getByRole("status")).toHaveText(
+      "0 von 2 Einträgen sichtbar",
+    );
+    await page.getByRole("button", { name: "Filter löschen" }).click();
+    await expect(page.getByLabel("Projekte nach Status filtern")).toHaveValue("");
   });
 
   test("persists local records and status changes for core modules", async ({

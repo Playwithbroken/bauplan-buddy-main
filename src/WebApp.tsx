@@ -1546,22 +1546,25 @@ function EntityPage({
 }) {
   const [draft, setDraft] = useState("");
   const [filter, setFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const normalizedFilter = filter.trim().toLocaleLowerCase("de-DE");
   const filtered = useMemo(() => {
-    if (!normalizedFilter) return items;
     return items.filter((item) =>
-      [
-        item.id,
-        item.title,
-        item.subtitle,
-        item.status,
-        getEntityContextLabel(item, projects, customers) ?? "",
-      ].some((value) =>
-        value.toLocaleLowerCase("de-DE").includes(normalizedFilter),
-      ),
+      (!statusFilter || item.status === statusFilter) &&
+      (!normalizedFilter ||
+        [
+          item.id,
+          item.title,
+          item.subtitle,
+          item.status,
+          getEntityContextLabel(item, projects, customers) ?? "",
+        ].some((value) =>
+          value.toLocaleLowerCase("de-DE").includes(normalizedFilter),
+        )),
     );
-  }, [customers, items, normalizedFilter, projects]);
-  const resultLabel = normalizedFilter
+  }, [customers, items, normalizedFilter, projects, statusFilter]);
+  const hasActiveFilter = Boolean(normalizedFilter || statusFilter);
+  const resultLabel = hasActiveFilter
     ? `${filtered.length} von ${items.length} Einträgen sichtbar`
     : `${items.length} Einträge`;
 
@@ -1623,16 +1626,34 @@ function EntityPage({
                 onChange={(event) => setFilter(event.target.value)}
               />
             </div>
+            <div>
+              <select
+                aria-label={`${title} nach Status filtern`}
+                className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+              >
+                <option value="">Alle Status</option>
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-xs text-muted-foreground" role="status">
                 {resultLabel}
               </p>
-              {normalizedFilter ? (
+              {hasActiveFilter ? (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setFilter("")}
+                  onClick={() => {
+                    setFilter("");
+                    setStatusFilter("");
+                  }}
                 >
                   Filter löschen
                 </Button>
@@ -1660,6 +1681,8 @@ function EntityPage({
         emptyText={
           normalizedFilter
             ? "Keine passenden Einträge gefunden."
+            : statusFilter
+              ? `Keine Einträge mit Status ${statusFilter} vorhanden.`
             : emptyText
         }
       />

@@ -90,13 +90,15 @@ update-panel check, and cleanup.
 
 ## Backup And Support
 
-- [ ] Edit Briefkopf and Brieffuss under Einstellungen > Drucklayout.
+- [ ] Edit Briefkopf, Brieffuss, Ausrichtung and Raender under Einstellungen >
+      Drucklayout.
 - [ ] Reload the app and confirm the Drucklayout values remain present.
 - [ ] Export a beta backup from Einstellungen.
 - [ ] Reset beta data.
 - [ ] Import the backup.
 - [ ] Confirm restored records are available again.
-- [ ] Confirm restored Briefkopf and Brieffuss are available again.
+- [ ] Confirm restored Briefkopf, Brieffuss, Ausrichtung and Raender are
+      available again.
 - [ ] Confirm document metadata, file paths, and available imported/linked file
       contents restore correctly.
 - [ ] Export a support report.

@@ -319,11 +319,14 @@ test.describe("Desktop beta smoke", () => {
     await page
       .getByLabel("Brieffuß für Drucklayout")
       .fill("Steuernummer folgt\nDanke für Ihr Vertrauen.");
+    await page.getByLabel("Ausrichtung für Drucklayout").selectOption("landscape");
+    await page.getByLabel("Ränder für Drucklayout").selectOption("compact");
     const printPreview = page.getByRole("region", {
       name: "Drucklayout Vorschau",
     });
     await expect(printPreview.getByText("Bauplan Buddy GmbH")).toBeVisible();
     await expect(printPreview.getByText("Steuernummer folgt")).toBeVisible();
+    await expect(printPreview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
 
     await page.reload();
     await expect(page.getByLabel("Briefkopf für Drucklayout")).toHaveValue(
@@ -332,6 +335,10 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByLabel("Brieffuß für Drucklayout")).toHaveValue(
       "Steuernummer folgt\nDanke für Ihr Vertrauen.",
     );
+    await expect(page.getByLabel("Ausrichtung für Drucklayout")).toHaveValue(
+      "landscape",
+    );
+    await expect(page.getByLabel("Ränder für Drucklayout")).toHaveValue("compact");
 
     await page.goto("/#/quotes");
     await page
@@ -347,6 +354,7 @@ test.describe("Desktop beta smoke", () => {
     const preview = await previewPromise;
     await expect(preview.getByText("Bauplan Buddy GmbH")).toBeVisible();
     await expect(preview.getByText("E2E Druck Angebot")).toBeVisible();
+    await expect(preview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
     await expect(preview.getByRole("button", { name: "Drucken" })).toBeVisible();
     await preview.close();
   });

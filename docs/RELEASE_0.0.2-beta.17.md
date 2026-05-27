@@ -57,9 +57,10 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 - Dokumente koennen lokal importiert oder verlinkt werden. JSON-Backups
   enthalten Metadaten, Dateipfade und verfuegbare lokale Dateiinhalte als
   Beta-Archivdaten; nicht lesbare Dateien werden als Warnung protokolliert.
-- Briefkopf und Brieffuss sind lokale Beta-Drucklayout-Einstellungen.
-  Angebote und Rechnungen koennen eine A4-Druckansicht oeffnen; produktive
-  PDF-Nummernkreise, finale Pflichtangaben und GoBD-Pruefung folgen spaeter.
+- Briefkopf, Brieffuss, Papierformat, Ausrichtung und Raender sind lokale
+  Beta-Drucklayout-Einstellungen. Angebote und Rechnungen koennen eine
+  Druckansicht oeffnen; produktive PDF-Nummernkreise, finale Pflichtangaben und
+  GoBD-Pruefung folgen spaeter.
 - Der Update-Endpoint ist fuer lokale Beta-Tests nicht produktiv angebunden.
 - Der gepackte Desktop-Renderer verwendet einen stabilen lokalen Origin, damit
   die local-first Beta-Daten App-Neustarts ueberstehen.

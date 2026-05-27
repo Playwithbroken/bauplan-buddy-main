@@ -85,8 +85,9 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
   behalten
 - Angebot und Rechnung als lokale Beta-JSON-Datei exportieren
-- Briefkopf/Brieffuss lokal bearbeiten, nach Reload behalten und in einer
-  Druckansicht fuer Angebote/Rechnungen verwenden
+- Briefkopf/Brieffuss, Papierformat, Ausrichtung und Raender lokal bearbeiten,
+  nach Reload behalten und in einer Druckansicht fuer Angebote/Rechnungen
+  verwenden
 - Backup exportieren und wiederherstellen
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
@@ -115,14 +116,16 @@ werden als Warnung im Backup protokolliert.
 - Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen und
   Missing-File-Hinweis fuer lokale Dateien.
 - Einstellungen: lokale Datenverwaltung, Backup/Restore, Supportbericht,
-  Drucklayout mit Briefkopf/Brieffuss und Update-Panel.
+  Drucklayout mit Briefkopf/Brieffuss, Papierformat, Ausrichtung, Raendern und
+  Update-Panel.
 
 ## Drucklayout
 
-Briefkopf und Brieffuss werden unter `Einstellungen > Drucklayout` lokal
-gespeichert. Angebote und Rechnungen koennen eine A4-Druckansicht oeffnen, die
-den nativen Druckdialog des Betriebssystems nutzt. Drucker, Papierfach,
-Skalierung und Zielgeraet werden dort gewaehlt. Das lokale Backup enthaelt die
+Briefkopf, Brieffuss, Papierformat, Ausrichtung und Randmodus werden unter
+`Einstellungen > Drucklayout` lokal gespeichert. Angebote und Rechnungen
+koennen eine Druckansicht oeffnen, die diese Werte uebernimmt und den nativen
+Druckdialog des Betriebssystems nutzt. Drucker, Papierfach, Skalierung und
+Zielgeraet werden dort gewaehlt. Das lokale Backup enthaelt die
 Drucklayout-Einstellungen.
 
 ## Bekannte lokale Build-Einschraenkung

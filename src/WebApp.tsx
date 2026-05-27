@@ -97,7 +97,9 @@ interface WebAppProps {
 type PrintSettings = {
   letterhead: string;
   footer: string;
-  paperSize: "A4";
+  paperSize: "A4" | "Letter";
+  orientation: "portrait" | "landscape";
+  marginPreset: "compact" | "normal" | "wide";
 };
 
 type BetaBackupFile = {
@@ -132,6 +134,8 @@ const defaultPrintSettings: PrintSettings = {
   footer:
     "Vielen Dank für Ihr Vertrauen.\nBankverbindung und rechtliche Pflichtangaben bitte vor produktiver Nutzung ergänzen.",
   paperSize: "A4",
+  orientation: "portrait",
+  marginPreset: "normal",
 };
 
 const defaultStore: BetaStore = {
@@ -307,6 +311,13 @@ function readBetaStore(): BetaStore {
 function normalizePrintSettings(value: unknown): PrintSettings {
   const source =
     value && typeof value === "object" ? (value as Partial<PrintSettings>) : {};
+  const paperSize = source.paperSize === "Letter" ? "Letter" : "A4";
+  const orientation =
+    source.orientation === "landscape" ? "landscape" : "portrait";
+  const marginPreset =
+    source.marginPreset === "compact" || source.marginPreset === "wide"
+      ? source.marginPreset
+      : "normal";
 
   return {
     letterhead:
@@ -317,7 +328,9 @@ function normalizePrintSettings(value: unknown): PrintSettings {
       typeof source.footer === "string"
         ? source.footer
         : defaultPrintSettings.footer,
-    paperSize: "A4",
+    paperSize,
+    orientation,
+    marginPreset,
   };
 }
 
@@ -581,8 +594,32 @@ function formatPrintBlock(value: string) {
   return escapeHtml(value).replace(/\n/g, "<br />");
 }
 
+function getPrintLayout(settings: PrintSettings) {
+  const paper =
+    settings.paperSize === "Letter"
+      ? { portraitWidth: "216mm", portraitHeight: "279mm" }
+      : { portraitWidth: "210mm", portraitHeight: "297mm" };
+  const marginMm =
+    settings.marginPreset === "compact"
+      ? 12
+      : settings.marginPreset === "wide"
+        ? 24
+        : 18;
+  const isLandscape = settings.orientation === "landscape";
+
+  return {
+    pageWidth: isLandscape ? paper.portraitHeight : paper.portraitWidth,
+    pageHeight: isLandscape ? paper.portraitWidth : paper.portraitHeight,
+    marginMm,
+    label: `${settings.paperSize}, ${
+      isLandscape ? "Querformat" : "Hochformat"
+    }, ${settings.marginPreset === "compact" ? "schmale" : settings.marginPreset === "wide" ? "breite" : "normale"} Ränder`,
+  };
+}
+
 function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
   const printSettings = readPrintSettings();
+  const printLayout = getPrintLayout(printSettings);
   const documentLabels: Record<keyof BetaStore, string> = {
     projects: "Projekt",
     quotes: "Angebot",
@@ -605,7 +642,10 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
   <meta charset="utf-8" />
   <title>${documentLabels[entityKey]} ${escapeHtml(item.id)}</title>
   <style>
-    @page { size: ${printSettings.paperSize}; margin: 18mm; }
+    @page {
+      size: ${printSettings.paperSize} ${printSettings.orientation};
+      margin: ${printLayout.marginMm}mm;
+    }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -633,10 +673,10 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
       cursor: pointer;
     }
     .page {
-      width: 210mm;
-      min-height: 297mm;
+      width: ${printLayout.pageWidth};
+      min-height: ${printLayout.pageHeight};
       margin: 18px auto;
-      padding: 18mm;
+      padding: ${printLayout.marginMm}mm;
       background: #ffffff;
       box-shadow: 0 14px 45px rgba(15, 23, 42, 0.18);
     }
@@ -702,7 +742,7 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
   <main class="page">
     <header>
       <div>${formatPrintBlock(printSettings.letterhead)}</div>
-      <div class="doc-type">Lokale Beta-Druckansicht<br />${documentLabels[entityKey]}</div>
+      <div class="doc-type">Lokale Beta-Druckansicht<br />${documentLabels[entityKey]}<br />${printLayout.label}</div>
     </header>
     <h1>${escapeHtml(item.title)}</h1>
     <p>${escapeHtml(item.subtitle)}</p>
@@ -1958,29 +1998,45 @@ function DocumentModuleSummary({
 }
 
 function PrintSettingsPreview({ settings }: { settings: PrintSettings }) {
+  const printLayout = getPrintLayout(settings);
+  const isLandscape = settings.orientation === "landscape";
+
   return (
     <div
       aria-label="Drucklayout Vorschau"
       className="rounded-md border bg-background p-4 text-sm"
       role="region"
     >
-      <div className="flex items-start justify-between gap-4 border-b pb-4">
-        <p className="whitespace-pre-line font-medium">{settings.letterhead}</p>
-        <div className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Lokale Beta-Vorschau
-          <br />
-          A4
+      <div className="mb-3 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+        <span>Druckvorschau</span>
+        <span>{printLayout.label}</span>
+      </div>
+      <div
+        className={`mx-auto rounded-sm border bg-white p-4 shadow-sm ${
+          isLandscape ? "aspect-[1.414/1] max-w-[360px]" : "aspect-[1/1.414] max-w-[260px]"
+        }`}
+      >
+        <div className="flex items-start justify-between gap-4 border-b pb-3">
+          <p className="whitespace-pre-line text-xs font-medium leading-relaxed">
+            {settings.letterhead}
+          </p>
+          <div className="text-right text-[10px] font-semibold uppercase text-muted-foreground">
+            Lokale Beta-Vorschau
+            <br />
+            {settings.paperSize}
+          </div>
         </div>
-      </div>
-      <div className="py-6">
-        <p className="text-lg font-semibold">Angebot / Rechnung</p>
-        <p className="mt-2 text-muted-foreground">
-          Diese Vorschau zeigt Briefkopf, Brieffuß und Druckabstand. Echte
-          Positionen und PDF-Layout folgen im nächsten Ausbauschritt.
-        </p>
-      </div>
-      <div className="border-t pt-4 text-xs text-muted-foreground">
-        <p className="whitespace-pre-line">{settings.footer}</p>
+        <div className="py-5">
+          <p className="text-sm font-semibold">Angebot / Rechnung</p>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Diese Vorschau zeigt Briefkopf, Brieffuß, Ausrichtung und
+            Druckabstand. Der Drucker wird anschließend im Betriebssystem
+            gewählt.
+          </p>
+        </div>
+        <div className="border-t pt-3 text-[10px] leading-relaxed text-muted-foreground">
+          <p className="whitespace-pre-line">{settings.footer}</p>
+        </div>
       </div>
     </div>
   );
@@ -2454,6 +2510,67 @@ function SettingsPage() {
                 }
               />
             </label>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <label className="block space-y-2">
+                <span className="text-sm font-medium">Papierformat</span>
+                <select
+                  aria-label="Papierformat für Drucklayout"
+                  className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                  value={printSettings.paperSize}
+                  onChange={(event) =>
+                    updatePrintSettings({
+                      ...printSettings,
+                      paperSize: event.target.value === "Letter" ? "Letter" : "A4",
+                    })
+                  }
+                >
+                  <option value="A4">A4</option>
+                  <option value="Letter">Letter</option>
+                </select>
+              </label>
+              <label className="block space-y-2">
+                <span className="text-sm font-medium">Ausrichtung</span>
+                <select
+                  aria-label="Ausrichtung für Drucklayout"
+                  className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                  value={printSettings.orientation}
+                  onChange={(event) =>
+                    updatePrintSettings({
+                      ...printSettings,
+                      orientation:
+                        event.target.value === "landscape"
+                          ? "landscape"
+                          : "portrait",
+                    })
+                  }
+                >
+                  <option value="portrait">Hochformat</option>
+                  <option value="landscape">Querformat</option>
+                </select>
+              </label>
+              <label className="block space-y-2">
+                <span className="text-sm font-medium">Ränder</span>
+                <select
+                  aria-label="Ränder für Drucklayout"
+                  className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                  value={printSettings.marginPreset}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    updatePrintSettings({
+                      ...printSettings,
+                      marginPreset:
+                        value === "compact" || value === "wide"
+                          ? value
+                          : "normal",
+                    });
+                  }}
+                >
+                  <option value="compact">Schmal</option>
+                  <option value="normal">Normal</option>
+                  <option value="wide">Breit</option>
+                </select>
+              </label>
+            </div>
             <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
               Drucker, Papierfach, Skalierung und Zielgerät werden im nativen
               Druckdialog des Betriebssystems gewählt. Diese Beta liefert die

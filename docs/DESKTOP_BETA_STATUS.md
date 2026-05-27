@@ -79,8 +79,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Login und Dashboard
 - reduzierte Beta-Navigation
 - Projektpersistenz nach Reload
-- Erstellen, Bearbeiten von Titel/Beschreibung, Statuswechsel, Filtern und
-  Reload fuer Kernmodule
+- Erstellen, Bearbeiten von Titel/Beschreibung/Betrag, Statuswechsel, Filtern
+  und Reload fuer Kernmodule
 - Filter mit Trefferanzahl, Zuruecksetzen und Suche ueber Kunde/Projekt-Kontext
   in Kernlisten
 - Statusfilter pro Kernliste mit gemeinsamem Zuruecksetzen

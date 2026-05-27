@@ -923,6 +923,7 @@ function useBetaStore() {
     id: string,
     title: string,
     subtitle?: string,
+    amount?: number | null,
   ) => {
     const nextTitle = title.trim();
     if (!nextTitle) return;
@@ -939,6 +940,12 @@ function useBetaStore() {
                 subtitle === undefined
                   ? item.subtitle
                   : nextSubtitle || "Keine Beschreibung",
+              amount:
+                amount === undefined
+                  ? item.amount
+                  : amount === null
+                    ? undefined
+                    : amount,
             }
           : item,
       ),
@@ -1524,7 +1531,12 @@ function EntityPage({
   items: BetaEntity[];
   onAdd: (title: string) => void;
   onStatusChange: (id: string, status: string) => void;
-  onTitleChange: (id: string, title: string, subtitle?: string) => void;
+  onTitleChange: (
+    id: string,
+    title: string,
+    subtitle?: string,
+    amount?: number | null,
+  ) => void;
   onRelationChange?: (
     id: string,
     relation: "customerId" | "projectId",
@@ -2236,7 +2248,12 @@ function EntityList({
   items: BetaEntity[];
   statusOptions?: string[];
   onStatusChange?: (id: string, status: string) => void;
-  onTitleChange?: (id: string, title: string, subtitle?: string) => void;
+  onTitleChange?: (
+    id: string,
+    title: string,
+    subtitle?: string,
+    amount?: number | null,
+  ) => void;
   onRelationChange?: (
     id: string,
     relation: "customerId" | "projectId",
@@ -2254,21 +2271,38 @@ function EntityList({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [editingSubtitle, setEditingSubtitle] = useState("");
+  const [editingAmount, setEditingAmount] = useState("");
+  const canEditAmount =
+    entityKey === "projects" || entityKey === "quotes" || entityKey === "invoices";
 
   const startEditing = (item: BetaEntity) => {
     setEditingId(item.id);
     setEditingTitle(item.title);
     setEditingSubtitle(item.subtitle);
+    setEditingAmount(
+      typeof item.amount === "number" ? String(Math.round(item.amount)) : "",
+    );
   };
 
   const cancelEditing = () => {
     setEditingId(null);
     setEditingTitle("");
     setEditingSubtitle("");
+    setEditingAmount("");
   };
 
   const saveEditing = (item: BetaEntity) => {
-    onTitleChange?.(item.id, editingTitle, editingSubtitle);
+    const parsedAmount = editingAmount.trim()
+      ? Number(editingAmount.replace(",", "."))
+      : null;
+    onTitleChange?.(
+      item.id,
+      editingTitle,
+      editingSubtitle,
+      canEditAmount && (parsedAmount === null || Number.isFinite(parsedAmount))
+        ? parsedAmount
+        : undefined,
+    );
     cancelEditing();
   };
 
@@ -2290,7 +2324,13 @@ function EntityList({
             >
               <div>
                 {editingId === item.id ? (
-                  <div className="grid gap-2 lg:grid-cols-[minmax(180px,1fr)_minmax(220px,1.3fr)_auto] lg:items-center">
+                  <div
+                    className={`grid gap-2 lg:items-center ${
+                      canEditAmount
+                        ? "lg:grid-cols-[minmax(180px,1fr)_minmax(220px,1.3fr)_minmax(140px,0.6fr)_auto]"
+                        : "lg:grid-cols-[minmax(180px,1fr)_minmax(220px,1.3fr)_auto]"
+                    }`}
+                  >
                     <Input
                       aria-label={`Titel für ${item.title} bearbeiten`}
                       value={editingTitle}
@@ -2309,6 +2349,19 @@ function EntityList({
                         if (event.key === "Escape") cancelEditing();
                       }}
                     />
+                    {canEditAmount ? (
+                      <Input
+                        aria-label={`Betrag für ${item.title} bearbeiten`}
+                        inputMode="decimal"
+                        value={editingAmount}
+                        placeholder="Betrag"
+                        onChange={(event) => setEditingAmount(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") saveEditing(item);
+                          if (event.key === "Escape") cancelEditing();
+                        }}
+                      />
+                    ) : null}
                     <div className="flex gap-2">
                       <Button size="sm" onClick={() => saveEditing(item)}>
                         Speichern
@@ -2834,8 +2887,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("projects", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("projects", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("projects", id, title, subtitle, amount)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("projects", id, relation, value)
@@ -2866,8 +2919,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("quotes", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("quotes", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("quotes", id, title, subtitle, amount)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("quotes", id, relation, value)
@@ -2902,8 +2955,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("invoices", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("invoices", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("invoices", id, title, subtitle, amount)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("invoices", id, relation, value)
@@ -2939,8 +2992,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("appointments", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("appointments", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("appointments", id, title, subtitle, amount)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("appointments", id, relation, value)
@@ -2973,8 +3026,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("customers", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("customers", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("customers", id, title, subtitle, amount)
                       }
                       onDelete={(id) => deleteEntity("customers", id)}
                       placeholder="Kundenname eingeben"
@@ -3002,8 +3055,8 @@ function BetaRoutes() {
                       onStatusChange={(id, status) =>
                         updateEntityStatus("documents", id, status)
                       }
-                      onTitleChange={(id, title, subtitle) =>
-                        updateEntityTitle("documents", id, title, subtitle)
+                      onTitleChange={(id, title, subtitle, amount) =>
+                        updateEntityTitle("documents", id, title, subtitle, amount)
                       }
                       onRelationChange={(id, relation, value) =>
                         updateEntityRelation("documents", id, relation, value)

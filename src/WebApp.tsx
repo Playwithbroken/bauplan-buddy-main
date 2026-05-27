@@ -2224,8 +2224,7 @@ function EntityList({
                 {entityKey &&
                 onRelationChange &&
                 customers.length > 0 &&
-                entityKey !== "customers" &&
-                entityKey !== "documents" ? (
+                entityKey !== "customers" ? (
                   <select
                     aria-label={`Kunde für ${item.title}`}
                     className="h-9 rounded-md border bg-background px-2 text-sm"
@@ -2841,7 +2840,7 @@ function BetaRoutes() {
                   element={
                     <EntityPage
                       title="Dokumente"
-                      description="Lokale Dokumenteinträge für die Beta. Datei-Inhalte werden noch nicht gespeichert."
+                      description="Lokale Dokumenteinträge für die Beta. Dateien können importiert, verlinkt und lokal zugeordnet werden."
                       entityKey="documents"
                       items={store.documents}
                       onAdd={(title) => addEntity("documents", title)}

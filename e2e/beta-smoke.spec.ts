@@ -306,9 +306,24 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByText("Beta Import.pdf")).toBeVisible();
     await expect(page.getByText("Importiert").first()).toBeVisible();
     await expect(page.getByText("2 KB")).toBeVisible();
+    await page
+      .getByLabel("Kunde für Beta Import.pdf")
+      .selectOption({ label: "Familie Müller" });
+    await page
+      .getByLabel("Projekt für Beta Import.pdf")
+      .selectOption({ label: "Wohnhaus Südtor" });
+    await expect(
+      page.getByText("Kontext: Familie Müller / Wohnhaus Südtor"),
+    ).toBeVisible();
 
     await page.reload();
     await expect(page.getByText("Beta Import.pdf")).toBeVisible();
+    await expect(page.getByLabel("Kunde für Beta Import.pdf")).toHaveValue(
+      "KND-001",
+    );
+    await expect(page.getByLabel("Projekt für Beta Import.pdf")).toHaveValue(
+      "PRJ-001",
+    );
     await expect(page.getByRole("button", { name: "Datei Beta Import.pdf öffnen" })).toBeVisible();
   });
 

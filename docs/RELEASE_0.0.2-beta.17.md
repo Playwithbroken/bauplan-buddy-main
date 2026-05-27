@@ -58,7 +58,8 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
 
 - Dokumente koennen lokal importiert oder verlinkt werden. JSON-Backups
   enthalten Metadaten, Dateipfade und verfuegbare lokale Dateiinhalte als
-  Beta-Archivdaten; nicht lesbare Dateien werden als Warnung protokolliert.
+  Beta-Archivdaten; Kunde/Projekt-Zuordnungen bleiben lokal erhalten; nicht
+  lesbare Dateien werden als Warnung protokolliert.
 - Briefkopf, Brieffuss, Papierformat, Ausrichtung und Raender sind lokale
   Beta-Drucklayout-Einstellungen. Angebote und Rechnungen koennen eine
   Druckansicht oeffnen; produktive PDF-Nummernkreise, finale Pflichtangaben und

@@ -84,7 +84,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   kontrolliertem Entfernen verwaister Zuordnungen beim Loeschen
 - Dokument loeschen mit Bestaetigung
 - Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
-  behalten
+  inklusive Kunde/Projekt-Zuordnung nach Reload behalten
 - Angebot und Rechnung inklusive Kunde/Projekt-Kontext als lokale
   Beta-JSON-Datei exportieren
 - Briefkopf/Brieffuss, Papierformat, Ausrichtung und Raender lokal bearbeiten,
@@ -117,8 +117,8 @@ werden als Warnung im Backup protokolliert.
 - Rechnungen: Rechnungsstatus, offene Summe, Kunde/Projekt-Kontext,
   JSON-Export und Druckansicht inklusive Kontextdaten.
 - Kalender: Terminstatus, naechster Termin und Kunde/Projekt-Kontext.
-- Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen und
-  Missing-File-Hinweis fuer lokale Dateien.
+- Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen, Kunde/Projekt-
+  Zuordnung und Missing-File-Hinweis fuer lokale Dateien.
 - Einstellungen: lokale Datenverwaltung, Backup/Restore, Supportbericht,
   Drucklayout mit Briefkopf/Brieffuss, Papierformat, Ausrichtung, Raendern und
   Update-Panel.

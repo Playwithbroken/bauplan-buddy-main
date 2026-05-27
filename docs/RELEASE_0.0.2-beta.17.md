@@ -29,7 +29,8 @@ Realtime-/AI-Demo-Flaechen.
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
   lokale Kunde/Projekt/Angebot-Beziehungen,
   Bereinigung lokaler Kunden-/Projektverweise beim Loeschen,
-  Angebots-/Rechnungs-Druckansicht, lokaler Dokumentimport, Backup-Export,
+  Angebots-/Rechnungs-Export und Druckansicht mit Kunde/Projekt-Kontext,
+  lokaler Dokumentimport, Backup-Export,
   Backup-Import und Supportbericht.
 - Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked
   App-Smoke, unsigned Installer-Build, Release-Artefaktpruefung,

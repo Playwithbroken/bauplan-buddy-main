@@ -85,7 +85,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Dokument loeschen mit Bestaetigung
 - Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
   behalten
-- Angebot und Rechnung als lokale Beta-JSON-Datei exportieren
+- Angebot und Rechnung inklusive Kunde/Projekt-Kontext als lokale
+  Beta-JSON-Datei exportieren
 - Briefkopf/Brieffuss, Papierformat, Ausrichtung und Raender lokal bearbeiten,
   nach Reload behalten und in einer Druckansicht fuer Angebote/Rechnungen
   verwenden
@@ -112,9 +113,9 @@ werden als Warnung im Backup protokolliert.
 - Kunden: Kundenstatus, lokale Beziehungen zu Projekten/Angeboten und
   Bereinigung lokaler Kundenverweise beim Loeschen.
 - Angebote: Pipeline, lokales Angebotsvolumen, Kunde/Projekt-Kontext,
-  JSON-Export und Druckansicht.
+  JSON-Export und Druckansicht inklusive Kontextdaten.
 - Rechnungen: Rechnungsstatus, offene Summe, Kunde/Projekt-Kontext,
-  JSON-Export und Druckansicht.
+  JSON-Export und Druckansicht inklusive Kontextdaten.
 - Kalender: Terminstatus, naechster Termin und Kunde/Projekt-Kontext.
 - Dokumente: Statusuebersicht, Import, Verlinkung, Oeffnen und
   Missing-File-Hinweis fuer lokale Dateien.

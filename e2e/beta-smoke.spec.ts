@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 
 const coreRoutes = [
   { path: "/#/dashboard", title: "Dashboard" },
@@ -319,24 +320,52 @@ test.describe("Desktop beta smoke", () => {
       .getByPlaceholder("Angebotstitel eingeben")
       .fill("E2E Export Angebot");
     await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Export Angebot")
+      .selectOption({ label: "Familie Müller" });
+    await page
+      .getByLabel("Projekt für E2E Export Angebot")
+      .selectOption({ label: "Wohnhaus Südtor" });
     const quoteDownloadPromise = page.waitForEvent("download");
     await page
       .getByRole("button", { name: "Eintrag E2E Export Angebot exportieren" })
       .click();
     const quoteDownload = await quoteDownloadPromise;
     expect(quoteDownload.suggestedFilename()).toContain("angebot");
+    const quotePath = await quoteDownload.path();
+    expect(quotePath).toBeTruthy();
+    const quoteExport = JSON.parse(await readFile(quotePath!, "utf8"));
+    expect(quoteExport.context).toMatchObject({
+      customerTitle: "Familie Müller",
+      projectTitle: "Wohnhaus Südtor",
+      label: "Familie Müller / Wohnhaus Südtor",
+    });
 
     await page.goto("/#/invoices");
     await page
       .getByPlaceholder("Rechnungstitel eingeben")
       .fill("E2E Export Rechnung");
     await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Export Rechnung")
+      .selectOption({ label: "Familie Müller" });
+    await page
+      .getByLabel("Projekt für E2E Export Rechnung")
+      .selectOption({ label: "Wohnhaus Südtor" });
     const invoiceDownloadPromise = page.waitForEvent("download");
     await page
       .getByRole("button", { name: "Eintrag E2E Export Rechnung exportieren" })
       .click();
     const invoiceDownload = await invoiceDownloadPromise;
     expect(invoiceDownload.suggestedFilename()).toContain("rechnung");
+    const invoicePath = await invoiceDownload.path();
+    expect(invoicePath).toBeTruthy();
+    const invoiceExport = JSON.parse(await readFile(invoicePath!, "utf8"));
+    expect(invoiceExport.context).toMatchObject({
+      customerTitle: "Familie Müller",
+      projectTitle: "Wohnhaus Südtor",
+      label: "Familie Müller / Wohnhaus Südtor",
+    });
   });
 
   test("persists print layout settings and opens a print preview", async ({ page }) => {
@@ -375,6 +404,12 @@ test.describe("Desktop beta smoke", () => {
       .getByPlaceholder("Angebotstitel eingeben")
       .fill("E2E Druck Angebot");
     await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Druck Angebot")
+      .selectOption({ label: "Familie Müller" });
+    await page
+      .getByLabel("Projekt für E2E Druck Angebot")
+      .selectOption({ label: "Wohnhaus Südtor" });
     const previewPromise = page.waitForEvent("popup");
     await page
       .getByRole("button", {
@@ -384,6 +419,8 @@ test.describe("Desktop beta smoke", () => {
     const preview = await previewPromise;
     await expect(preview.getByText("Bauplan Buddy GmbH")).toBeVisible();
     await expect(preview.getByText("E2E Druck Angebot")).toBeVisible();
+    await expect(preview.getByText("Familie Müller")).toBeVisible();
+    await expect(preview.getByText("Wohnhaus Südtor")).toBeVisible();
     await expect(preview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
     await expect(preview.getByRole("button", { name: "Drucken" })).toBeVisible();
     await preview.close();

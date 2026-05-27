@@ -400,6 +400,19 @@ function getEntityContextLabel(
   return labels.length ? labels.join(" / ") : null;
 }
 
+function getEntityExportContext(item: BetaEntity, store: BetaStore) {
+  const customerTitle = findEntityTitle(store.customers, item.customerId);
+  const projectTitle = findEntityTitle(store.projects, item.projectId);
+
+  return {
+    customerId: item.customerId,
+    customerTitle,
+    projectId: item.projectId,
+    projectTitle,
+    label: getEntityContextLabel(item, store.projects, store.customers),
+  };
+}
+
 async function collectDocumentFilesForBackup(store: BetaStore) {
   const documentFiles: BetaBackupFile[] = [];
   const documentFileWarnings: string[] = [];
@@ -517,6 +530,7 @@ function downloadBetaSupportReport() {
 }
 
 function downloadBetaEntityExport(entityKey: keyof BetaStore, item: BetaEntity) {
+  const store = readBetaStore();
   const exportLabels: Record<keyof BetaStore, string> = {
     projects: "projekt",
     quotes: "angebot",
@@ -534,6 +548,7 @@ function downloadBetaEntityExport(entityKey: keyof BetaStore, item: BetaEntity) 
     betaNotice:
       "Lokaler Beta-Export zur Prüfung. Nicht als produktives Rechnungs- oder Angebotsdokument verwenden.",
     printSettings: readPrintSettings(),
+    context: getEntityExportContext(item, store),
     record: item,
   });
 }
@@ -618,6 +633,7 @@ function getPrintLayout(settings: PrintSettings) {
 }
 
 function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
+  const store = readBetaStore();
   const printSettings = readPrintSettings();
   const printLayout = getPrintLayout(printSettings);
   const documentLabels: Record<keyof BetaStore, string> = {
@@ -629,6 +645,7 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
     documents: "Dokument",
   };
   const amount = formatAmount(item.amount);
+  const context = getEntityExportContext(item, store);
   const preview = window.open("", "_blank", "width=980,height=760");
 
   if (!preview) {
@@ -750,6 +767,8 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
       <dt>Nummer</dt><dd>${escapeHtml(item.id)}</dd>
       <dt>Status</dt><dd>${escapeHtml(item.status)}</dd>
       <dt>Datum</dt><dd>${escapeHtml(item.date)}</dd>
+      ${context.customerTitle ? `<dt>Kunde</dt><dd>${escapeHtml(context.customerTitle)}</dd>` : ""}
+      ${context.projectTitle ? `<dt>Projekt</dt><dd>${escapeHtml(context.projectTitle)}</dd>` : ""}
       ${amount ? `<dt>Betrag</dt><dd>${escapeHtml(amount)}</dd>` : ""}
     </dl>
     <div class="notice">

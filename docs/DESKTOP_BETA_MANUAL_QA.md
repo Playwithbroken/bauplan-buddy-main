@@ -67,11 +67,16 @@ update-panel check, and cleanup.
 - [ ] Delete the linked customer and confirm related project/quote assignments
       are cleared instead of showing stale context.
 - [ ] Export the quote beta JSON file.
-- [ ] Open the quote print preview and confirm Briefkopf/Brieffuss are visible.
+- [ ] Confirm the quote beta JSON contains the selected customer/project
+      context.
+- [ ] Open the quote print preview and confirm Briefkopf/Brieffuss and
+      customer/project context are visible.
 - [ ] Create one invoice and change its status.
 - [ ] Export the invoice beta JSON file.
+- [ ] Confirm the invoice beta JSON contains the selected customer/project
+      context.
 - [ ] Open the invoice print preview and confirm it is printable through the
-      native Windows print dialog.
+      native Windows print dialog with customer/project context visible.
 - [ ] Create one calendar appointment.
 - [ ] Edit the appointment.
 - [ ] Delete the appointment.

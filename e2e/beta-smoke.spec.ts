@@ -128,6 +128,12 @@ test.describe("Desktop beta smoke", () => {
       .fill("abc");
     await page.getByRole("button", { name: "Speichern" }).click();
     await expect(
+      page.getByLabel("Betrag für E2E Beta Projekt bearbeiten"),
+    ).toHaveAttribute("aria-invalid", "true");
+    await expect(
+      page.getByLabel("Betrag für E2E Beta Projekt bearbeiten"),
+    ).toHaveAttribute("aria-describedby", /amount-error/);
+    await expect(
       page.getByText("Bitte einen gültigen Betrag eingeben"),
     ).toBeVisible();
     await page

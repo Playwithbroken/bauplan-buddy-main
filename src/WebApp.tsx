@@ -2315,6 +2315,7 @@ function EntityList({
   const [editingSubtitle, setEditingSubtitle] = useState("");
   const [editingAmount, setEditingAmount] = useState("");
   const [editingAmountError, setEditingAmountError] = useState("");
+  const amountErrorId = editingId ? `${editingId}-amount-error` : undefined;
   const canEditAmount =
     entityKey === "projects" || entityKey === "quotes" || entityKey === "invoices";
 
@@ -2404,6 +2405,9 @@ function EntityList({
                         value={editingAmount}
                         placeholder="Betrag"
                         aria-invalid={editingAmountError ? "true" : undefined}
+                        aria-describedby={
+                          editingAmountError ? amountErrorId : undefined
+                        }
                         onChange={(event) => {
                           setEditingAmount(event.target.value);
                           setEditingAmountError("");
@@ -2424,6 +2428,7 @@ function EntityList({
                     </div>
                     {editingAmountError ? (
                       <p
+                        id={amountErrorId}
                         className="text-sm text-destructive lg:col-span-full"
                         role="alert"
                       >

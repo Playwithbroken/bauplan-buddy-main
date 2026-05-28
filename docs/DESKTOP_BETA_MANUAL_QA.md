@@ -62,6 +62,8 @@ update-panel check, and cleanup.
 - [ ] Confirm the project shows the selected customer after reload.
 - [ ] Edit the project title, description and amount. Confirm an invalid amount
       shows a validation message and `123.456,00` is saved as `123.456 €`.
+- [ ] Confirm the invalid amount field is announced as invalid by assistive
+      technology or browser accessibility inspection.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Confirm filtered lists show a visible result count and can be reset with
       `Filter löschen`.

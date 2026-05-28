@@ -60,7 +60,8 @@ update-panel check, and cleanup.
 - [ ] Create one customer.
 - [ ] Create one project and connect or reference the customer where available.
 - [ ] Confirm the project shows the selected customer after reload.
-- [ ] Edit the project title, description and amount.
+- [ ] Edit the project title, description and amount. Confirm an invalid amount
+      shows a validation message and `123.456,00` is saved as `123.456 €`.
 - [ ] Filter the project list and confirm the edited project remains findable.
 - [ ] Confirm filtered lists show a visible result count and can be reset with
       `Filter löschen`.

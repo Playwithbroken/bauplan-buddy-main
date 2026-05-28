@@ -125,7 +125,14 @@ test.describe("Desktop beta smoke", () => {
       .fill("Innenausbau und Abnahmeplanung");
     await page
       .getByLabel("Betrag für E2E Beta Projekt bearbeiten")
-      .fill("123456");
+      .fill("abc");
+    await page.getByRole("button", { name: "Speichern" }).click();
+    await expect(
+      page.getByText("Bitte einen gültigen Betrag eingeben"),
+    ).toBeVisible();
+    await page
+      .getByLabel("Betrag für E2E Beta Projekt bearbeiten")
+      .fill("123.456,00");
     await page.getByRole("button", { name: "Speichern" }).click();
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
     await expect(page.getByText(/Innenausbau und Abnahmeplanung/)).toBeVisible();

@@ -365,6 +365,39 @@ function formatAmount(value?: number) {
   }).format(value);
 }
 
+function parseLocalAmountInput(value: string):
+  | { ok: true; value: number | null }
+  | { ok: false } {
+  const trimmed = value.trim();
+  if (!trimmed) return { ok: true, value: null };
+
+  const compact = trimmed.replace(/\s/g, "").replace(/€/g, "");
+  if (!/^\d[\d.,]*$/.test(compact)) return { ok: false };
+
+  const lastComma = compact.lastIndexOf(",");
+  const lastDot = compact.lastIndexOf(".");
+  let normalized = compact;
+
+  if (lastComma >= 0 && lastDot >= 0) {
+    normalized =
+      lastComma > lastDot
+        ? compact.replace(/\./g, "").replace(",", ".")
+        : compact.replace(/,/g, "");
+  } else if (lastComma >= 0) {
+    normalized = compact.replace(",", ".");
+  } else if (lastDot >= 0) {
+    const parts = compact.split(".");
+    normalized =
+      parts.length > 2 || parts.at(-1)?.length === 3
+        ? compact.replace(/\./g, "")
+        : compact;
+  }
+
+  const parsed = Number(normalized);
+  if (!Number.isFinite(parsed) || parsed < 0) return { ok: false };
+  return { ok: true, value: Math.round(parsed * 100) / 100 };
+}
+
 function formatFileSize(value?: number) {
   if (typeof value !== "number" || value < 0) return null;
   if (value < 1024) return `${value} B`;
@@ -2281,6 +2314,7 @@ function EntityList({
   const [editingTitle, setEditingTitle] = useState("");
   const [editingSubtitle, setEditingSubtitle] = useState("");
   const [editingAmount, setEditingAmount] = useState("");
+  const [editingAmountError, setEditingAmountError] = useState("");
   const canEditAmount =
     entityKey === "projects" || entityKey === "quotes" || entityKey === "invoices";
 
@@ -2291,6 +2325,7 @@ function EntityList({
     setEditingAmount(
       typeof item.amount === "number" ? String(Math.round(item.amount)) : "",
     );
+    setEditingAmountError("");
   };
 
   const cancelEditing = () => {
@@ -2298,19 +2333,23 @@ function EntityList({
     setEditingTitle("");
     setEditingSubtitle("");
     setEditingAmount("");
+    setEditingAmountError("");
   };
 
   const saveEditing = (item: BetaEntity) => {
-    const parsedAmount = editingAmount.trim()
-      ? Number(editingAmount.replace(",", "."))
-      : null;
+    const parsedAmount = parseLocalAmountInput(editingAmount);
+    if (canEditAmount && !parsedAmount.ok) {
+      setEditingAmountError(
+        "Bitte einen gültigen Betrag eingeben, zum Beispiel 123.456,78.",
+      );
+      return;
+    }
+
     onTitleChange?.(
       item.id,
       editingTitle,
       editingSubtitle,
-      canEditAmount && (parsedAmount === null || Number.isFinite(parsedAmount))
-        ? parsedAmount
-        : undefined,
+      canEditAmount && parsedAmount.ok ? parsedAmount.value : undefined,
     );
     cancelEditing();
   };
@@ -2364,7 +2403,11 @@ function EntityList({
                         inputMode="decimal"
                         value={editingAmount}
                         placeholder="Betrag"
-                        onChange={(event) => setEditingAmount(event.target.value)}
+                        aria-invalid={editingAmountError ? "true" : undefined}
+                        onChange={(event) => {
+                          setEditingAmount(event.target.value);
+                          setEditingAmountError("");
+                        }}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") saveEditing(item);
                           if (event.key === "Escape") cancelEditing();
@@ -2379,6 +2422,14 @@ function EntityList({
                         Abbrechen
                       </Button>
                     </div>
+                    {editingAmountError ? (
+                      <p
+                        className="text-sm text-destructive lg:col-span-full"
+                        role="alert"
+                      >
+                        {editingAmountError}
+                      </p>
+                    ) : null}
                   </div>
                 ) : (
                   <div className="flex flex-wrap items-center gap-2">

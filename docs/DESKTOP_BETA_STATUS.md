@@ -81,6 +81,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Projektpersistenz nach Reload
 - Erstellen, Bearbeiten von Titel/Beschreibung/Betrag, Statuswechsel, Filtern
   und Reload fuer Kernmodule
+- Deutsche Betragseingaben werden validiert und ohne stilles Verwerfen
+  gespeichert.
 - Filter mit Trefferanzahl, Zuruecksetzen und Suche ueber Kunde/Projekt-Kontext
   in Kernlisten inklusive modulbezogener Kein-Treffer-Texte
 - Statusfilter pro Kernliste mit gemeinsamem Zuruecksetzen

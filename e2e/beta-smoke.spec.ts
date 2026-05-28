@@ -546,6 +546,19 @@ test.describe("Desktop beta smoke", () => {
     expect(backupJson.documentFiles[0].filename).toBe("Backup Plan.pdf");
     expect(backupJson.documentFiles[0].dataBase64).toBe("ZG9rdW1lbnQ=");
 
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("Lokale Beta-Daten wirklich zurücksetzen?");
+      await dialog.dismiss();
+    });
+    await page.getByRole("button", { name: "Beta-Demodaten zurücksetzen" }).click();
+    await page.goto("/#/projects");
+    await expect(page.getByText("E2E Backup Projekt")).toBeVisible();
+
+    await page.goto("/#/settings");
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("Lokale Beta-Daten wirklich zurücksetzen?");
+      await dialog.accept();
+    });
     await page.getByRole("button", { name: "Beta-Demodaten zurücksetzen" }).click();
     await page.goto("/#/projects");
     await expect(page.getByText("E2E Backup Projekt")).toBeHidden();

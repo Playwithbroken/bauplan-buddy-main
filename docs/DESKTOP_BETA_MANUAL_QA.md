@@ -119,7 +119,8 @@ update-panel check, and cleanup.
 - [ ] Export a beta backup from Einstellungen.
 - [ ] Confirm missing or unreadable linked document files are shown as visible
       backup warnings.
-- [ ] Reset beta data.
+- [ ] Reset beta data. Confirm cancellation keeps local data and confirmation
+      replaces it with demo data.
 - [ ] Import the backup.
 - [ ] Confirm restored records are available again.
 - [ ] Confirm restored Briefkopf, Brieffuss, Ausrichtung and Raender are

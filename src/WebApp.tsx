@@ -2664,6 +2664,11 @@ function SettingsPage() {
   };
 
   const resetData = () => {
+    const confirmed = window.confirm(
+      "Lokale Beta-Daten wirklich zurücksetzen? Vorhandene Projekte, Kunden, Angebote, Rechnungen, Termine und Dokumenteinträge werden durch Demodaten ersetzt.",
+    );
+    if (!confirmed) return;
+
     localStorage.setItem(STORE_KEY, JSON.stringify(defaultStore));
     window.location.reload();
   };

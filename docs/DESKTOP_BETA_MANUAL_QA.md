@@ -122,6 +122,8 @@ update-panel check, and cleanup.
 - [ ] Reset beta data. Confirm cancellation keeps local data and confirmation
       replaces it with demo data.
 - [ ] Import the backup.
+- [ ] Confirm cancellation keeps current local data and confirmation restores
+      the backup data.
 - [ ] Confirm restored records are available again.
 - [ ] Confirm restored Briefkopf, Brieffuss, Ausrichtung and Raender are
       available again.

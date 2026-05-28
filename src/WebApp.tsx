@@ -2646,6 +2646,14 @@ function SettingsPage() {
       if (!parsed.store) {
         throw new Error("missing store");
       }
+      const confirmed = window.confirm(
+        "Datensicherung einspielen? Aktuelle lokale Beta-Daten werden durch die Sicherung ersetzt.",
+      );
+      if (!confirmed) {
+        setBackupWarnings([]);
+        setMessage("Datensicherung wurde nicht eingespielt.");
+        return;
+      }
       const nextStore = await restoreDocumentFilesFromBackup(
         normalizeBetaStore(parsed.store),
         Array.isArray(parsed.documentFiles) ? parsed.documentFiles : [],
@@ -2659,6 +2667,7 @@ function SettingsPage() {
       setMessage("Datensicherung wurde eingespielt. Die Ansicht wird neu geladen.");
       window.setTimeout(() => window.location.reload(), 200);
     } catch {
+      setBackupWarnings([]);
       setMessage("Die Datei konnte nicht als Beta-Datensicherung gelesen werden.");
     }
   };
@@ -2676,6 +2685,7 @@ function SettingsPage() {
   const updatePrintSettings = (next: PrintSettings) => {
     setPrintSettings(next);
     savePrintSettings(next);
+    setBackupWarnings([]);
     setMessage("Drucklayout wurde lokal gespeichert.");
   };
 

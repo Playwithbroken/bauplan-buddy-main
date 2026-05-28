@@ -578,6 +578,25 @@ test.describe("Desktop beta smoke", () => {
         },
       });
     });
+
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("Datensicherung einspielen?");
+      await dialog.dismiss();
+    });
+    await page
+      .getByLabel("Beta-Datensicherung auswählen")
+      .setInputFiles(backupPath!);
+    await expect(
+      page.getByText("Datensicherung wurde nicht eingespielt."),
+    ).toBeVisible();
+    await page.goto("/#/projects");
+    await expect(page.getByText("E2E Backup Projekt")).toBeHidden();
+
+    await page.goto("/#/settings");
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("Datensicherung einspielen?");
+      await dialog.accept();
+    });
     await page
       .getByLabel("Beta-Datensicherung auswählen")
       .setInputFiles(backupPath!);

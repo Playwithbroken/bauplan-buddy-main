@@ -99,7 +99,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Briefkopf/Brieffuss, Papierformat, Ausrichtung und Raender lokal bearbeiten,
   nach Reload behalten und in einer Druckansicht fuer Angebote/Rechnungen
   verwenden
-- Backup exportieren, Reset-Bestaetigung und Wiederherstellung
+- Backup exportieren, Reset-/Restore-Bestaetigung und Wiederherstellung
 - Supportbericht ohne rohe Datensaetze
 - Recovery bei kaputtem lokalen Beta-Speicher
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844

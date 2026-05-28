@@ -94,6 +94,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Dokument loeschen mit Bestaetigung
 - Dokument als lokale Desktop-Datei importieren und Metadaten nach Reload
   inklusive Kunde/Projekt-Zuordnung nach Reload behalten
+- Importierte Dokumentdatei neu zuordnen, erneut in den App-Speicher kopieren
+  und Metadaten nach Reload behalten
 - Verlinkte Dokumentdatei als fehlend markieren und nach Reload sichtbar
   behalten
 - Fehlende verlinkte Dokumentdatei neu zuordnen und Missing-Status nach Reload

@@ -372,6 +372,43 @@ test.describe("Desktop beta smoke", () => {
       "PRJ-001",
     );
     await expect(page.getByRole("button", { name: "Datei Beta Import.pdf öffnen" })).toBeVisible();
+
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Beta Import Neu.pdf"],
+          }),
+          readFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Desktop\\Beta Import Neu.pdf",
+            name: "Beta Import Neu.pdf",
+            mimeType: "application/pdf",
+            size: 4096,
+            dataBase64: "bmV1",
+          }),
+          writeFile: async () => ({
+            ok: true,
+            path: "C:\\Users\\Tester\\Documents\\Bauplan Buddy\\Beta Import Neu.pdf",
+            name: "Beta Import Neu.pdf",
+            mimeType: "application/pdf",
+          }),
+        },
+      });
+    });
+    await page
+      .getByRole("button", { name: "Datei Beta Import.pdf neu zuordnen" })
+      .click();
+    await expect(page.getByText("Importierte Datei neu zugeordnet")).toBeVisible();
+    await expect(page.getByText("4 KB")).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByText("Beta Import.pdf")).toBeVisible();
+    await expect(page.getByText("Importierte Datei neu zugeordnet")).toBeVisible();
+    await expect(page.getByText("4 KB")).toBeVisible();
   });
 
   test("marks a linked document as missing when the file is gone", async ({

@@ -96,6 +96,8 @@ update-panel check, and cleanup.
 - [ ] Import one local document file and confirm it is marked as `Importiert`.
 - [ ] Assign the imported document to a customer and project and confirm both
       remain after reload.
+- [ ] Reassign the imported document and confirm it remains imported with
+      updated metadata after reload.
 - [ ] Link one local document file and confirm it is marked as `Verlinkt`.
 - [ ] Open an imported or linked document from the app.
 - [ ] Move or delete the original linked file and confirm the app shows

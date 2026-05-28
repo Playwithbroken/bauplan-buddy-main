@@ -96,6 +96,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   inklusive Kunde/Projekt-Zuordnung nach Reload behalten
 - Verlinkte Dokumentdatei als fehlend markieren und nach Reload sichtbar
   behalten
+- Fehlende verlinkte Dokumentdatei neu zuordnen und Missing-Status nach Reload
+  aufloesen
 - Angebot und Rechnung inklusive Kunde/Projekt-Kontext als lokale
   Beta-JSON-Datei exportieren
 - Briefkopf/Brieffuss, Papierformat, Ausrichtung und Raender lokal bearbeiten,

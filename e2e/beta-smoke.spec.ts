@@ -380,14 +380,22 @@ test.describe("Desktop beta smoke", () => {
     await page.getByRole("button", { name: "Anmelden" }).click();
     await page.goto("/#/documents");
     await page.evaluate(() => {
+      let dialogCount = 0;
       Object.defineProperty(window, "desktop", {
         configurable: true,
         value: {
           isDesktop: true,
-          openFileDialog: async () => ({
-            canceled: false,
-            filePaths: ["C:\\Users\\Tester\\Desktop\\Verschobener Plan.pdf"],
-          }),
+          openFileDialog: async () => {
+            dialogCount += 1;
+            return {
+              canceled: false,
+              filePaths: [
+                dialogCount === 1
+                  ? "C:\\Users\\Tester\\Desktop\\Verschobener Plan.pdf"
+                  : "C:\\Users\\Tester\\Desktop\\Wiedergefundener Plan.pdf",
+              ],
+            };
+          },
           fileExists: async () => ({ ok: true, exists: false }),
           openPath: async () => ({ ok: false }),
         },
@@ -414,6 +422,28 @@ test.describe("Desktop beta smoke", () => {
     await page.reload();
     await expect(page.getByText("Verschobener Plan.pdf")).toBeVisible();
     await expect(page.getByText("Datei fehlt", { exact: true })).toBeVisible();
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Wiedergefundener Plan.pdf"],
+          }),
+        },
+      });
+    });
+
+    await page
+      .getByRole("button", { name: "Datei Verschobener Plan.pdf neu zuordnen" })
+      .click();
+    await expect(page.getByText("Wiedergefundener Plan.pdf")).toBeVisible();
+    await expect(page.getByText("Datei fehlt", { exact: true })).toBeHidden();
+
+    await page.reload();
+    await expect(page.getByText("Wiedergefundener Plan.pdf")).toBeVisible();
+    await expect(page.getByText("Datei fehlt", { exact: true })).toBeHidden();
   });
 
   test("exports local quote and invoice beta records", async ({ page }) => {

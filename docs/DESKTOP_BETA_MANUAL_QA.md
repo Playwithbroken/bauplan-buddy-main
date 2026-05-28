@@ -102,6 +102,8 @@ update-panel check, and cleanup.
       `Datei fehlt` after opening it.
 - [ ] Reload and confirm the missing-file state remains visible and
       `Neu zuordnen` is available.
+- [ ] Reassign the missing linked file and confirm `Datei fehlt` disappears
+      after reload.
 - [ ] Delete the document entry and confirm the delete prompt appears.
 
 ## Persistence

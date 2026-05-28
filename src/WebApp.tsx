@@ -2609,6 +2609,7 @@ function EntityList({
 function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [message, setMessage] = useState("");
+  const [backupWarnings, setBackupWarnings] = useState<string[]>([]);
   const [updateStatus, setUpdateStatus] = useState("Noch nicht geprüft.");
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [printSettings, setPrintSettings] = useState<PrintSettings>(() =>
@@ -2622,12 +2623,14 @@ function SettingsPage() {
     try {
       const backup = await buildBetaBackup();
       downloadJsonFile("bauplan-buddy-beta-backup", backup);
+      setBackupWarnings(backup.documentFileWarnings);
       setMessage(
         backup.documentFileWarnings.length
           ? `Datensicherung wurde mit ${backup.documentFileWarnings.length} Dateihinweisen erstellt.`
           : "Datensicherung wurde inklusive verfügbarer Dokumentdateien erstellt.",
       );
     } catch {
+      setBackupWarnings([]);
       setMessage("Datensicherung konnte nicht erstellt werden.");
     }
   };
@@ -2767,6 +2770,19 @@ function SettingsPage() {
             <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
               {message}
             </p>
+          ) : null}
+          {backupWarnings.length ? (
+            <div
+              className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"
+              role="alert"
+            >
+              <p className="font-medium">Dateihinweise zur Datensicherung</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                {backupWarnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </div>
           ) : null}
         </CardContent>
       </Card>

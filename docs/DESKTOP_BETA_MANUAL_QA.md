@@ -117,6 +117,8 @@ update-panel check, and cleanup.
       Drucklayout.
 - [ ] Reload the app and confirm the Drucklayout values remain present.
 - [ ] Export a beta backup from Einstellungen.
+- [ ] Confirm missing or unreadable linked document files are shown as visible
+      backup warnings.
 - [ ] Reset beta data.
 - [ ] Import the backup.
 - [ ] Confirm restored records are available again.

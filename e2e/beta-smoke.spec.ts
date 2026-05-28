@@ -577,6 +577,43 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByText("Aus Datensicherung wiederhergestellt")).toBeVisible();
   });
 
+  test("shows document file warnings during backup", async ({ page }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.goto("/#/documents");
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Fehlender Plan.pdf"],
+          }),
+          readFile: async () => ({
+            ok: false,
+            message: "Datei nicht gefunden",
+          }),
+        },
+      });
+    });
+
+    await page.getByRole("button", { name: "Datei verlinken" }).click();
+    await expect(page.getByText("Fehlender Plan.pdf")).toBeVisible();
+
+    await page.goto("/#/settings");
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Daten sichern" }).click();
+    await downloadPromise;
+
+    await expect(
+      page.getByText("Datensicherung wurde mit 1 Dateihinweisen erstellt."),
+    ).toBeVisible();
+    await expect(page.getByText("Dateihinweise zur Datensicherung")).toBeVisible();
+    await expect(
+      page.getByText(/Datei konnte nicht in die Sicherung aufgenommen werden/),
+    ).toBeVisible();
+  });
+
   test("exports a support report without raw beta records", async ({ page }) => {
     await page.getByRole("button", { name: "Anmelden" }).click();
     await page.goto("/#/settings");

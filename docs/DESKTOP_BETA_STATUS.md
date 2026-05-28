@@ -112,7 +112,8 @@ den app-kontrollierten Bauplan-Buddy-Ordner, `linked` merkt sich den
 Originalpfad. Die Dokumentseite zeigt Importiert, Verlinkt und Datei-fehlt
 sichtbar an. JSON-Backups sichern Metadaten, Dateipfade und verfuegbare lokale
 Dateiinhalte als Beta-Archivdaten. Dateien, die beim Export nicht lesbar sind,
-werden als Warnung im Backup protokolliert.
+werden als Warnung im Backup protokolliert und in den Einstellungen sichtbar
+angezeigt.
 
 ## Aktueller Modulstand
 

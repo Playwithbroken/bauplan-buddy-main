@@ -374,6 +374,48 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByRole("button", { name: "Datei Beta Import.pdf öffnen" })).toBeVisible();
   });
 
+  test("marks a linked document as missing when the file is gone", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.goto("/#/documents");
+    await page.evaluate(() => {
+      Object.defineProperty(window, "desktop", {
+        configurable: true,
+        value: {
+          isDesktop: true,
+          openFileDialog: async () => ({
+            canceled: false,
+            filePaths: ["C:\\Users\\Tester\\Desktop\\Verschobener Plan.pdf"],
+          }),
+          fileExists: async () => ({ ok: true, exists: false }),
+          openPath: async () => ({ ok: false }),
+        },
+      });
+    });
+
+    await page.getByRole("button", { name: "Datei verlinken" }).click();
+    await expect(page.getByText("Verschobener Plan.pdf")).toBeVisible();
+    await expect(page.getByText("Verlinkt").first()).toBeVisible();
+
+    page.once("dialog", async (dialog) => {
+      expect(dialog.message()).toContain("Die verknüpfte Datei wurde nicht gefunden");
+      await dialog.accept();
+    });
+    await page
+      .getByRole("button", { name: "Datei Verschobener Plan.pdf öffnen" })
+      .click();
+
+    await expect(page.getByText("Datei fehlt", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Datei Verschobener Plan.pdf neu zuordnen" }),
+    ).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByText("Verschobener Plan.pdf")).toBeVisible();
+    await expect(page.getByText("Datei fehlt", { exact: true })).toBeVisible();
+  });
+
   test("exports local quote and invoice beta records", async ({ page }) => {
     await page.getByRole("button", { name: "Anmelden" }).click();
 

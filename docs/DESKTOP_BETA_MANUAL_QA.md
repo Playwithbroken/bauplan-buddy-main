@@ -98,8 +98,10 @@ update-panel check, and cleanup.
       remain after reload.
 - [ ] Link one local document file and confirm it is marked as `Verlinkt`.
 - [ ] Open an imported or linked document from the app.
-- [ ] Move or delete the original linked file and confirm the app shows a
-      friendly missing-file state or lets the file be reassigned.
+- [ ] Move or delete the original linked file and confirm the app shows
+      `Datei fehlt` after opening it.
+- [ ] Reload and confirm the missing-file state remains visible and
+      `Neu zuordnen` is available.
 - [ ] Delete the document entry and confirm the delete prompt appears.
 
 ## Persistence

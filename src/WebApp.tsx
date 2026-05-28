@@ -1562,6 +1562,15 @@ function EntityPage({
   const [sortMode, setSortMode] = useState<"newest" | "title" | "status">(
     "newest",
   );
+  const entityCopy = {
+    projects: { plural: "Projekte", dativePlural: "Projekten" },
+    quotes: { plural: "Angebote", dativePlural: "Angeboten" },
+    invoices: { plural: "Rechnungen", dativePlural: "Rechnungen" },
+    appointments: { plural: "Termine", dativePlural: "Terminen" },
+    customers: { plural: "Kunden", dativePlural: "Kunden" },
+    documents: { plural: "Dokumente", dativePlural: "Dokumenten" },
+    printSettings: { plural: "Drucklayouts", dativePlural: "Drucklayouts" },
+  }[entityKey];
   const normalizedFilter = filter.trim().toLocaleLowerCase("de-DE");
   const filtered = useMemo(() => {
     const nextItems = items.filter((item) =>
@@ -1596,8 +1605,8 @@ function EntityPage({
   }, [customers, items, normalizedFilter, projects, sortMode, statusFilter]);
   const hasActiveFilter = Boolean(normalizedFilter || statusFilter);
   const resultLabel = hasActiveFilter
-    ? `${filtered.length} von ${items.length} Einträgen sichtbar`
-    : `${items.length} Einträge`;
+    ? `${filtered.length} von ${items.length} ${entityCopy.dativePlural} sichtbar`
+    : `${items.length} ${entityCopy.plural}`;
 
   return (
     <Page title={title} description={description}>
@@ -1730,9 +1739,9 @@ function EntityPage({
         customers={customers}
         emptyText={
           normalizedFilter
-            ? "Keine passenden Einträge gefunden."
+            ? `Keine passenden ${entityCopy.plural} gefunden.`
             : statusFilter
-              ? `Keine Einträge mit Status ${statusFilter} vorhanden.`
+              ? `Keine ${entityCopy.plural} mit Status ${statusFilter} vorhanden.`
             : emptyText
         }
       />

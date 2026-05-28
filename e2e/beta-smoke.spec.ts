@@ -141,8 +141,8 @@ test.describe("Desktop beta smoke", () => {
     await expect(page.getByRole("status")).toContainText("von");
     await page.getByLabel("Projekte filtern").fill("kein treffer");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeHidden();
-    await expect(page.getByText("Keine passenden Einträge gefunden.")).toBeVisible();
-    await expect(page.getByRole("status")).toHaveText("0 von 2 Einträgen sichtbar");
+    await expect(page.getByText("Keine passenden Projekte gefunden.")).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText("0 von 2 Projekten sichtbar");
     await page.getByRole("button", { name: "Filter löschen" }).click();
     await expect(page.getByLabel("Projekte filtern")).toHaveValue("");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeVisible();
@@ -155,7 +155,7 @@ test.describe("Desktop beta smoke", () => {
       .selectOption("Pausiert");
     await expect(page.getByText("E2E Beta Projekt Bearbeitet")).toBeHidden();
     await expect(page.getByRole("status")).toHaveText(
-      "0 von 2 Einträgen sichtbar",
+      "0 von 2 Projekten sichtbar",
     );
     await page.getByRole("button", { name: "Filter löschen" }).click();
     await expect(page.getByLabel("Projekte nach Status filtern")).toHaveValue("");
@@ -223,7 +223,7 @@ test.describe("Desktop beta smoke", () => {
     await page.getByLabel("Angebote filtern").fill("Beziehung Projekt");
     await expect(page.getByText("E2E Beziehung Angebot")).toBeVisible();
     await expect(page.getByRole("status")).toHaveText(
-      "1 von 2 Einträgen sichtbar",
+      "1 von 2 Angeboten sichtbar",
     );
 
     await page.reload();

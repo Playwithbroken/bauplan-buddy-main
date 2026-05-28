@@ -82,7 +82,7 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Erstellen, Bearbeiten von Titel/Beschreibung/Betrag, Statuswechsel, Filtern
   und Reload fuer Kernmodule
 - Filter mit Trefferanzahl, Zuruecksetzen und Suche ueber Kunde/Projekt-Kontext
-  in Kernlisten
+  in Kernlisten inklusive modulbezogener Kein-Treffer-Texte
 - Statusfilter pro Kernliste mit gemeinsamem Zuruecksetzen
 - Sortierung pro Kernliste nach neuestem Eintrag, Name oder Status
 - Farbige Status-Badges fuer scanbare Listen in Dashboard und Kernmodulen

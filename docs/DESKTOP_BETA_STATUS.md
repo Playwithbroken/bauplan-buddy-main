@@ -36,6 +36,9 @@ Lokaler Gate-Stand:
 
 - `npm run quality:desktop-beta:installer` ist am 27.05.2026 mit robustem
   Installer-Smoke-Cleanup gruen gelaufen.
+- Seitdem wurden weitere Beta-Haertungen umgesetzt. Vor finaler Weitergabe
+  muss `npm run quality:desktop-beta:installer` auf dem aktuellen HEAD erneut
+  laufen.
 - Abgedeckt sind `typecheck:beta`, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
   Release-Artefaktpruefung, Authenticode-`NotSigned`-Status und

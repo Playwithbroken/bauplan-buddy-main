@@ -25,6 +25,9 @@ Realtime-/AI-Demo-Flaechen.
 
 - `npm run quality:desktop-beta:installer` ist am 27.05.2026 mit robustem
   Installer-Smoke-Cleanup gruen gelaufen.
+- Seit diesem Gate wurden weitere Beta-Haertungen umgesetzt; fuer die finale
+  Weitergabe muss das komplette Installer-Gate auf dem aktuellen HEAD erneut
+  laufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
   lokale Kunde/Projekt/Angebot-Beziehungen,

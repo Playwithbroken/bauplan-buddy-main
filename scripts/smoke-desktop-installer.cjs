@@ -272,11 +272,23 @@ async function verifyRestartAndBackupImport(context, rendererUrl, backupPath) {
   await page.getByText("Installer Smoke Projekt").waitFor();
 
   await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+  page.once("dialog", async (dialog) => {
+    if (!dialog.message().includes("Lokale Beta-Daten wirklich")) {
+      fail(`Unexpected reset confirmation message: ${dialog.message()}`);
+    }
+    await dialog.accept();
+  });
   await page.getByRole("button", { name: "Beta-Demodaten zurücksetzen" }).click();
   await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });
   await page.getByText("Installer Smoke Projekt").waitFor({ state: "hidden" });
 
   await page.goto(`${rendererUrl}/#/settings`, { waitUntil: "domcontentloaded" });
+  page.once("dialog", async (dialog) => {
+    if (!dialog.message().includes("Datensicherung einspielen")) {
+      fail(`Unexpected backup restore confirmation message: ${dialog.message()}`);
+    }
+    await dialog.accept();
+  });
   await page.getByLabel("Beta-Datensicherung auswählen").setInputFiles(backupPath);
   await page.waitForURL("**/#/settings");
   await page.goto(`${rendererUrl}/#/projects`, { waitUntil: "domcontentloaded" });

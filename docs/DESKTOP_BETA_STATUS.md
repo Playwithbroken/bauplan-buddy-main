@@ -113,7 +113,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
 - Installer-Smoke mit Default-Installationspfad, Silent-Install, Start und
   Neustart der installierten App, Login, Projektpersistenz, Backup-Export,
-  Backup-Import, nativem Update-Panel-Check und Cleanup
+  Backup-Import inklusive Reset-/Restore-Bestaetigung, nativem
+  Update-Panel-Check und Cleanup
 
 Dokumente unterstuetzen zwei lokale Dateiarten: `imported` kopiert die Datei in
 den app-kontrollierten Bauplan-Buddy-Ordner, `linked` merkt sich den

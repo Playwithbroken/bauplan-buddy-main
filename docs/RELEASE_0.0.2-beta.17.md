@@ -30,8 +30,9 @@ Realtime-/AI-Demo-Flaechen.
   lokale Kunde/Projekt/Angebot-Beziehungen,
   Bereinigung lokaler Kunden-/Projektverweise beim Loeschen,
   Angebots-/Rechnungs-Export und Druckansicht mit Kunde/Projekt-Kontext,
-  lokaler Dokumentimport, Backup-Export,
-  Backup-Import und Supportbericht.
+  lokaler Dokumentimport, importierte und verlinkte Dokument-Neuzuordnung,
+  Missing-File-Zustand, Backup-Export, Backup-Import mit Bestaetigung und
+  Supportbericht ohne Rohdaten.
 - Das Desktop-Installer-Gate prueft zusaetzlich Desktop-Preflight, unpacked
   App-Smoke, unsigned Installer-Build, Release-Artefaktpruefung,
   Authenticode-`NotSigned`-Status, Default-Installationspfad,
@@ -60,6 +61,11 @@ Diese Konten sind nur fuer die lokale Desktop-/Demo-Beta vorgesehen.
   enthalten Metadaten, Dateipfade und verfuegbare lokale Dateiinhalte als
   Beta-Archivdaten; Kunde/Projekt-Zuordnungen bleiben lokal erhalten; nicht
   lesbare Dateien werden als Warnung protokolliert.
+- Reset und Backup-Import ueberschreiben lokale Beta-Daten nur nach sichtbarer
+  Bestaetigung. Der Installer-Smoke akzeptiert diese Bestaetigungen im
+  automatisierten Backup/Restore-Pfad.
+- Der Supportbericht enthaelt sichere Summen zu Dokumenten und Drucklayout,
+  aber keine Projekt-, Kunden-, Dokumenttitel oder Dateipfade.
 - Briefkopf, Brieffuss, Papierformat, Ausrichtung und Raender sind lokale
   Beta-Drucklayout-Einstellungen. Angebote und Rechnungen koennen eine
   Druckansicht oeffnen; produktive PDF-Nummernkreise, finale Pflichtangaben und

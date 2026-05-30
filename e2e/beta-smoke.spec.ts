@@ -783,7 +783,21 @@ test.describe("Desktop beta smoke", () => {
     expect(report.type).toBe("desktop-beta-support-report");
     expect(report.version).toBe("0.0.2-beta.17");
     expect(report.dataCounts.projects).toBeGreaterThanOrEqual(1);
+    expect(report.documentCounts).toEqual({
+      imported: 0,
+      linked: 0,
+      missing: 0,
+      assigned: 1,
+    });
+    expect(report.printLayout).toMatchObject({
+      paperSize: "A4",
+      orientation: "portrait",
+      marginPreset: "normal",
+      hasLetterhead: true,
+      hasFooter: true,
+    });
     expect(JSON.stringify(report)).not.toContain("Wohnhaus Südtor");
+    expect(JSON.stringify(report)).not.toContain("Beta Import.pdf");
   });
 
   test("recovers from malformed local beta storage", async ({ page }) => {

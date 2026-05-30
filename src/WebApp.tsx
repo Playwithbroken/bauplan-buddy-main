@@ -568,6 +568,7 @@ function downloadJsonFile(filenamePrefix: string, payload: unknown) {
 function downloadBetaSupportReport() {
   const store = readBetaStore();
   const user = readJson<BetaUser | null>(USER_KEY, null);
+  const printSettings = readPrintSettings();
   downloadJsonFile("bauplan-buddy-beta-supportbericht", {
     app: "Bauplan Buddy",
     type: "desktop-beta-support-report",
@@ -592,6 +593,22 @@ function downloadBetaSupportReport() {
       customers: store.customers.length,
       appointments: store.appointments.length,
       documents: store.documents.length,
+    },
+    documentCounts: {
+      imported: store.documents.filter((item) => item.documentSource === "imported")
+        .length,
+      linked: store.documents.filter((item) => item.documentSource === "linked")
+        .length,
+      missing: store.documents.filter((item) => item.missing).length,
+      assigned: store.documents.filter((item) => item.projectId || item.customerId)
+        .length,
+    },
+    printLayout: {
+      paperSize: printSettings.paperSize,
+      orientation: printSettings.orientation,
+      marginPreset: printSettings.marginPreset,
+      hasLetterhead: Boolean(printSettings.letterhead.trim()),
+      hasFooter: Boolean(printSettings.footer.trim()),
     },
   });
 }

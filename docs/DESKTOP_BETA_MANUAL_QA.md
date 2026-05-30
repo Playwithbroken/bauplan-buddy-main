@@ -140,6 +140,8 @@ update-panel check, and cleanup.
 - [ ] Export a support report.
 - [ ] Confirm the support report does not contain raw customer, project,
       quote, invoice, appointment, or document records.
+- [ ] Confirm the support report contains only safe counts for documents and
+      print layout settings, not file paths or document titles.
 
 ## Update Panel
 

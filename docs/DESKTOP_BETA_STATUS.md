@@ -107,7 +107,8 @@ Der Playwright-Smoke deckt die Kernpfade ab:
   nach Reload behalten und in einer Druckansicht fuer Angebote/Rechnungen
   verwenden
 - Backup exportieren, Reset-/Restore-Bestaetigung und Wiederherstellung
-- Supportbericht ohne rohe Datensaetze
+- Supportbericht ohne rohe Datensaetze, aber mit sicheren Dokument- und
+  Drucklayout-Summendaten
 - Recovery bei kaputtem lokalen Beta-Speicher
 - Viewport-Smoke fuer 1366x768, 1920x1080, 768x1024 und mobile 390x844
 - Installer-Smoke mit Default-Installationspfad, Silent-Install, Start und

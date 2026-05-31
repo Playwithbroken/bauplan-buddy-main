@@ -617,6 +617,35 @@ test.describe("Desktop beta smoke", () => {
       }),
     ).toBeVisible();
     await preview.close();
+
+    await page.goto("/#/invoices");
+    await page
+      .getByPlaceholder("Rechnungstitel eingeben")
+      .fill("E2E Druck Rechnung");
+    await page.getByRole("button", { name: "Neu anlegen" }).click();
+    await page
+      .getByLabel("Kunde für E2E Druck Rechnung")
+      .selectOption({ label: "Familie Müller" });
+    await page
+      .getByLabel("Projekt für E2E Druck Rechnung")
+      .selectOption({ label: "Wohnhaus Südtor" });
+    const invoicePreviewPromise = page.waitForEvent("popup");
+    await page
+      .getByRole("button", {
+        name: "Eintrag E2E Druck Rechnung Druckansicht öffnen",
+      })
+      .click();
+    const invoicePreview = await invoicePreviewPromise;
+    await expect(invoicePreview.getByText("Bauplan Buddy GmbH")).toBeVisible();
+    await expect(invoicePreview.getByText("E2E Druck Rechnung")).toBeVisible();
+    await expect(invoicePreview.getByText("Familie Müller")).toBeVisible();
+    await expect(invoicePreview.getByText("Wohnhaus Südtor")).toBeVisible();
+    await expect(
+      invoicePreview.getByRole("button", {
+        name: "Drucker-Einstellungen öffnen",
+      }),
+    ).toBeVisible();
+    await invoicePreview.close();
   });
 
   test("exports and restores local beta data from settings", async ({ page }) => {

@@ -63,6 +63,10 @@ npm run verify:desktop-release -- --platform=win --dir=release
 npm run verify:desktop-release -- --platform=mac --dir=release
 ```
 
+For Windows builds, the verifier checks the installer, `.blockmap`, updater
+metadata (`beta.yml` or `latest.yml`), the installer reference and file size in
+that metadata, and prints the installer SHA256 for release notes.
+
 Preflight checks before tagging/release:
 
 ```bash

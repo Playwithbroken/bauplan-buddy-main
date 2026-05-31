@@ -562,6 +562,18 @@ test.describe("Desktop beta smoke", () => {
     });
     await expect(printPreview.getByText("Bauplan Buddy GmbH")).toBeVisible();
     await expect(printPreview.getByText("Steuernummer folgt")).toBeVisible();
+    const settingsPreviewPromise = page.waitForEvent("popup");
+    await page
+      .getByRole("button", { name: "Testdruck mit Drucker-Einstellungen" })
+      .click();
+    const settingsPreview = await settingsPreviewPromise;
+    await expect(settingsPreview.getByText("Testdruck Drucklayout")).toBeVisible();
+    await expect(
+      settingsPreview.getByRole("button", {
+        name: "Drucker-Einstellungen oeffnen",
+      }),
+    ).toBeVisible();
+    await settingsPreview.close();
     await expect(printPreview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
 
     await page.reload();
@@ -599,7 +611,11 @@ test.describe("Desktop beta smoke", () => {
     await expect(preview.getByText("Familie Müller")).toBeVisible();
     await expect(preview.getByText("Wohnhaus Südtor")).toBeVisible();
     await expect(preview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
-    await expect(preview.getByRole("button", { name: "Drucken" })).toBeVisible();
+    await expect(
+      preview.getByRole("button", {
+        name: "Drucker-Einstellungen oeffnen",
+      }),
+    ).toBeVisible();
     await preview.close();
   });
 

@@ -837,7 +837,7 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
 </head>
 <body>
   <div class="toolbar">
-    <button type="button" onclick="window.print()">Drucken</button>
+    <button type="button" onclick="window.print()">Drucker-Einstellungen oeffnen</button>
     <button type="button" onclick="window.close()">Schließen</button>
   </div>
   <main class="page">
@@ -865,6 +865,18 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
 </html>`);
   preview.document.close();
   preview.focus();
+}
+
+function openPrintSettingsTestPreview() {
+  openBetaPrintPreview("invoices", {
+    id: "TEST-DRUCK",
+    title: "Testdruck Drucklayout",
+    subtitle:
+      "Musteransicht fuer Briefkopf, Brieffuss, Papierformat und Druckraender.",
+    status: "Vorschau",
+    amount: 1234.56,
+    date: new Date().toISOString().slice(0, 10),
+  });
 }
 
 class BetaErrorBoundary extends Component<
@@ -2922,11 +2934,20 @@ function SettingsPage() {
                 </select>
               </label>
             </div>
-            <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+            <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
               Drucker, Papierfach, Skalierung und Zielgerät werden im nativen
               Druckdialog des Betriebssystems gewählt. Diese Beta liefert die
               lokale Dokumentansicht dafür.
-            </p>
+            </div>
+            <Button
+              className="mt-3"
+              type="button"
+              variant="outline"
+              onClick={openPrintSettingsTestPreview}
+            >
+              <Printer className="mr-2 h-4 w-4" />
+              Testdruck mit Drucker-Einstellungen
+            </Button>
           </div>
           <div>
             <p className="mb-2 text-sm font-medium">Vorschau</p>

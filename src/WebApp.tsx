@@ -837,7 +837,7 @@ function openBetaPrintPreview(entityKey: keyof BetaStore, item: BetaEntity) {
 </head>
 <body>
   <div class="toolbar">
-    <button type="button" onclick="window.print()">Drucker-Einstellungen oeffnen</button>
+    <button type="button" onclick="window.print()">Drucker-Einstellungen &ouml;ffnen</button>
     <button type="button" onclick="window.close()">Schließen</button>
   </div>
   <main class="page">

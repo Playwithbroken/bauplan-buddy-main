@@ -570,7 +570,7 @@ test.describe("Desktop beta smoke", () => {
     await expect(settingsPreview.getByText("Testdruck Drucklayout")).toBeVisible();
     await expect(
       settingsPreview.getByRole("button", {
-        name: "Drucker-Einstellungen oeffnen",
+        name: "Drucker-Einstellungen öffnen",
       }),
     ).toBeVisible();
     await settingsPreview.close();
@@ -613,7 +613,7 @@ test.describe("Desktop beta smoke", () => {
     await expect(preview.getByText("A4, Querformat, schmale Ränder")).toBeVisible();
     await expect(
       preview.getByRole("button", {
-        name: "Drucker-Einstellungen oeffnen",
+        name: "Drucker-Einstellungen öffnen",
       }),
     ).toBeVisible();
     await preview.close();

@@ -76,11 +76,9 @@ Validate artifacts in `release/`:
 Current local beta artifact:
 
 - `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
-- SHA256 `F12F9925B131A3EC04141C57995E815649EC11F8601784DABD89A176C21DE8F5`
+- SHA256 `7AD97E1DF4E677B6E2F387110A54C8033963E8A2579E7119EF67A3968EC825BD`
 
-The full local installer gate last passed for this artifact on 27.05.2026.
-Rerun `npm run quality:desktop-beta:installer` on the final beta HEAD before
-handoff, because later beta-hardening commits updated flows and smoke scripts.
+The full local installer gate passed for this artifact on 31.05.2026.
 
 GitHub PR CI status:
 

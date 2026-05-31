@@ -34,11 +34,8 @@ Diese Konten sind nur fuer lokale Desktop-/Demo-Beta gedacht.
 
 Lokaler Gate-Stand:
 
-- `npm run quality:desktop-beta:installer` ist am 27.05.2026 mit robustem
-  Installer-Smoke-Cleanup gruen gelaufen.
-- Seitdem wurden weitere Beta-Haertungen umgesetzt. Vor finaler Weitergabe
-  muss `npm run quality:desktop-beta:installer` auf dem aktuellen HEAD erneut
-  laufen.
+- `npm run quality:desktop-beta:installer` ist am 31.05.2026 auf dem aktuellen
+  HEAD mit robustem Installer-Smoke-Cleanup gruen gelaufen.
 - Abgedeckt sind `typecheck:beta`, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Desktop-Preflight, unpacked App-Smoke, unsigned Installer-Build,
   Release-Artefaktpruefung, Authenticode-`NotSigned`-Status und
@@ -173,7 +170,7 @@ bleiben.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `F12F9925B131A3EC04141C57995E815649EC11F8601784DABD89A176C21DE8F5`
+- SHA256: `7AD97E1DF4E677B6E2F387110A54C8033963E8A2579E7119EF67A3968EC825BD`
 
 Automatisiert geprueft sind Default-Installationspfad, Installer-Installation,
 Start, Login, echter App-Neustart, Projektpersistenz, Backup-Export,

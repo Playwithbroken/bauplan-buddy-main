@@ -23,11 +23,8 @@ Realtime-/AI-Demo-Flaechen.
 
 ## Abnahme-Status
 
-- `npm run quality:desktop-beta:installer` ist am 27.05.2026 mit robustem
-  Installer-Smoke-Cleanup gruen gelaufen.
-- Seit diesem Gate wurden weitere Beta-Haertungen umgesetzt; fuer die finale
-  Weitergabe muss das komplette Installer-Gate auf dem aktuellen HEAD erneut
-  laufen.
+- `npm run quality:desktop-beta:installer` ist am 31.05.2026 auf dem aktuellen
+  HEAD mit robustem Installer-Smoke-Cleanup gruen gelaufen.
 - Automatisiert geprueft sind TypeScript, Lint, Jest, Playwright-Beta-Smoke,
   Vite-Build, Kernmodul-Persistenz, Drucklayout-Persistenz,
   lokale Kunde/Projekt/Angebot-Beziehungen,
@@ -48,7 +45,7 @@ Realtime-/AI-Demo-Flaechen.
 - Installer: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Blockmap: `release/Bauplan Buddy Setup 0.0.2-beta.17.exe.blockmap`
 - Updater-Metadaten: `release/beta.yml`
-- SHA256: `F12F9925B131A3EC04141C57995E815649EC11F8601784DABD89A176C21DE8F5`
+- SHA256: `7AD97E1DF4E677B6E2F387110A54C8033963E8A2579E7119EF67A3968EC825BD`
 
 ## Beta-Konten
 

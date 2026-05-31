@@ -17,7 +17,7 @@ update-panel check, and cleanup.
 - Installer:
   `release/Bauplan Buddy Setup 0.0.2-beta.17.exe`
 - Installer SHA256:
-  `F12F9925B131A3EC04141C57995E815649EC11F8601784DABD89A176C21DE8F5`
+  `7AD97E1DF4E677B6E2F387110A54C8033963E8A2579E7119EF67A3968EC825BD`
 
 ## Pre-Checks
 
@@ -25,8 +25,7 @@ update-panel check, and cleanup.
       intentionally backed up before testing.
 - [ ] `npm run quality:desktop-beta:installer` has passed on the current
       release candidate. Last full local installer-gate pass for the artifact
-      listed above: 27.05.2026. Rerun this gate after the latest beta-hardening
-      commits before final handoff.
+      listed above: 31.05.2026.
 - [ ] GitHub Actions `CI/CD Pipeline` is green for the release candidate branch.
 - [ ] The installer, `.blockmap`, and `beta.yml` exist in `release/`.
 

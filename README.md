@@ -13,6 +13,30 @@ End-to-end construction project planning suite covering scheduling, document wor
 - Offline-ready PWA shell with theme presets and advanced accessibility tooling
 - Shared design system based on Radix UI + Tailwind (Shadcn inspired)
 
+## Current Desktop Beta
+
+The active beta target is a local Windows/Electron desktop beta:
+`0.0.2-beta.17`. It is local-first, uses browser storage for beta data, and
+does not require Supabase, backend services, or cloud synchronization.
+
+Stable beta scope:
+
+- Dashboard
+- Projekte
+- Angebote
+- Rechnungen
+- Kalender
+- Kunden
+- Dokumente
+- Einstellungen
+
+Primary beta references:
+
+- Status: `docs/DESKTOP_BETA_STATUS.md`
+- Release notes: `docs/RELEASE_0.0.2-beta.17.md`
+- Release checklist: `docs/RELEASE_v0.0.1_CHECKLIST.md`
+- Manual QA protocol: `docs/DESKTOP_BETA_MANUAL_QA.md`
+
 ## Repository Layout
 - `src/` – React application (components, pages, services, utilities)
 - `backend/` – Node 20+ workspace for Prisma-driven services (Postgres + RabbitMQ)
@@ -60,6 +84,8 @@ End-to-end construction project planning suite covering scheduling, document wor
 | `npm run build:desktop` | Build desktop artifacts via Electron Builder |
 | `npm run build:desktop:win` | Build Windows desktop installer (`.exe`) |
 | `npm run build:desktop:mac` | Build macOS desktop installer (`.dmg`) |
+| `npm run quality:beta` | Run the local desktop beta quality gate |
+| `npm run quality:desktop-beta:installer` | Run the full Windows beta gate, including installer build and installed-app smoke |
 | `npm run preflight:desktop-release -- --platform=win|mac --publish=true|false --tag=vX.Y.Z` | Validate release prerequisites (version/tag/secrets) |
 | `npm run verify:desktop-release -- --platform=win|mac --dir=release` | Smoke-check desktop release artifacts |
 | `npm run preview` | Preview prod build |
@@ -73,6 +99,9 @@ End-to-end construction project planning suite covering scheduling, document wor
 | `npm run test:e2e:report` | Open the latest Playwright report |
 
 ## Testing & Quality Gates
+- For the current local desktop beta, use `npm run quality:beta`.
+- For the Windows installer release candidate, use `npm run quality:desktop-beta:installer`.
+- Record the final interactive Windows QA result in `docs/DESKTOP_BETA_MANUAL_QA.md`.
 - `npm run lint` before committing UI changes to keep Tailwind class ordering consistent.
 - `npm run test` covers key services (OCR, invoicing, notification logic). Add coverage for new services in `src/services/__tests__`.
 - `npm run test:e2e` validates appointment scheduling, document flows, and notification settings. Use `npm run test:e2e:ui` for debugging.
@@ -98,6 +127,9 @@ End-to-end construction project planning suite covering scheduling, document wor
 - Reporting pipeline: `ENHANCED_REPORTING.md`
 - Backend roadmap: `docs/backend-implementation-roadmap.md`
 - Desktop release pipeline: `docs/DESKTOP_RELEASE_PIPELINE.md`
+- Desktop beta status: `docs/DESKTOP_BETA_STATUS.md`
+- Desktop beta release notes: `docs/RELEASE_0.0.2-beta.17.md`
+- Desktop beta manual QA: `docs/DESKTOP_BETA_MANUAL_QA.md`
 
 ## UI Follow-Up Items
 - `src/components/NotificationSettingsDialog.tsx`: No user-facing confirmation when `handleSave` succeeds; add toast/snackbar so the dialog close is not the only signal. Also surface permission errors instead of logging to console.

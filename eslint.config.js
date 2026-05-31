@@ -5,7 +5,21 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "coverage", "playwright-report", "_QuoteToProjectConverter_corrupted.tsx", "_QuoteToProjectConverter_original.tsx"] },
+  {
+    ignores: [
+      ".claude/**",
+      "backend/**/dist/**",
+      "coverage/**",
+      "dist/**",
+      "node_modules/**",
+      "playwright-report/**",
+      "release/**",
+      "test-results/**",
+      "temp_*.txt",
+      "_QuoteToProjectConverter_corrupted.tsx",
+      "_QuoteToProjectConverter_original.tsx",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],

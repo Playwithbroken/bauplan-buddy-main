@@ -12,8 +12,10 @@ let autoUpdater = null;
 let rendererServer = null;
 let rendererServerPromise = null;
 let rendererBaseUrl = null;
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
 
 const DIST_DIR = path.join(__dirname, "../dist");
+const RENDERER_SERVER_PORT = Number(process.env.BAUPLAN_DESKTOP_RENDERER_PORT) || 43877;
 const STARTUP_LOG_PATH = path.join(
   process.env.TEMP || process.env.TMP || process.cwd(),
   "bauplan-buddy-desktop.log"
@@ -36,6 +38,7 @@ const IPC_CHANNELS = {
   OPEN_TEAR_OFF: "desktop:open-tear-off",
   NOTIFY: "desktop:notify",
   OPEN_EXTERNAL: "desktop:open-external",
+  OPEN_PATH: "desktop:file:open-path",
   OPEN_FILE_DIALOG: "desktop:file:open-dialog",
   READ_FILE: "desktop:file:read",
   WRITE_FILE: "desktop:file:write",
@@ -136,7 +139,7 @@ function ensureRendererServer() {
       reject(error);
     });
 
-    server.listen(0, "127.0.0.1", () => {
+    server.listen(RENDERER_SERVER_PORT, "127.0.0.1", () => {
       const address = server.address();
       if (!address || typeof address === "string") {
         rendererServerPromise = null;
@@ -329,6 +332,15 @@ function focusMainWindow() {
   mainWindow.focus();
 }
 
+if (!hasSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    writeStartupLog("app:second-instance");
+    focusMainWindow();
+  });
+}
+
 function createTray() {
   if (tray) {
     return;
@@ -481,6 +493,25 @@ ipcMain.handle(IPC_CHANNELS.OPEN_EXTERNAL, (_event, targetUrl) => {
 
   void shell.openExternal(targetUrl);
   return { ok: true };
+});
+
+ipcMain.handle(IPC_CHANNELS.OPEN_PATH, async (_event, targetPath) => {
+  if (!isValidAbsoluteFilePath(targetPath)) {
+    return { ok: false, reason: "invalid_path" };
+  }
+
+  try {
+    const result = await shell.openPath(targetPath);
+    return result
+      ? { ok: false, reason: "open_failed", message: result }
+      : { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: "open_failed",
+      message: error?.message || "Could not open file",
+    };
+  }
 });
 
 ipcMain.handle(IPC_CHANNELS.OPEN_FILE_DIALOG, async (_event, payload) => {
@@ -654,6 +685,10 @@ ipcMain.on("open-tear-off", (_event, payload) => {
 });
 
 app.on('ready', () => {
+  if (!hasSingleInstanceLock) {
+    return;
+  }
+
   writeStartupLog("app:ready");
   void (async () => {
     try {

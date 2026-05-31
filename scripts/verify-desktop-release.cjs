@@ -2,6 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
+const { execFileSync } = require("child_process");
 
 function parseArgs(argv) {
   const parsed = {};
@@ -23,12 +25,75 @@ function ensureAnyMatch(files, patterns, label) {
   if (matched.length === 0) {
     fail(`Missing ${label}. Expected one of: ${patterns.map((p) => p.toString()).join(", ")}`);
   }
+
+  return matched;
+}
+
+function verifyUnsignedWindowsInstaller(releaseDir, installerName) {
+  if (process.platform !== "win32") {
+    process.stdout.write(
+      "[verify-desktop-release] WARN: skipping Authenticode check outside Windows.\n"
+    );
+    return;
+  }
+
+  const installerPath = path.join(releaseDir, installerName);
+  const powershellPath = installerPath.replace(/'/g, "''");
+  const powershellCommand = [
+    `$signature = Get-AuthenticodeSignature -LiteralPath '${powershellPath}'`,
+    "Write-Output $signature.Status",
+  ].join("; ");
+
+  let status;
+  try {
+    status = execFileSync(
+      "powershell.exe",
+      ["-NoProfile", "-NonInteractive", "-Command", powershellCommand],
+      { encoding: "utf8" }
+    ).trim();
+  } catch (error) {
+    fail(`Unable to inspect Authenticode signature for ${installerName}: ${error.message}`);
+  }
+
+  if (status !== "NotSigned") {
+    fail(`Expected unsigned Windows beta installer, got Authenticode status "${status}".`);
+  }
+
+  process.stdout.write(
+    `[verify-desktop-release] Authenticode OK: ${installerName} is unsigned.\n`
+  );
+}
+
+function sha256File(filePath) {
+  return crypto
+    .createHash("sha256")
+    .update(fs.readFileSync(filePath))
+    .digest("hex")
+    .toUpperCase();
+}
+
+function verifyWindowsUpdateMetadata(releaseDir, installerName, installerSize) {
+  const metadataName = fs.existsSync(path.join(releaseDir, "beta.yml"))
+    ? "beta.yml"
+    : "latest.yml";
+  const metadataPath = path.join(releaseDir, metadataName);
+  const metadata = fs.readFileSync(metadataPath, "utf8");
+
+  if (!metadata.includes(`path: ${installerName}`) && !metadata.includes(`url: ${installerName}`)) {
+    fail(`${metadataName} does not reference installer ${installerName}`);
+  }
+
+  if (!metadata.includes(`size: ${installerSize}`)) {
+    fail(`${metadataName} does not contain installer size ${installerSize}`);
+  }
 }
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const platform = (args.platform || "").toLowerCase();
   const releaseDir = path.resolve(process.cwd(), args.dir || "release");
+  const allowUnpacked = String(args.allowUnpacked || "false").toLowerCase() === "true";
+  const expectUnsigned = String(args.expectUnsigned || "false").toLowerCase() === "true";
 
   if (!platform || !["win", "mac"].includes(platform)) {
     fail('Provide --platform=win or --platform=mac');
@@ -44,13 +109,31 @@ function main() {
   }
 
   if (platform === "win") {
-    ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
+    if (allowUnpacked && fs.existsSync(path.join(releaseDir, "win-unpacked", "Bauplan Buddy.exe"))) {
+      process.stdout.write(
+        `[verify-desktop-release] OK (${platform}, unpacked) in ${releaseDir}\nFiles: ${files.length}\n`
+      );
+      return;
+    }
+
+    const installers = ensureAnyMatch(files, [/\.exe$/i], "Windows installer (.exe)");
+    const installerPath = path.join(releaseDir, installers[0]);
+    const installerSize = fs.statSync(installerPath).size;
     ensureAnyMatch(
       files,
       [/latest\.yml$/i, /beta\.yml$/i],
       "Windows update metadata (latest.yml or beta.yml)"
     );
     ensureAnyMatch(files, [/\.blockmap$/i], "Windows blockmap");
+    verifyWindowsUpdateMetadata(releaseDir, installers[0], installerSize);
+
+    if (expectUnsigned) {
+      verifyUnsignedWindowsInstaller(releaseDir, installers[0]);
+    }
+
+    process.stdout.write(
+      `[verify-desktop-release] SHA256 ${installers[0]} ${sha256File(installerPath)}\n`
+    );
   }
 
   if (platform === "mac") {

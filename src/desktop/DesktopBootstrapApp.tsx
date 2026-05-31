@@ -14,20 +14,6 @@ interface DesktopUser {
   permissions: string[];
 }
 
-declare global {
-  interface Window {
-    desktop?: {
-      checkForUpdates?: () => Promise<unknown>;
-      openFileDialog?: (
-        filters?: { name: string; extensions: string[] }[],
-        properties?: string[],
-        title?: string
-      ) => Promise<{ canceled?: boolean; filePaths?: string[] }>;
-      openExternal?: (url: string) => Promise<unknown>;
-    };
-  }
-}
-
 const STORAGE_KEY = "bauplan_offline_user";
 
 const DEMO_USERS: Array<{
